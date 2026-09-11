@@ -65,7 +65,7 @@
   
   /* Navbar */
   .navbar {
-    background: var(--surface); /* Regresamos al blanco original */
+    background: var(--surface);
     height: 70px;
     display: flex;
     align-items: center;
@@ -79,7 +79,7 @@
     transition: background-color 0.3s, border-color 0.3s;
   }
   
-  /* Logo en imagen restaurado */
+  /* Logo */
   .brand { 
     display: flex; 
     align-items: center; 
@@ -91,34 +91,62 @@
     border-radius: 6px;
   }
 
-  /* Título central de la barra */
-  .nav-title {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    color: var(--text-main); /* Ahora es gris oscuro para que se vea sobre el blanco */
-    font-size: 18px;
-    font-weight: 700; /* Un poco más gordito para que resalte */
-    letter-spacing: 0.5px;
-    white-space: nowrap;
+  /* Menú de Opciones (Nav Actions) */
+  .nav-actions { 
+    position: relative; 
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
-  /* Menú de Opciones (Nav Actions) */
-  .nav-actions { position: relative; margin-left: auto; }
-  .btn-icon-top {
-    background: transparent; border: none; font-size: 22px; cursor: pointer;
-    color: var(--text-muted); /* Regresa a gris */
-    padding: 8px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
-  }
-  .btn-icon-top:hover { 
-    background: var(--input-bg);
+  /* Date Pill */
+  .date-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    background: var(--surface);
+    font-size: 14px;
     color: var(--text-main);
+    font-weight: 600;
+    transition: border-color 0.3s;
+  }
+  .dot-orange {
+    width: 8px; height: 8px;
+    background-color: #F59E0B; /* Naranja */
+    border-radius: 50%;
+  }
+  .date-text .fw-normal {
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+
+  /* Custom Gear Button */
+  .btn-settings-outline {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    width: 42px; height: 42px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-settings-outline:hover {
+    border-color: #0EA5E9; /* Azul claro estilo la captura */
+    color: #0EA5E9;
+    background: #F0F9FF; /* Fondo azul muy sutil */
+  }
+  body.dark-theme .btn-settings-outline:hover {
+    background: #0C4A6E; /* Fondo oscuro sutil */
   }
   
+  /* Dropdown Menú */
   .dropdown-menu {
-    position: absolute; right: 0; top: 50px; background: var(--surface);
+    position: absolute; right: 0; top: 56px; background: var(--surface);
     border: 1px solid var(--border); border-radius: var(--radius-md);
     box-shadow: var(--shadow-md); min-width: 220px; z-index: 100;
     overflow: hidden;
@@ -244,6 +272,10 @@
   }
   @media (max-width: 500px) {
     .punch-grid { grid-template-columns: 1fr; }
+    
+    /* Responsive nav */
+    .date-pill { padding: 6px 10px; font-size: 12px; }
+    .date-text .fw-normal { display: none; }
   }
 
   .btn-punch {
@@ -281,17 +313,27 @@
 <body>
 
 <nav class="navbar">
-  <!-- Logo original restaurado -->
+  <!-- Logo -->
   <div class="brand">
     <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
   </div>
   
-  <!-- Título centrado -->
-  <div class="nav-title">Asistencia Diaria</div>
-  
-  <!-- Engranaje en la esquina superior -->
+  <!-- Contenedor derecho: Fecha y Engranaje HD -->
   <div class="nav-actions">
-    <button class="btn-icon-top" id="btnSettings" onclick="toggleMenu()" title="Configuración">⚙️</button>
+    
+    <div class="date-pill" id="datePill">
+      <span class="dot-orange"></span>
+      <span class="date-text"><span class="fw-normal">Hoy:</span> <span id="currentDate">Cargando...</span></span>
+    </div>
+
+    <button class="btn-settings-outline" id="btnSettings" onclick="toggleMenu()" title="Configuración">
+      <!-- Icono de engranaje en SVG de alta definición -->
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"></circle>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+      </svg>
+    </button>
+    
     <div id="settingsMenu" class="dropdown-menu hidden">
       <div class="dropdown-header">Opciones de la App</div>
       <button class="dropdown-item" onclick="editarUsuario()"><span>👤</span> Editar usuario</button>
@@ -390,6 +432,7 @@
   // Inicialización principal
   function init() {
     aplicarTema();
+    actualizarFecha();
 
     const savedName = localStorage.getItem(KEY_USER);
     const savedBranch = localStorage.getItem(KEY_BRANCH);
@@ -406,6 +449,18 @@
       viewSetup.classList.remove('display-none');
       viewPunch.classList.add('display-none');
     }
+  }
+  
+  function actualizarFecha() {
+    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
+    const hoy = new Date();
+    
+    const nombreDia = dias[hoy.getDay()];
+    const numeroDia = hoy.getDate();
+    const nombreMes = meses[hoy.getMonth()];
+    
+    document.getElementById('currentDate').textContent = `${nombreDia}, ${numeroDia} De ${nombreMes}`;
   }
 
   /* ====== LÓGICA DEL MENÚ SUPERIOR ====== */
