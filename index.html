@@ -27,8 +27,8 @@
     --icon-bg: #EFF6FF;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --radius-lg: 16px;
-    --radius-md: 10px;
+    --radius-lg: 32px; /* Aumentado para mayor curvatura en esquinas */
+    --radius-md: 16px; /* Aumentado para botones e inputs */
     --hover-ent: #ECFDF5;
     --hover-sal: #FEF2F2;
   }
@@ -79,21 +79,16 @@
     transition: background-color 0.3s, border-color 0.3s;
   }
   
+  /* Logo en la esquina izquierda */
   .brand { 
-    position: absolute; 
-    left: 50%; 
-    transform: translateX(-50%);
     display: flex; 
     align-items: center; 
   }
   .brand-img {
-    max-height: 40px;
+    max-height: 44px;
     width: auto;
     object-fit: contain;
-  }
-  body.dark-theme .brand-img {
-    /* Agrega un sutil resplandor blanco para que las letras oscuras se vean bien en fondo oscuro */
-    filter: drop-shadow(0px 1px 4px rgba(255, 255, 255, 0.7));
+    border-radius: 6px; /* Para suavizar un poco la imagen si tiene fondo blanco solido */
   }
 
   /* Menú de Opciones (Nav Actions) */
@@ -270,7 +265,7 @@
 <body>
 
 <nav class="navbar">
-  <!-- El logo ahora está centrado absolutamente en la barra -->
+  <!-- El logo a la izquierda -->
   <div class="brand">
     <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
   </div>
@@ -326,7 +321,7 @@
 
   <!-- VISTA: RELOJ CHECADOR -->
   <div id="view-punch" class="card display-none">
-    <!-- El usuario y sucursal ahora están perfectamente centrados -->
+    <!-- El usuario y sucursal están centrados -->
     <div class="user-badge">
       <div class="user-badge-info">
         <h1 id="lblNombre">Cargando...</h1>
