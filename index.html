@@ -12,6 +12,7 @@
   :root {
     --bg-color: #F4F7F9;
     --surface: #FFFFFF;
+    --navbar-bg: #E8EEF2; /* El color azul clarito/gris que pediste para la barra */
     --text-main: #1E293B;
     --text-muted: #64748B;
     --border: #E2E8F0;
@@ -37,6 +38,7 @@
   body.dark-theme {
     --bg-color: #0F172A;
     --surface: #1E293B;
+    --navbar-bg: #1E293B; /* En oscuro la barra se mantiene oscura */
     --text-main: #F8FAFC;
     --text-muted: #94A3B8;
     --border: #334155;
@@ -65,7 +67,7 @@
   
   /* Navbar */
   .navbar {
-    background: var(--surface);
+    background: var(--navbar-bg);
     height: 70px;
     display: flex;
     align-items: center;
@@ -79,26 +81,17 @@
     transition: background-color 0.3s, border-color 0.3s;
   }
   
-  /* Logo en Alta Definición (Reconstruido con CSS para colores perfectos y cero padding blanco) */
+  /* Logo en imagen restaurado */
   .brand { 
     display: flex; 
     align-items: center; 
   }
-  .dmf-logo {
-    display: flex; flex-direction: column; justify-content: center; user-select: none;
+  .brand-img {
+    height: 55px; /* Altura forzada para que no se vea tan miniatura */
+    width: auto;
+    object-fit: contain;
+    border-radius: 6px;
   }
-  .dmf-logo-top {
-    font-size: 26px; font-weight: 800; letter-spacing: -1px; display: flex; align-items: center;
-  }
-  .dmf-dental { color: #52525B; }
-  .dmf-cross { color: #00A3B5; font-size: 25px; margin: 0 3px; }
-  .dmf-facil { color: #00A3B5; }
-  .dmf-logo-bottom {
-    font-size: 9px; font-weight: 700; color: #71717A; letter-spacing: 0.22em; margin-top: -3px;
-  }
-  /* Adaptación del logo en modo oscuro */
-  body.dark-theme .dmf-dental { color: #F4F4F5; }
-  body.dark-theme .dmf-logo-bottom { color: #A1A1AA; }
 
   /* Menú de Opciones (Nav Actions) */
   .nav-actions { position: relative; margin-left: auto; }
@@ -274,16 +267,9 @@
 <body>
 
 <nav class="navbar">
-  <!-- Logo reconstruido en código de Alta Definición (HD) -->
+  <!-- Logo original restaurado -->
   <div class="brand">
-    <div class="dmf-logo">
-      <div class="dmf-logo-top">
-        <span class="dmf-dental">Dental</span>
-        <span class="dmf-cross">✚</span>
-        <span class="dmf-facil">Fácil</span>
-      </div>
-      <div class="dmf-logo-bottom">TU CONEXIÓN A LA SALUD</div>
-    </div>
+    <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
   </div>
   
   <!-- Engranaje en la esquina superior -->
@@ -337,7 +323,6 @@
 
   <!-- VISTA: RELOJ CHECADOR -->
   <div id="view-punch" class="card display-none">
-    <!-- El usuario y sucursal están centrados -->
     <div class="user-badge">
       <div class="user-badge-info">
         <h1 id="lblNombre">Cargando...</h1>
