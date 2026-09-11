@@ -78,21 +78,26 @@
     z-index: 10;
     transition: background-color 0.3s, border-color 0.3s;
   }
-  .brand { display: flex; align-items: center; gap: 12px; }
-  .logo-cross {
-    color: var(--teal); font-size: 24px; font-weight: 800;
+  
+  .brand { 
+    position: absolute; 
+    left: 50%; 
+    transform: translateX(-50%);
+    display: flex; 
+    align-items: center; 
   }
-  .logo-text-wrapper { display: flex; flex-direction: column; }
-  .logo-title {
-    font-size: 18px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin-bottom: -2px;
+  .brand-img {
+    max-height: 40px;
+    width: auto;
+    object-fit: contain;
   }
-  .logo-title span { color: var(--teal); }
-  .logo-subtitle {
-    font-size: 9px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
+  body.dark-theme .brand-img {
+    /* Agrega un sutil resplandor blanco para que las letras oscuras se vean bien en fondo oscuro */
+    filter: drop-shadow(0px 1px 4px rgba(255, 255, 255, 0.7));
   }
 
   /* Menú de Opciones (Nav Actions) */
-  .nav-actions { position: relative; }
+  .nav-actions { position: relative; margin-left: auto; }
   .btn-icon-top {
     background: transparent; border: none; font-size: 22px; cursor: pointer;
     color: var(--text-muted); padding: 8px; border-radius: 50%;
@@ -144,27 +149,29 @@
 
   .card-header {
     display: flex;
+    flex-direction: column;
     align-items: center;
+    text-align: center;
     gap: 12px;
     margin-bottom: 24px;
   }
   .card-icon {
     background: var(--icon-bg);
     color: var(--primary);
-    width: 38px; height: 38px;
-    border-radius: 10px;
+    width: 48px; height: 48px;
+    border-radius: 12px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 18px;
+    font-size: 24px;
   }
   .card-title-group h2 {
-    margin: 0; font-size: 16px; font-weight: 700; color: var(--text-main);
+    margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main);
   }
   .card-title-group p {
-    margin: 4px 0 0; font-size: 13px; color: var(--text-muted);
+    margin: 4px 0 0; font-size: 14px; color: var(--text-muted);
   }
 
   /* Forms */
-  .form-group { margin-bottom: 20px; }
+  .form-group { margin-bottom: 20px; text-align: left; }
   .form-group label {
     display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;
   }
@@ -210,15 +217,15 @@
 
   /* Punch View Specifics */
   .user-badge {
-    display: flex; justify-content: space-between; align-items: flex-start;
+    display: flex; flex-direction: column; align-items: center; text-align: center;
     padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
   }
   .user-badge-info h1 {
-    margin: 0 0 6px 0; font-size: 22px; font-weight: 700; color: var(--text-main);
+    margin: 0 0 8px 0; font-size: 26px; font-weight: 700; color: var(--text-main);
   }
   .user-badge-info .sucursal-tag {
     display: inline-block; background: var(--teal-light); color: var(--teal);
-    padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 700;
+    padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
   }
 
   .punch-grid {
@@ -263,12 +270,9 @@
 <body>
 
 <nav class="navbar">
+  <!-- El logo ahora está centrado absolutamente en la barra -->
   <div class="brand">
-    <div class="logo-cross">✚</div>
-    <div class="logo-text-wrapper">
-      <div class="logo-title">Dental<span>+</span>Fácil</div>
-      <div class="logo-subtitle">Tu conexión a la salud</div>
-    </div>
+    <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
   </div>
   
   <!-- Engranaje en la esquina superior -->
@@ -322,6 +326,7 @@
 
   <!-- VISTA: RELOJ CHECADOR -->
   <div id="view-punch" class="card display-none">
+    <!-- El usuario y sucursal ahora están perfectamente centrados -->
     <div class="user-badge">
       <div class="user-badge-info">
         <h1 id="lblNombre">Cargando...</h1>
@@ -384,7 +389,7 @@
     } else {
       document.getElementById('setupTitle').textContent = "Crear perfil de empleado";
       document.getElementById('setupDesc').textContent = "Solo necesitas configurar esto la primera vez.";
-      btnCancelar.classList.add('display-none'); // Esconder el botón de cancelar si es nuevo
+      btnCancelar.classList.add('display-none'); 
       viewSetup.classList.remove('display-none');
       viewPunch.classList.add('display-none');
     }
@@ -439,14 +444,12 @@
   }
 
   function editarUsuario() {
-    // Rellenar con los datos actuales
     inputNombre.value = localStorage.getItem(KEY_USER) || '';
     inputSucursal.value = localStorage.getItem(KEY_BRANCH) || '';
     
     document.getElementById('setupTitle').textContent = "Editar perfil";
     document.getElementById('setupDesc').textContent = "Actualiza tu nombre o cambia de sucursal.";
     
-    // Mostrar el botón de Cancelar porque el usuario ya tiene una cuenta válida a donde regresar
     btnCancelar.classList.remove('display-none');
     
     viewPunch.classList.add('display-none');
@@ -455,7 +458,6 @@
   }
 
   function cancelarEdicion() {
-    // Al cancelar, simplemente volvemos a llamar a init() que nos regresa al panel principal
     init();
   }
 
