@@ -139,11 +139,13 @@
   }
   .btn-primary:hover { background: #082a45; }
   
-  .btn-text {
-    background: none; color: var(--text-muted); font-size: 13px; width: auto; padding: 6px 12px;
-    text-decoration: underline; text-underline-offset: 4px;
+  .btn-icon {
+    background: none; border: none; font-size: 22px; cursor: pointer;
+    color: var(--text-muted); padding: 8px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s;
   }
-  .btn-text:hover { color: var(--text-main); }
+  .btn-icon:hover { background: #F1F5F9; }
 
   /* Punch View Specifics */
   .user-badge {
@@ -211,13 +213,13 @@
 
 <div class="container">
   
-  <!-- VISTA: CREAR USUARIO -->
+  <!-- VISTA: SETUP/EDITAR USUARIO -->
   <div id="view-setup" class="card hidden">
     <div class="card-header">
       <div class="card-icon">👤</div>
       <div class="card-title-group">
-        <h2>Crear tu perfil de empleado</h2>
-        <p>Solo necesitas configurar esto la primera vez.</p>
+        <h2 id="setupTitle">Crear perfil de empleado</h2>
+        <p id="setupDesc">Solo necesitas configurar esto la primera vez.</p>
       </div>
     </div>
     
@@ -237,7 +239,7 @@
       </select>
     </div>
     
-    <button class="btn btn-primary" onclick="guardarUsuario()">Guardar usuario</button>
+    <button class="btn btn-primary" onclick="guardarUsuario()">Guardar perfil</button>
   </div>
 
 
@@ -248,7 +250,7 @@
         <h1 id="lblNombre">Cargando...</h1>
         <div class="sucursal-tag" id="lblSucursal">Sucursal</div>
       </div>
-      <button class="btn-text" onclick="cerrarSesion()">Cambiar usuario</button>
+      <button class="btn-icon" onclick="editarUsuario()" title="Editar perfil">⚙️</button>
     </div>
 
     <div style="text-align: center; margin-bottom: 24px;">
@@ -300,13 +302,15 @@
       viewPunch.classList.remove('hidden');
       viewSetup.classList.add('hidden');
     } else {
-      // Nuevo usuario, mostrar setup
+      // Nuevo usuario, mostrar setup en modo creacion
+      document.getElementById('setupTitle').textContent = "Crear perfil de empleado";
+      document.getElementById('setupDesc').textContent = "Solo necesitas configurar esto la primera vez.";
       viewSetup.classList.remove('hidden');
       viewPunch.classList.add('hidden');
     }
   }
 
-  // Guardar perfil inicial
+  // Guardar perfil (creación o edición)
   function guardarUsuario() {
     const nombre = inputNombre.value.trim();
     const sucursal = inputSucursal.value;
@@ -321,39 +325,34 @@
     init();
   }
 
-  // Borrar perfil (Cambiar empleado)
-  function cerrarSesion() {
-    if(confirm("¿Seguro que deseas salir? Tendrás que volver a ingresar tu nombre y sucursal la próxima vez.")){
-      localStorage.removeItem(KEY_USER);
-      localStorage.removeItem(KEY_BRANCH);
-      inputNombre.value = '';
-      inputSucursal.value = '';
-      msgStatus.className = 'status-message';
-      init();
-    }
+  // Editar perfil (en lugar de solo borrarlo)
+  function editarUsuario() {
+    // Pre-llenar los campos con lo que ya tiene guardado
+    inputNombre.value = localStorage.getItem(KEY_USER) || '';
+    inputSucursal.value = localStorage.getItem(KEY_BRANCH) || '';
+    
+    // Cambiar los textos para que se entienda que está editando
+    document.getElementById('setupTitle').textContent = "Editar perfil";
+    document.getElementById('setupDesc').textContent = "Actualiza tu nombre o cambia de sucursal.";
+    
+    // Cambiar de vista
+    viewPunch.classList.add('hidden');
+    viewSetup.classList.remove('hidden');
   }
 
-  // Registrar asistencia inteligentemente (captura la hora exacta en el momento del click)
+  // Registrar asistencia inteligentemente
   function registrar(tipo) {
-    // Aquí el sistema captura automáticamente la hora exacta en la que le dio clic:
     const now = new Date();
     const timeString = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
     
-    // Muestra el mensaje en pantalla
     msgStatus.textContent = `¡${tipo} registrada exitosamente a las ${timeString}!`;
     msgStatus.className = 'status-message success';
 
-    // Ocultar el mensaje después de 5 segundos
     setTimeout(() => {
       msgStatus.className = 'status-message';
     }, 5000);
 
-    // [INTEGRACIÓN FUTURA]
-    // Aquí se hará el envío de datos a Google Sheets usando fetch() enviando:
-    // - nombre (lblNombre.textContent)
-    // - sucursal (lblSucursal.textContent)
-    // - tipo ("Entrada" o "Salida")
-    // - hora exacta (now)
+    // [INTEGRACIÓN FUTURA CON GOOGLE SHEETS]
     console.log(`Guardando en base de datos: ${tipo} | Empleado: ${lblNombre.textContent} | Hora: ${timeString}`);
   }
 
