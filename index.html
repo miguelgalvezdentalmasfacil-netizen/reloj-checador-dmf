@@ -73,7 +73,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    border-bottom: 1px solid rgba(0,0,0,0.1); /* Borde más sutil para el fondo azul */
+    border-bottom: 1px solid rgba(0,0,0,0.1);
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -91,6 +91,18 @@
     width: auto;
     object-fit: contain;
     border-radius: 6px;
+  }
+
+  /* Título central de la barra */
+  .nav-title {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #FFFFFF;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
   }
 
   /* Menú de Opciones (Nav Actions) */
@@ -274,6 +286,9 @@
   <div class="brand">
     <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
   </div>
+  
+  <!-- Título centrado -->
+  <div class="nav-title">Asistencia Diaria</div>
   
   <!-- Engranaje en la esquina superior -->
   <div class="nav-actions">
