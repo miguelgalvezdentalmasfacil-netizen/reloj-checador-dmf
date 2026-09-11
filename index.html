@@ -12,7 +12,7 @@
   :root {
     --bg-color: #F4F7F9;
     --surface: #FFFFFF;
-    --navbar-bg: #E8EEF2; /* El color azul clarito/gris que pediste para la barra */
+    --navbar-bg: #0078D4; /* Color azul vibrante estilo Dentalink */
     --text-main: #1E293B;
     --text-muted: #64748B;
     --border: #E2E8F0;
@@ -73,7 +73,7 @@
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    border-bottom: 1px solid var(--border);
+    border-bottom: 1px solid rgba(0,0,0,0.1); /* Borde más sutil para el fondo azul */
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -97,11 +97,14 @@
   .nav-actions { position: relative; margin-left: auto; }
   .btn-icon-top {
     background: transparent; border: none; font-size: 22px; cursor: pointer;
-    color: var(--text-muted); padding: 8px; border-radius: 50%;
+    color: #FFFFFF; /* Blanco para que contraste con el azul */
+    padding: 8px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s, color 0.2s;
+    transition: background 0.2s;
   }
-  .btn-icon-top:hover { background: var(--input-bg); color: var(--text-main); }
+  .btn-icon-top:hover { 
+    background: rgba(255, 255, 255, 0.2); /* Fondo blanco semitransparente al pasar el mouse */
+  }
   
   .dropdown-menu {
     position: absolute; right: 0; top: 50px; background: var(--surface);
