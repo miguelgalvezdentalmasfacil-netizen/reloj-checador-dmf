@@ -8,24 +8,50 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+  /* Variables de Color (Tema Claro por defecto) */
   :root {
     --bg-color: #F4F7F9;
     --surface: #FFFFFF;
     --text-main: #1E293B;
     --text-muted: #64748B;
     --border: #E2E8F0;
-    --primary: #1D4ED8; /* Blue */
+    --primary: #1D4ED8; 
     --primary-hover: #1E40AF;
+    --primary-btn-bg: #0c3b5e;
+    --primary-btn-hover: #082a45;
     --teal: #0D9488;
     --teal-light: #CCFBF1;
     --green: #10B981;
     --red: #EF4444;
     --input-bg: #F8FAFC;
+    --icon-bg: #EFF6FF;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --radius-lg: 16px;
     --radius-md: 10px;
+    --hover-ent: #ECFDF5;
+    --hover-sal: #FEF2F2;
   }
+
+  /* Tema Oscuro */
+  body.dark-theme {
+    --bg-color: #0F172A;
+    --surface: #1E293B;
+    --text-main: #F8FAFC;
+    --text-muted: #94A3B8;
+    --border: #334155;
+    --input-bg: #0B1120;
+    --icon-bg: #0F172A;
+    --teal-light: #134E4A;
+    --teal: #2DD4BF;
+    --primary-btn-bg: #3B82F6;
+    --primary-btn-hover: #2563EB;
+    --hover-ent: rgba(16, 185, 129, 0.1);
+    --hover-sal: rgba(239, 68, 68, 0.1);
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  }
+
   * { box-sizing: border-box; }
   body {
     margin: 0; padding: 0;
@@ -34,6 +60,7 @@
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     min-height: 100vh;
+    transition: background-color 0.3s, color 0.3s;
   }
   
   /* Navbar */
@@ -42,12 +69,14 @@
     height: 70px;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 24px;
     border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
     z-index: 10;
+    transition: background-color 0.3s, border-color 0.3s;
   }
   .brand { display: flex; align-items: center; gap: 12px; }
   .logo-cross {
@@ -55,12 +84,45 @@
   }
   .logo-text-wrapper { display: flex; flex-direction: column; }
   .logo-title {
-    font-size: 18px; font-weight: 800; color: #0c3b5e; letter-spacing: -0.5px; margin-bottom: -2px;
+    font-size: 18px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; margin-bottom: -2px;
   }
   .logo-title span { color: var(--teal); }
   .logo-subtitle {
     font-size: 9px; color: var(--text-muted); font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase;
   }
+
+  /* Menú de Opciones (Nav Actions) */
+  .nav-actions { position: relative; }
+  .btn-icon-top {
+    background: transparent; border: none; font-size: 22px; cursor: pointer;
+    color: var(--text-muted); padding: 8px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s, color 0.2s;
+  }
+  .btn-icon-top:hover { background: var(--input-bg); color: var(--text-main); }
+  
+  .dropdown-menu {
+    position: absolute; right: 0; top: 50px; background: var(--surface);
+    border: 1px solid var(--border); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md); min-width: 220px; z-index: 100;
+    overflow: hidden;
+    transform-origin: top right; transition: opacity 0.2s, transform 0.2s;
+  }
+  .dropdown-menu.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
+  
+  .dropdown-header {
+    padding: 12px 16px; font-size: 11px; font-weight: 700; color: var(--text-muted); 
+    text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); 
+    background: var(--bg-color);
+  }
+  .dropdown-item {
+    display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; border: none;
+    background: var(--surface); color: var(--text-main); font-size: 14px; font-weight: 500; 
+    cursor: pointer; text-align: left; font-family: inherit; transition: background 0.1s;
+  }
+  .dropdown-item:hover { background: var(--input-bg); }
+  .dropdown-divider { height: 1px; background: var(--border); }
+  .text-red { color: var(--red); }
 
   /* Layout */
   .container {
@@ -77,6 +139,7 @@
     padding: 30px;
     box-shadow: var(--shadow-sm);
     margin-bottom: 20px;
+    transition: background-color 0.3s, border-color 0.3s;
   }
 
   .card-header {
@@ -86,7 +149,7 @@
     margin-bottom: 24px;
   }
   .card-icon {
-    background: #EFF6FF;
+    background: var(--icon-bg);
     color: var(--primary);
     width: 38px; height: 38px;
     border-radius: 10px;
@@ -135,17 +198,9 @@
     cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; width: 100%;
   }
   .btn-primary {
-    background: #0c3b5e; color: white;
+    background: var(--primary-btn-bg); color: white;
   }
-  .btn-primary:hover { background: #082a45; }
-  
-  .btn-icon {
-    background: none; border: none; font-size: 22px; cursor: pointer;
-    color: var(--text-muted); padding: 8px; border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
-  }
-  .btn-icon:hover { background: #F1F5F9; }
+  .btn-primary:hover { background: var(--primary-btn-hover); }
 
   /* Punch View Specifics */
   .user-badge {
@@ -153,7 +208,7 @@
     padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
   }
   .user-badge-info h1 {
-    margin: 0 0 6px 0; font-size: 22px; font-weight: 700; color: #0c3b5e;
+    margin: 0 0 6px 0; font-size: 22px; font-weight: 700; color: var(--text-main);
   }
   .user-badge-info .sucursal-tag {
     display: inline-block; background: var(--teal-light); color: var(--teal);
@@ -170,7 +225,7 @@
   .btn-punch {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     padding: 32px 16px; border-radius: var(--radius-lg); border: 2px solid transparent;
-    cursor: pointer; transition: transform 0.1s, box-shadow 0.2s; background: var(--surface);
+    cursor: pointer; transition: transform 0.1s, box-shadow 0.2s, background 0.2s; background: var(--surface);
     font-family: inherit;
   }
   .btn-punch:active { transform: scale(0.97); }
@@ -178,12 +233,12 @@
   .btn-punch.entrada {
     border-color: var(--green); box-shadow: 0 8px 20px -5px rgba(16, 185, 129, 0.15);
   }
-  .btn-punch.entrada:hover { background: #ECFDF5; }
+  .btn-punch.entrada:hover { background: var(--hover-ent); }
   
   .btn-punch.salida {
     border-color: var(--red); box-shadow: 0 8px 20px -5px rgba(239, 68, 68, 0.15);
   }
-  .btn-punch.salida:hover { background: #FEF2F2; }
+  .btn-punch.salida:hover { background: var(--hover-sal); }
 
   .punch-icon { font-size: 32px; margin-bottom: 12px; }
   .punch-label { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
@@ -193,10 +248,10 @@
     margin-top: 24px; padding: 16px; border-radius: var(--radius-md);
     text-align: center; font-weight: 600; font-size: 15px; display: none;
   }
-  .status-message.success { background: #ECFDF5; color: #047857; display: block; }
+  .status-message.success { background: var(--hover-ent); color: var(--green); display: block; border: 1px solid var(--green); }
   
   /* Utilities */
-  .hidden { display: none !important; }
+  .display-none { display: none !important; }
 </style>
 </head>
 <body>
@@ -209,12 +264,25 @@
       <div class="logo-subtitle">Tu conexión a la salud</div>
     </div>
   </div>
+  
+  <!-- Engranaje en la esquina superior -->
+  <div class="nav-actions">
+    <button class="btn-icon-top" id="btnSettings" onclick="toggleMenu()" title="Configuración">⚙️</button>
+    <div id="settingsMenu" class="dropdown-menu hidden">
+      <div class="dropdown-header">Opciones de la App</div>
+      <button class="dropdown-item" onclick="editarUsuario()"><span>👤</span> Editar usuario</button>
+      <button class="dropdown-item" id="btnTheme" onclick="toggleTheme()"><span>🌙</span> Modo oscuro</button>
+      <button class="dropdown-item" onclick="mostrarAyuda()"><span>❓</span> Ayuda y soporte</button>
+      <div class="dropdown-divider"></div>
+      <button class="dropdown-item text-red" onclick="cerrarSesion()"><span>🚪</span> Cerrar sesión</button>
+    </div>
+  </div>
 </nav>
 
 <div class="container">
   
   <!-- VISTA: SETUP/EDITAR USUARIO -->
-  <div id="view-setup" class="card hidden">
+  <div id="view-setup" class="card display-none">
     <div class="card-header">
       <div class="card-icon">👤</div>
       <div class="card-title-group">
@@ -244,13 +312,12 @@
 
 
   <!-- VISTA: RELOJ CHECADOR -->
-  <div id="view-punch" class="card hidden">
+  <div id="view-punch" class="card display-none">
     <div class="user-badge">
       <div class="user-badge-info">
         <h1 id="lblNombre">Cargando...</h1>
         <div class="sucursal-tag" id="lblSucursal">Sucursal</div>
       </div>
-      <button class="btn-icon" onclick="editarUsuario()" title="Editar perfil">⚙️</button>
     </div>
 
     <div style="text-align: center; margin-bottom: 24px;">
@@ -280,6 +347,7 @@
   // Variables globales
   const KEY_USER = 'dmf_emp_nombre';
   const KEY_BRANCH = 'dmf_emp_sucursal';
+  const KEY_THEME = 'dmf_theme';
   
   // Elementos DOM
   const viewSetup = document.getElementById('view-setup');
@@ -289,28 +357,62 @@
   const lblNombre = document.getElementById('lblNombre');
   const lblSucursal = document.getElementById('lblSucursal');
   const msgStatus = document.getElementById('msgStatus');
+  const settingsMenu = document.getElementById('settingsMenu');
 
-  // Inicialización
+  // Inicialización principal
   function init() {
+    aplicarTema();
+
     const savedName = localStorage.getItem(KEY_USER);
     const savedBranch = localStorage.getItem(KEY_BRANCH);
 
     if (savedName && savedBranch) {
-      // Usuario existe, mostrar panel de botones
       lblNombre.textContent = savedName;
       lblSucursal.textContent = savedBranch;
-      viewPunch.classList.remove('hidden');
-      viewSetup.classList.add('hidden');
+      viewPunch.classList.remove('display-none');
+      viewSetup.classList.add('display-none');
     } else {
-      // Nuevo usuario, mostrar setup en modo creacion
       document.getElementById('setupTitle').textContent = "Crear perfil de empleado";
       document.getElementById('setupDesc').textContent = "Solo necesitas configurar esto la primera vez.";
-      viewSetup.classList.remove('hidden');
-      viewPunch.classList.add('hidden');
+      viewSetup.classList.remove('display-none');
+      viewPunch.classList.add('display-none');
     }
   }
 
-  // Guardar perfil (creación o edición)
+  /* ====== LÓGICA DEL MENÚ SUPERIOR ====== */
+  function toggleMenu() {
+    settingsMenu.classList.toggle('hidden');
+  }
+
+  // Cerrar menú si se hace clic afuera
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.nav-actions')) {
+      settingsMenu.classList.add('hidden');
+    }
+  });
+
+  /* ====== TEMA OSCURO / CLARO ====== */
+  function aplicarTema() {
+    const isDark = localStorage.getItem(KEY_THEME) === 'dark';
+    const btnTheme = document.getElementById('btnTheme');
+    
+    if (isDark) {
+      document.body.classList.add('dark-theme');
+      btnTheme.innerHTML = '<span>☀️</span> Modo claro';
+    } else {
+      document.body.classList.remove('dark-theme');
+      btnTheme.innerHTML = '<span>🌙</span> Modo oscuro';
+    }
+  }
+
+  function toggleTheme() {
+    const isDark = document.body.classList.contains('dark-theme');
+    localStorage.setItem(KEY_THEME, isDark ? 'light' : 'dark');
+    aplicarTema();
+    toggleMenu(); // Cierra el menú al hacer clic
+  }
+
+  /* ====== FUNCIONES DEL PERFIL ====== */
   function guardarUsuario() {
     const nombre = inputNombre.value.trim();
     const sucursal = inputSucursal.value;
@@ -321,26 +423,40 @@
     localStorage.setItem(KEY_USER, nombre);
     localStorage.setItem(KEY_BRANCH, sucursal);
     
-    msgStatus.className = 'status-message'; // reset message
+    msgStatus.className = 'status-message';
     init();
   }
 
-  // Editar perfil (en lugar de solo borrarlo)
   function editarUsuario() {
-    // Pre-llenar los campos con lo que ya tiene guardado
     inputNombre.value = localStorage.getItem(KEY_USER) || '';
     inputSucursal.value = localStorage.getItem(KEY_BRANCH) || '';
     
-    // Cambiar los textos para que se entienda que está editando
     document.getElementById('setupTitle').textContent = "Editar perfil";
     document.getElementById('setupDesc').textContent = "Actualiza tu nombre o cambia de sucursal.";
     
-    // Cambiar de vista
-    viewPunch.classList.add('hidden');
-    viewSetup.classList.remove('hidden');
+    viewPunch.classList.add('display-none');
+    viewSetup.classList.remove('display-none');
+    toggleMenu();
   }
 
-  // Registrar asistencia inteligentemente
+  function cerrarSesion() {
+    if(confirm("¿Seguro que deseas cerrar sesión? Borrará tus datos de este dispositivo.")){
+      localStorage.removeItem(KEY_USER);
+      localStorage.removeItem(KEY_BRANCH);
+      inputNombre.value = '';
+      inputSucursal.value = '';
+      msgStatus.className = 'status-message';
+      init();
+    }
+    toggleMenu();
+  }
+
+  function mostrarAyuda() {
+    alert("Soporte: Para cualquier problema con el reloj checador, contacta al administrador o a Recursos Humanos de Dental Más Fácil.");
+    toggleMenu();
+  }
+
+  /* ====== LÓGICA DEL RELOJ ====== */
   function registrar(tipo) {
     const now = new Date();
     const timeString = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
@@ -352,11 +468,11 @@
       msgStatus.className = 'status-message';
     }, 5000);
 
-    // [INTEGRACIÓN FUTURA CON GOOGLE SHEETS]
-    console.log(`Guardando en base de datos: ${tipo} | Empleado: ${lblNombre.textContent} | Hora: ${timeString}`);
+    // LOG PARA FUTURA INTEGRACIÓN
+    console.log(`[BD] ${tipo} | Empleado: ${lblNombre.textContent} | Sucursal: ${lblSucursal.textContent} | Hora: ${timeString}`);
   }
 
-  // Arrancar la app al cargar la página
+  // Iniciar la app
   init();
 </script>
 
