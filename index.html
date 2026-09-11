@@ -12,7 +12,6 @@
   :root {
     --bg-color: #F4F7F9;
     --surface: #FFFFFF;
-    --navbar-bg: #0078D4; /* Color azul vibrante estilo Dentalink */
     --text-main: #1E293B;
     --text-muted: #64748B;
     --border: #E2E8F0;
@@ -38,7 +37,6 @@
   body.dark-theme {
     --bg-color: #0F172A;
     --surface: #1E293B;
-    --navbar-bg: #1E293B; /* En oscuro la barra se mantiene oscura */
     --text-main: #F8FAFC;
     --text-muted: #94A3B8;
     --border: #334155;
@@ -67,13 +65,13 @@
   
   /* Navbar */
   .navbar {
-    background: var(--navbar-bg);
+    background: var(--surface); /* Regresamos al blanco original */
     height: 70px;
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 0 24px;
-    border-bottom: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid var(--border);
     box-shadow: var(--shadow-sm);
     position: sticky;
     top: 0;
@@ -87,7 +85,7 @@
     align-items: center; 
   }
   .brand-img {
-    height: 55px; /* Altura forzada para que no se vea tan miniatura */
+    height: 55px;
     width: auto;
     object-fit: contain;
     border-radius: 6px;
@@ -98,9 +96,9 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    color: #FFFFFF;
+    color: var(--text-main); /* Ahora es gris oscuro para que se vea sobre el blanco */
     font-size: 18px;
-    font-weight: 600;
+    font-weight: 700; /* Un poco más gordito para que resalte */
     letter-spacing: 0.5px;
     white-space: nowrap;
   }
@@ -109,13 +107,14 @@
   .nav-actions { position: relative; margin-left: auto; }
   .btn-icon-top {
     background: transparent; border: none; font-size: 22px; cursor: pointer;
-    color: #FFFFFF; /* Blanco para que contraste con el azul */
+    color: var(--text-muted); /* Regresa a gris */
     padding: 8px; border-radius: 50%;
     display: flex; align-items: center; justify-content: center;
-    transition: background 0.2s;
+    transition: background 0.2s, color 0.2s;
   }
   .btn-icon-top:hover { 
-    background: rgba(255, 255, 255, 0.2); /* Fondo blanco semitransparente al pasar el mouse */
+    background: var(--input-bg);
+    color: var(--text-main);
   }
   
   .dropdown-menu {
