@@ -202,6 +202,12 @@
   }
   .btn-primary:hover { background: var(--primary-btn-hover); }
 
+  .btn-text {
+    background: none; color: var(--text-muted); font-size: 14px; width: auto; padding: 14px 16px;
+    text-decoration: underline; text-underline-offset: 4px; border: none; cursor: pointer; font-family: inherit;
+  }
+  .btn-text:hover { color: var(--text-main); }
+
   /* Punch View Specifics */
   .user-badge {
     display: flex; justify-content: space-between; align-items: flex-start;
@@ -307,7 +313,10 @@
       </select>
     </div>
     
-    <button class="btn btn-primary" onclick="guardarUsuario()">Guardar perfil</button>
+    <div style="display: flex; gap: 12px; align-items: center; margin-top: 10px;">
+      <button class="btn btn-primary" style="flex: 1;" onclick="guardarUsuario()">Guardar perfil</button>
+      <button class="btn-text display-none" id="btnCancelar" onclick="cancelarEdicion()">Cancelar</button>
+    </div>
   </div>
 
 
@@ -358,6 +367,7 @@
   const lblSucursal = document.getElementById('lblSucursal');
   const msgStatus = document.getElementById('msgStatus');
   const settingsMenu = document.getElementById('settingsMenu');
+  const btnCancelar = document.getElementById('btnCancelar');
 
   // Inicialización principal
   function init() {
@@ -374,6 +384,7 @@
     } else {
       document.getElementById('setupTitle').textContent = "Crear perfil de empleado";
       document.getElementById('setupDesc').textContent = "Solo necesitas configurar esto la primera vez.";
+      btnCancelar.classList.add('display-none'); // Esconder el botón de cancelar si es nuevo
       viewSetup.classList.remove('display-none');
       viewPunch.classList.add('display-none');
     }
@@ -428,15 +439,24 @@
   }
 
   function editarUsuario() {
+    // Rellenar con los datos actuales
     inputNombre.value = localStorage.getItem(KEY_USER) || '';
     inputSucursal.value = localStorage.getItem(KEY_BRANCH) || '';
     
     document.getElementById('setupTitle').textContent = "Editar perfil";
     document.getElementById('setupDesc').textContent = "Actualiza tu nombre o cambia de sucursal.";
     
+    // Mostrar el botón de Cancelar porque el usuario ya tiene una cuenta válida a donde regresar
+    btnCancelar.classList.remove('display-none');
+    
     viewPunch.classList.add('display-none');
     viewSetup.classList.remove('display-none');
     toggleMenu();
+  }
+
+  function cancelarEdicion() {
+    // Al cancelar, simplemente volvemos a llamar a init() que nos regresa al panel principal
+    init();
   }
 
   function cerrarSesion() {
