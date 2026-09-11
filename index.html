@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Reloj Checador · Dental Más Fácil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F3EFE6;
+    --surface:#FFFFFF;
+    --ink:#1B2430;
+    --muted:#6B6558;
+    --muted-2:#9C9585;
+    --line:#DED5C2;
+    --line-soft:#EAE4D6;
+    --ontime:#2F6F4E;
+    --ontime-tint:#E4EFE7;
+    --late:#B23A2E;
+    --late-tint:#F5E4E1;
+    --accent:#B4791F;
+    --accent-tint:#F3E6D1;
+    --shadow: 0 1px 2px rgba(27,36,48,0.05), 0 10px 28px -14px rgba(27,36,48,0.28);
+    --radius: 16px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+  }
+  ::selection{background:var(--accent-tint);color:var(--ink);}
+  button{font-family:inherit;}
+
+  /* ================= SHARED ================= */
+  .top-link{
+    position:fixed; top:18px; right:22px; z-index:40;
+    font-size:12.5px; color:var(--muted); text-decoration:none; font-weight:600;
+    background:var(--surface); border:1px solid var(--line); padding:8px 14px;
+    border-radius:999px; cursor:pointer; box-shadow:var(--shadow);
+    display:flex; align-items:center; gap:6px;
+  }
+  .top-link:hover{color:var(--ink); border-color:var(--muted-2);}
+  .brand-mini{
+    position:fixed; top:18px; left:22px; z-index:40;
+    display:flex; align-items:center; gap:10px;
+  }
+  .brand-mini .mark{
+    width:34px; height:34px; border-radius:9px; background:var(--ink);
+    color:#fff; display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:600; font-size:13px;
+  }
+  .brand-mini .txt{font-size:12.5px; color:var(--muted); font-weight:600;}
+  .brand-mini .txt b{color:var(--ink);}
+
+  #view-kiosk, #view-admin{display:none;}
+  #view-kiosk.active, #view-admin.active{display:block;}
+
+  /* ================= KIOSK ================= */
+  #view-kiosk{
+    min-height:100vh; display:flex; align-items:center; justify-content:center;
+    padding:100px 24px 48px;
+  }
+  .kiosk-wrap{width:100%; max-width:640px; text-align:center;}
+
+  .clock-huge{
+    font-family:'IBM Plex Mono',monospace; font-weight:600;
+    font-size:clamp(56px, 12vw, 108px); line-height:1; letter-spacing:-0.02em;
+    color:var(--ink); font-variant-numeric:tabular-nums;
+  }
+  .clock-huge .colon{color:var(--accent); animation:blink 2s steps(1) infinite;}
+  @keyframes blink{50%{opacity:0.25;}}
+  .date-sub{
+    font-family:'Fraunces',serif; font-size:17px; color:var(--muted);
+    margin-top:6px; text-transform:capitalize;
+  }
+
+  .kiosk-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:20px;
+    box-shadow:var(--shadow); padding:32px 28px; margin-top:36px; text-align:left;
+  }
+
+  .field-label{
+    font-size:12px; font-weight:700; color:var(--muted); margin-bottom:10px;
+    display:block;
+  }
+  .clinic-pills{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:26px;}
+  .clinic-pill{
+    flex:1; min-width:120px; padding:12px 10px; border-radius:12px; border:1.5px solid var(--line);
+    background:var(--paper); text-align:center; cursor:pointer; font-size:13.5px; font-weight:600;
+    color:var(--muted); transition:all .15s ease; user-select:none;
+  }
+  .clinic-pill:hover{border-color:var(--muted-2);}
+  .clinic-pill.sel{background:var(--ink); border-color:var(--ink); color:#fff;}
+
+  .name-field{margin-bottom:8px;}
+  .name-field input{
+    width:100%; padding:16px 18px; border:1.5px solid var(--line); border-radius:12px;
+    font-size:19px; font-family:'Inter',sans-serif; color:var(--ink); background:var(--paper);
+    outline:none; transition:border-color .15s ease, background .15s ease;
+  }
+  .name-field input:focus{border-color:var(--ink); background:#fff;}
+
+  .stamp-row{display:flex; gap:18px; margin-top:30px;}
+  .stamp-btn{
+    flex:1; aspect-ratio:1/0.62; border-radius:16px; border:3px solid;
+    display:flex; flex-direction:column; align-items:center; justify-content:center;
+    gap:6px; cursor:pointer; font-family:'Fraunces',serif; font-weight:700;
+    font-size:21px; letter-spacing:0.02em; background:none; transition:transform .1s ease, box-shadow .15s ease;
+    transform:rotate(-1deg);
+  }
+  .stamp-btn:active{transform:rotate(-1deg) scale(0.96);}
+  .stamp-btn.entrada{border-color:var(--ontime); color:var(--ontime);}
+  .stamp-btn.entrada:hover{background:var(--ontime-tint); box-shadow:0 8px 22px -10px rgba(47,111,78,.45);}
+  .stamp-btn.salida{border-color:var(--late); color:var(--late); transform:rotate(1deg);}
+  .stamp-btn.salida:active{transform:rotate(1deg) scale(0.96);}
+  .stamp-btn.salida:hover{background:var(--late-tint); box-shadow:0 8px 22px -10px rgba(178,58,46,.45);}
+  .stamp-btn .icon{font-size:26px;}
+  .stamp-btn:disabled{opacity:0.4; cursor:not-allowed; transform:none;}
+
+  .kiosk-msg{
+    margin-top:18px; min-height:24px; font-size:13.5px; font-weight:600; text-align:center;
+  }
+  .kiosk-msg.ok{color:var(--ontime);}
+  .kiosk-msg.late{color:var(--late);}
+  .kiosk-msg.err{color:var(--late);}
+
+  .recent-strip{margin-top:30px; text-align:left;}
+  .recent-strip .lbl{font-size:11.5px; font-weight:700; color:var(--muted-2); text-transform:uppercase; letter-spacing:.06em; margin-bottom:10px;}
+  .recent-item{
+    display:flex; align-items:center; justify-content:space-between; padding:10px 4px;
+    border-bottom:1px solid var(--line-soft); font-size:13.5px;
+  }
+  .recent-item:last-child{border-bottom:none;}
+  .recent-item .who{font-weight:600;}
+  .recent-item .meta{color:var(--muted-2); font-size:12px;}
+  .recent-badge{
+    padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700;
+  }
+  .recent-badge.entrada-ok{background:var(--ontime-tint); color:var(--ontime);}
+  .recent-badge.entrada-tarde{background:var(--late-tint); color:var(--late);}
+  .recent-badge.salida{background:var(--accent-tint); color:var(--accent);}
+
+  /* ================= ADMIN ================= */
+  #view-admin{padding:88px 32px 60px;}
+  .admin-wrap{max-width:1280px; margin:0 auto;}
+
+  .admin-head{display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:28px; flex-wrap:wrap; gap:16px;}
+  .admin-head h1{font-family:'Fraunces',serif; font-size:28px; font-weight:600; margin:0 0 4px;}
+  .admin-head p{margin:0; color:var(--muted); font-size:13.5px;}
+
+  .filters-row{display:flex; gap:10px; flex-wrap:wrap; margin-bottom:24px;}
+  .filters-row select, .filters-row input{
+    padding:10px 14px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--surface); font-size:13px; color:var(--ink); font-family:inherit; outline:none;
+  }
+  .filters-row select:focus, .filters-row input:focus{border-color:var(--ink);}
+  .filters-row input[type=text]{flex:1; min-width:180px;}
+
+  .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:26px;}
+  .stat-card{
+    background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:18px 20px;
+    box-shadow:var(--shadow);
+  }
+  .stat-card .lbl{font-size:11px; font-weight:700; color:var(--muted-2); text-transform:uppercase; letter-spacing:.05em;}
+  .stat-card .val{font-family:'IBM Plex Mono',monospace; font-size:26px; font-weight:600; margin-top:8px;}
+  .stat-card.late .val{color:var(--late);}
+  .stat-card.ok .val{color:var(--ontime);}
+
+  .two-col{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:26px;}
+  @media (max-width:900px){.two-col{grid-template-columns:1fr;} .stat-row{grid-template-columns:1fr 1fr;}}
+
+  .panel{background:var(--surface); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow);}
+  .panel-head{padding:18px 20px 12px; border-bottom:1px solid var(--line-soft);}
+  .panel-head .eyebrow{font-size:11px; color:var(--accent); font-weight:700; text-transform:uppercase; letter-spacing:.06em;}
+  .panel-head h3{font-family:'Fraunces',serif; font-size:17px; font-weight:600; margin:4px 0 0;}
+  .panel-body{padding:14px 20px 18px;}
+
+  .rank-row{
+    display:flex; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid var(--line-soft);
+  }
+  .rank-row:last-child{border-bottom:none;}
+  .rank-num{
+    width:26px; height:26px; border-radius:50%; background:var(--paper); color:var(--muted);
+    display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0;
+  }
+  .rank-row:nth-child(1) .rank-num{background:#F1D48A; color:#6B4E00;}
+  .rank-row:nth-child(2) .rank-num{background:#DCDCDC; color:#4A4A4A;}
+  .rank-row:nth-child(3) .rank-num{background:#E4B48A; color:#6B3A10;}
+  .rank-name{flex:1; font-size:13.5px; font-weight:600;}
+  .rank-sub{font-size:11.5px; color:var(--muted-2);}
+  .rank-val{font-family:'IBM Plex Mono',monospace; font-size:13.5px; font-weight:600;}
+
+  .earliest-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:26px;}
+  @media (max-width:900px){.earliest-grid{grid-template-columns:repeat(2,1fr);}}
+  .earliest-card{background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; box-shadow:var(--shadow);}
+  .earliest-card .clin{font-size:11px; font-weight:700; color:var(--muted-2); text-transform:uppercase; letter-spacing:.05em;}
+  .earliest-card .name{font-family:'Fraunces',serif; font-size:15px; font-weight:600; margin:6px 0 2px;}
+  .earliest-card .time{font-family:'IBM Plex Mono',monospace; font-size:20px; color:var(--ontime); font-weight:600;}
+
+  table{width:100%; border-collapse:collapse; font-size:13px;}
+  thead th{
+    text-align:left; padding:10px 14px; font-size:10.5px; text-transform:uppercase; letter-spacing:.05em;
+    color:var(--muted-2); font-weight:700; border-bottom:1px solid var(--line); background:var(--paper);
+  }
+  tbody td{padding:11px 14px; border-bottom:1px solid var(--line-soft);}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:var(--paper);}
+  .badge{display:inline-block; padding:3px 10px; border-radius:999px; font-size:11px; font-weight:700;}
+  .badge.ok{background:var(--ontime-tint); color:var(--ontime);}
+  .badge.late{background:var(--late-tint); color:var(--late);}
+
+  .settings-toggle{
+    font-size:12.5px; color:var(--muted); cursor:pointer; font-weight:600; margin-bottom:16px;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .settings-panel{display:none; margin-bottom:22px;}
+  .settings-panel.open{display:block;}
+  .settings-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:14px;}
+  @media (max-width:900px){.settings-grid{grid-template-columns:1fr 1fr;}}
+  .settings-item label{display:block; font-size:11.5px; font-weight:700; color:var(--muted); margin-bottom:6px;}
+  .settings-item input{
+    width:100%; padding:9px 11px; border:1.5px solid var(--line); border-radius:9px;
+    font-size:13px; font-family:'IBM Plex Mono',monospace;
+  }
+  .demo-note{
+    font-size:12px; color:var(--accent); background:var(--accent-tint); border:1px solid #E4CFA3;
+    padding:10px 14px; border-radius:10px; margin-bottom:20px;
+  }
+</style>
+</head>
+<body>
+
+<div class="brand-mini"><div class="mark">DMF</div><div class="txt">Dental Más Fácil · <b>Reloj Checador</b></div></div>
+<div class="top-link" id="toggleBtn" onclick="toggleView()">Panel de administración →</div>
+
+<!-- ============ KIOSK ============ -->
+<div id="view-kiosk" class="active">
+  <div class="kiosk-wrap">
+    <div class="clock-huge" id="clockDisplay">00<span class="colon">:</span>00<span class="colon">:</span>00</div>
+    <div class="date-sub" id="dateDisplay">—</div>
+
+    <div class="kiosk-card">
+      <span class="field-label">¿En qué clínica estás?</span>
+      <div class="clinic-pills" id="clinicPills"></div>
+
+      <span class="field-label">Tu nombre</span>
+      <div class="name-field">
+        <input type="text" id="empName" list="empList" placeholder="Escribe tu nombre completo" autocomplete="off">
+        <datalist id="empList"></datalist>
+      </div>
+
+      <div class="stamp-row">
+        <button class="stamp-btn entrada" id="btnEntrada" onclick="registrar('Entrada')">
+          <span class="icon">✓</span> ENTRADA
+        </button>
+        <button class="stamp-btn salida" id="btnSalida" onclick="registrar('Salida')">
+          <span class="icon">✕</span> SALIDA
+        </button>
+      </div>
+      <div class="kiosk-msg" id="kioskMsg"></div>
+    </div>
+
+    <div class="recent-strip">
+      <div class="lbl">Últimos registros en este dispositivo</div>
+      <div id="recentList"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ADMIN ============ -->
+<div id="view-admin">
+  <div class="admin-wrap">
+    <div class="admin-head">
+      <div>
+        <h1>Panel de puntualidad</h1>
+        <p>Entradas y salidas de las 4 clínicas · datos de ejemplo mientras se conecta el backend</p>
+      </div>
+    </div>
+
+    <div class="demo-note" id="demoNote">🕒 Esto todavía guarda los registros solo en este navegador — es el diseño para que lo revises antes de conectarlo a Google Sheets.</div>
+
+    <div class="settings-toggle" onclick="toggleSettings()">⚙️ Hora de entrada esperada por clínica <span id="settingsArrow">▾</span></div>
+    <div class="settings-panel" id="settingsPanel">
+      <div class="panel" style="margin-bottom:22px;">
+        <div class="panel-body">
+          <div class="settings-grid" id="settingsGrid"></div>
+          <div style="font-size:11.5px;color:var(--muted-2);margin-top:12px;">Se considera "a tiempo" hasta 5 minutos después de esta hora (tolerancia).</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="filters-row">
+      <select id="fClinica" onchange="renderAdmin()">
+        <option value="">Todas las clínicas</option>
+        <option value="Tijuana">Tijuana</option>
+        <option value="Mexicali - Obregón">Mexicali - Obregón</option>
+        <option value="Mexicali - Villa Verde">Mexicali - Villa Verde</option>
+        <option value="Ensenada">Ensenada</option>
+      </select>
+      <select id="fEstatus" onchange="renderAdmin()">
+        <option value="">Todos los estatus</option>
+        <option value="ok">A tiempo</option>
+        <option value="late">Tarde</option>
+      </select>
+      <input type="text" id="fBuscar" placeholder="Buscar empleado..." oninput="renderAdmin()">
+    </div>
+
+    <div class="stat-row" id="statRow"></div>
+
+    <div class="earliest-grid" id="earliestGrid"></div>
+
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><div class="eyebrow">Este mes</div><h3>Más puntuales</h3></div>
+        <div class="panel-body" id="rankPuntuales"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><div class="eyebrow">Este mes</div><h3>Más tardanzas</h3></div>
+        <div class="panel-body" id="rankTardanzas"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head"><div class="eyebrow">Bitácora</div><h3>Todos los registros</h3></div>
+      <div class="panel-body" style="padding:0;">
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr><th>Empleado</th><th>Clínica</th><th>Fecha</th><th>Entrada</th><th>Salida</th><th>Horas</th><th>Estatus</th></tr>
+            </thead>
+            <tbody id="logBody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const CLINICAS = ["Tijuana", "Mexicali - Obregón", "Mexicali - Villa Verde", "Ensenada"];
+let clinicaActiva = localStorage.getItem('dmf_ent_clinica') || CLINICAS[0];
+
+// Hora esperada de entrada por clínica (editable en Admin) — placeholder hasta definir las reales
+let horaEsperada = JSON.parse(localStorage.getItem('dmf_ent_horas') || 'null') || {
+  "Tijuana": "09:00", "Mexicali - Obregón": "09:00", "Mexicali - Villa Verde": "09:00", "Ensenada": "09:00"
+};
+const TOLERANCIA_MIN = 5;
+
+// ---- Datos de ejemplo (se reemplazan por los reales de Sheets al conectar) ----
+function hoyISO(offsetDays){
+  const d = new Date(); d.setDate(d.getDate() + (offsetDays||0));
+  return d.toISOString().slice(0,10);
+}
+let registros = [
+  {id:1, empleado:"María Elena Sánchez", clinica:"Tijuana", fecha:hoyISO(0), entrada:"09:04", salida:"18:02"},
+  {id:2, empleado:"Jorge Luis Ramírez", clinica:"Tijuana", fecha:hoyISO(0), entrada:"08:57", salida:"17:55"},
+  {id:3, empleado:"Karla Ivett Torres", clinica:"Mexicali - Obregón", fecha:hoyISO(0), entrada:"09:12", salida:""},
+  {id:4, empleado:"Rodolgo Hernández", clinica:"Mexicali - Villa Verde", fecha:hoyISO(0), entrada:"08:49", salida:""},
+  {id:5, empleado:"Ana Paulina Díaz", clinica:"Ensenada", fecha:hoyISO(0), entrada:"09:21", salida:""},
+  {id:6, empleado:"María Elena Sánchez", clinica:"Tijuana", fecha:hoyISO(-1), entrada:"09:01", salida:"18:00"},
+  {id:7, empleado:"Jorge Luis Ramírez", clinica:"Tijuana", fecha:hoyISO(-1), entrada:"09:15", salida:"18:05"},
+  {id:8, empleado:"Karla Ivett Torres", clinica:"Mexicali - Obregón", fecha:hoyISO(-1), entrada:"08:55", salida:"17:50"},
+  {id:9, empleado:"Rodolgo Hernández", clinica:"Mexicali - Villa Verde", fecha:hoyISO(-1), entrada:"09:22", salida:"18:10"},
+  {id:10, empleado:"Ana Paulina Díaz", clinica:"Ensenada", fecha:hoyISO(-1), entrada:"09:03", salida:"18:00"},
+  {id:11, empleado:"Jorge Luis Ramírez", clinica:"Tijuana", fecha:hoyISO(-2), entrada:"08:52", salida:"18:00"},
+  {id:12, empleado:"Karla Ivett Torres", clinica:"Mexicali - Obregón", fecha:hoyISO(-2), entrada:"09:18", salida:"17:48"}
+];
+
+function minutosDiff(horaReal, horaEsp){
+  const [hr,mr] = horaReal.split(':').map(Number);
+  const [he,me] = horaEsp.split(':').map(Number);
+  return (hr*60+mr) - (he*60+me);
+}
+function esTarde(entrada, clinica){
+  const diff = minutosDiff(entrada, horaEsperada[clinica] || "09:00");
+  return diff > TOLERANCIA_MIN;
+}
+
+// ================= RELOJ =================
+function tick(){
+  const n = new Date();
+  const p = v => String(v).padStart(2,'0');
+  document.getElementById('clockDisplay').innerHTML = `${p(n.getHours())}<span class="colon">:</span>${p(n.getMinutes())}<span class="colon">:</span>${p(n.getSeconds())}`;
+  document.getElementById('dateDisplay').textContent = n.toLocaleDateString('es-MX',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+}
+setInterval(tick, 1000); tick();
+
+// ================= KIOSK =================
+function renderClinicPills(){
+  const wrap = document.getElementById('clinicPills');
+  wrap.innerHTML = CLINICAS.map(c => `<div class="clinic-pill ${c===clinicaActiva?'sel':''}" onclick="setClinica('${c}')">${c.replace('Mexicali - ','')}</div>`).join('');
+}
+function setClinica(c){
+  clinicaActiva = c;
+  localStorage.setItem('dmf_ent_clinica', c);
+  renderClinicPills();
+  renderEmpList();
+}
+function renderEmpList(){
+  const dl = document.getElementById('empList');
+  const nombres = [...new Set(registros.filter(r=>r.clinica===clinicaActiva).map(r=>r.empleado))];
+  dl.innerHTML = nombres.map(n=>`<option value="${n}">`).join('');
+}
+function horaActualHHMM(){
+  const n = new Date();
+  return String(n.getHours()).padStart(2,'0')+':'+String(n.getMinutes()).padStart(2,'0');
+}
+function registrar(tipo){
+  const nombre = document.getElementById('empName').value.trim();
+  const msg = document.getElementById('kioskMsg');
+  if(!nombre){
+    msg.className = 'kiosk-msg err';
+    msg.textContent = 'Escribe tu nombre antes de registrar.';
+    return;
+  }
+  const horaAhora = horaActualHHMM();
+  const fechaHoy = hoyISO(0);
+
+  if(tipo === 'Entrada'){
+    registros.unshift({id:Date.now(), empleado:nombre, clinica:clinicaActiva, fecha:fechaHoy, entrada:horaAhora, salida:""});
+    const tarde = esTarde(horaAhora, clinicaActiva);
+    msg.className = 'kiosk-msg ' + (tarde ? 'late' : 'ok');
+    msg.textContent = tarde
+      ? `Hola ${nombre.split(' ')[0]}, tu entrada quedó registrada a las ${horaAhora} — llegaste tarde.`
+      : `Hola ${nombre.split(' ')[0]}, tu entrada quedó registrada a las ${horaAhora} — ¡a tiempo!`;
+  } else {
+    const abierto = registros.find(r => r.empleado===nombre && r.clinica===clinicaActiva && r.fecha===fechaHoy && !r.salida);
+    if(abierto){ abierto.salida = horaAhora; }
+    else { registros.unshift({id:Date.now(), empleado:nombre, clinica:clinicaActiva, fecha:fechaHoy, entrada:"", salida:horaAhora}); }
+    msg.className = 'kiosk-msg ok';
+    msg.textContent = `Hasta luego ${nombre.split(' ')[0]}, tu salida quedó registrada a las ${horaAhora}.`;
+  }
+
+  document.getElementById('empName').value = '';
+  renderEmpList();
+  renderRecent();
+}
+function renderRecent(){
+  const wrap = document.getElementById('recentList');
+  const ultimos = registros.filter(r=>r.clinica===clinicaActiva).slice(0,5);
+  if(!ultimos.length){ wrap.innerHTML = '<div style="color:var(--muted-2);font-size:13px;">Aún no hay registros hoy en esta clínica.</div>'; return; }
+  wrap.innerHTML = ultimos.map(r=>{
+    let badge = '';
+    if(r.entrada){ const tarde = esTarde(r.entrada, r.clinica); badge = `<span class="recent-badge ${tarde?'entrada-tarde':'entrada-ok'}">Entrada ${r.entrada}${tarde?' · tarde':''}</span>`; }
+    else if(r.salida){ badge = `<span class="recent-badge salida">Salida ${r.salida}</span>`; }
+    return `<div class="recent-item"><div><div class="who">${r.empleado}</div><div class="meta">${r.fecha}</div></div>${badge}</div>`;
+  }).join('');
+}
+
+// ================= ADMIN =================
+function toggleView(){
+  const k = document.getElementById('view-kiosk');
+  const a = document.getElementById('view-admin');
+  const btn = document.getElementById('toggleBtn');
+  if(k.classList.contains('active')){
+    k.classList.remove('active'); a.classList.add('active');
+    btn.textContent = '← Volver al reloj';
+    renderAdmin();
+  } else {
+    a.classList.remove('active'); k.classList.add('active');
+    btn.textContent = 'Panel de administración →';
+  }
+}
+function toggleSettings(){
+  const p = document.getElementById('settingsPanel');
+  const arrow = document.getElementById('settingsArrow');
+  p.classList.toggle('open');
+  arrow.textContent = p.classList.contains('open') ? '▴' : '▾';
+}
+function renderSettings(){
+  document.getElementById('settingsGrid').innerHTML = CLINICAS.map(c => `
+    <div class="settings-item">
+      <label>${c}</label>
+      <input type="time" value="${horaEsperada[c]||'09:00'}" onchange="updateHora('${c}', this.value)">
+    </div>`).join('');
+}
+function updateHora(c, val){
+  horaEsperada[c] = val;
+  localStorage.setItem('dmf_ent_horas', JSON.stringify(horaEsperada));
+  renderAdmin();
+}
+
+function filtrarRegistros(){
+  const fc = document.getElementById('fClinica').value;
+  const fe = document.getElementById('fEstatus').value;
+  const fb = document.getElementById('fBuscar').value.toLowerCase();
+  return registros.filter(r => {
+    if(!r.entrada) return false; // la bitácora se basa en entradas
+    if(fc && r.clinica !== fc) return false;
+    if(fb && !r.empleado.toLowerCase().includes(fb)) return false;
+    const tarde = esTarde(r.entrada, r.clinica);
+    if(fe === 'ok' && tarde) return false;
+    if(fe === 'late' && !tarde) return false;
+    return true;
+  });
+}
+
+function horasTrabajadas(entrada, salida){
+  if(!entrada || !salida) return '—';
+  const [he,me] = entrada.split(':').map(Number);
+  const [hs,ms] = salida.split(':').map(Number);
+  let mins = (hs*60+ms) - (he*60+me);
+  if(mins < 0) mins += 24*60;
+  return (mins/60).toFixed(1) + ' h';
+}
+
+function renderAdmin(){
+  renderSettings();
+  const datos = filtrarRegistros();
+
+  const total = datos.length;
+  const tardes = datos.filter(r => esTarde(r.entrada, r.clinica));
+  const aTiempo = total - tardes.length;
+  const promedioTarde = tardes.length ? Math.round(tardes.reduce((s,r)=>s+minutosDiff(r.entrada, horaEsperada[r.clinica]||'09:00'),0)/tardes.length) : 0;
+
+  document.getElementById('statRow').innerHTML = `
+    <div class="stat-card"><div class="lbl">Registros filtrados</div><div class="val">${total}</div></div>
+    <div class="stat-card ok"><div class="lbl">A tiempo</div><div class="val">${aTiempo}</div></div>
+    <div class="stat-card late"><div class="lbl">Tarde</div><div class="val">${tardes.length}</div></div>
+    <div class="stat-card"><div class="lbl">Promedio de retraso</div><div class="val">${promedioTarde} min</div></div>
+  `;
+
+  // Récord de llegada más temprana por clínica
+  document.getElementById('earliestGrid').innerHTML = CLINICAS.map(c => {
+    const deEsa = registros.filter(r => r.clinica===c && r.entrada);
+    if(!deEsa.length) return `<div class="earliest-card"><div class="clin">${c.replace('Mexicali - ','')}</div><div class="name" style="color:var(--muted-2);font-weight:400;">Sin registros</div></div>`;
+    const masTemprano = deEsa.reduce((a,b)=> a.entrada < b.entrada ? a : b);
+    return `<div class="earliest-card"><div class="clin">${c.replace('Mexicali - ','')}</div><div class="name">${masTemprano.empleado}</div><div class="time">${masTemprano.entrada}</div></div>`;
+  }).join('');
+
+  // Rankings: puntualidad (usa todos los registros, no solo filtrados, para el mes completo)
+  const porEmpleado = {};
+  registros.filter(r=>r.entrada).forEach(r => {
+    if(!porEmpleado[r.empleado]) porEmpleado[r.empleado] = {total:0, tardes:0, minTardeTotal:0};
+    porEmpleado[r.empleado].total++;
+    if(esTarde(r.entrada, r.clinica)){
+      porEmpleado[r.empleado].tardes++;
+      porEmpleado[r.empleado].minTardeTotal += minutosDiff(r.entrada, horaEsperada[r.clinica]||'09:00');
+    }
+  });
+  const empleadosArr = Object.entries(porEmpleado).map(([nombre,d]) => ({nombre, ...d}));
+
+  const puntuales = [...empleadosArr].sort((a,b)=>a.tardes-b.tardes).slice(0,5);
+  document.getElementById('rankPuntuales').innerHTML = puntuales.map((e,i)=>`
+    <div class="rank-row"><div class="rank-num">${i+1}</div>
+      <div><div class="rank-name">${e.nombre}</div><div class="rank-sub">${e.total} registros</div></div>
+      <div class="rank-val">${e.tardes} tarde${e.tardes!==1?'s':''}</div>
+    </div>`).join('') || '<div style="color:var(--muted-2);font-size:13px;">Sin datos suficientes.</div>';
+
+  const tardones = [...empleadosArr].filter(e=>e.tardes>0).sort((a,b)=>b.tardes-a.tardes).slice(0,5);
+  document.getElementById('rankTardanzas').innerHTML = tardones.map((e,i)=>`
+    <div class="rank-row"><div class="rank-num">${i+1}</div>
+      <div><div class="rank-name">${e.nombre}</div><div class="rank-sub">${Math.round(e.minTardeTotal/e.tardes)} min promedio</div></div>
+      <div class="rank-val" style="color:var(--late)">${e.tardes} tarde${e.tardes!==1?'s':''}</div>
+    </div>`).join('') || '<div style="color:var(--muted-2);font-size:13px;">Nadie ha llegado tarde 🎉</div>';
+
+  // Bitácora
+  document.getElementById('logBody').innerHTML = datos
+    .sort((a,b)=> (b.fecha+b.entrada).localeCompare(a.fecha+a.entrada))
+    .map(r => {
+      const tarde = esTarde(r.entrada, r.clinica);
+      const diff = minutosDiff(r.entrada, horaEsperada[r.clinica]||'09:00');
+      return `<tr>
+        <td><b>${r.empleado}</b></td>
+        <td>${r.clinica}</td>
+        <td>${r.fecha}</td>
+        <td>${r.entrada}</td>
+        <td>${r.salida||'—'}</td>
+        <td>${horasTrabajadas(r.entrada,r.salida)}</td>
+        <td><span class="badge ${tarde?'late':'ok'}">${tarde? diff+' min tarde' : 'A tiempo'}</span></td>
+      </tr>`;
+    }).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted-2);padding:30px;">Sin registros con estos filtros.</td></tr>';
+}
+
+// ================= INIT =================
+renderClinicPills();
+renderEmpList();
+renderRecent();
+</script>
+</body>
+</html>
