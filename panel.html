@@ -6,23 +6,19 @@
 <title>Panel Directivo · Dental Más Fácil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Paleta de colores basada en la app de "Solicitud de Compra" */
+  /* Paleta ultra minimalista */
   :root {
-    --bg-color: #F4F7F9;
+    --bg-color: #F8FAFC;
     --surface: #FFFFFF;
-    --text-main: #1E293B;
-    --text-muted: #64748B;
-    --border: #E2E8F0;
-    --primary: #1D4ED8; 
-    --teal: #0D9488;
-    --green: #10B981;
-    --red: #EF4444;
-    --orange: #F59E0B;
-    --radius-md: 16px;
-    --radius-lg: 32px; /* Esquinas bien curveadas */
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.05);
+    --text-main: #0F172A; /* Casi negro, muy elegante */
+    --text-muted: #64748B; /* Gris medio */
+    --text-light: #94A3B8; /* Gris claro */
+    --border: #F1F5F9;
+    --border-dark: #E2E8F0;
+    --radius-lg: 24px;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.02);
   }
 
   * { box-sizing: border-box; }
@@ -31,92 +27,97 @@
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
   }
   
-  /* Navbar (Blanca y limpia como en la foto) */
+  svg { display: block; }
+
+  /* Navbar Minimalista */
   .navbar {
     background: var(--surface);
-    height: 75px; 
+    height: 80px; 
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 30px; 
+    padding: 0 40px; 
     border-bottom: 1px solid var(--border);
     position: sticky; top: 0; z-index: 10;
   }
-  .brand { display: flex; align-items: center; gap: 16px; }
-  .brand-img { height: 50px; width: auto; object-fit: contain; }
+  .brand { display: flex; align-items: center; gap: 20px; }
+  .brand-img { height: 45px; width: auto; object-fit: contain; }
   
+  .brand-divider {
+    width: 1px; height: 24px; background: var(--border-dark);
+  }
   .badge-admin { 
-    background: #EFF6FF; color: #1D4ED8; 
-    font-size: 12px; padding: 6px 12px; 
-    border-radius: 12px; font-weight: 700; 
-    text-transform: uppercase; letter-spacing: 0.5px;
-    border: 1px solid #BFDBFE;
+    color: var(--text-muted); 
+    font-size: 13px; font-weight: 500; 
+    letter-spacing: 0.5px;
   }
 
   .nav-user {
-    display: flex; align-items: center; gap: 12px; font-weight: 600; font-size: 15px; color: var(--text-main);
+    display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 14px; color: var(--text-main);
   }
   .nav-user-icon {
-    background: #F1F5F9; color: var(--text-muted); padding: 10px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px;
+    color: var(--text-muted); display: flex; align-items: center; justify-content: center;
   }
   
   /* Layout */
-  .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+  .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
   
-  .header-section { margin-bottom: 30px; display: flex; justify-content: space-between; align-items: flex-end; }
-  .header-section h1 { margin: 0; font-size: 26px; color: var(--text-main); font-weight: 800; }
-  .header-section p { margin: 6px 0 0; color: var(--text-muted); font-size: 15px; font-weight: 500; }
+  .header-section { margin-bottom: 40px; display: flex; justify-content: space-between; align-items: flex-end; }
+  .header-section h1 { margin: 0; font-size: 22px; color: var(--text-main); font-weight: 500; letter-spacing: -0.5px; }
+  .header-section p { margin: 8px 0 0; color: var(--text-muted); font-size: 14px; font-weight: 400; }
 
-  /* Info Box de Horarios */
+  /* Info Box Minimalista */
   .info-box {
-    background: #F8FAFC; border: 1px solid var(--border); 
-    border-radius: var(--radius-md); padding: 16px 20px; margin-bottom: 30px; 
-    font-size: 13px; color: var(--text-muted); display: flex; align-items: center; gap: 10px;
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px 0; margin-bottom: 40px; 
+    font-size: 13px; color: var(--text-muted); line-height: 1.5;
+    border-bottom: 1px solid var(--border);
   }
-  .info-box strong { font-weight: 700; color: var(--text-main); }
+  .info-box svg { color: var(--text-light); flex-shrink: 0; }
+  .info-box strong { font-weight: 600; color: var(--text-main); }
 
   /* Grid Layouts */
   .kpi-grid {
-    display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px; margin-bottom: 30px;
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px;
   }
   .dashboard-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 30px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;
   }
   @media (max-width: 768px) {
+    .kpi-grid { grid-template-columns: 1fr; }
     .dashboard-grid { grid-template-columns: 1fr; }
+    .navbar { padding: 0 20px; }
   }
 
-  /* Cards (Estilo Solicitud de Compra) */
+  /* Cards ultra limpias */
   .card {
     background: var(--surface); 
     border: 1px solid var(--border);
     border-radius: var(--radius-lg); 
     padding: 32px; 
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-soft);
   }
   .card-header-icon {
-    display: flex; align-items: center; gap: 12px; margin-bottom: 24px;
+    display: flex; align-items: center; gap: 16px; margin-bottom: 32px;
   }
   .c-icon {
-    background: #F1F5F9; padding: 12px; border-radius: 12px; font-size: 20px; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted);
   }
   .card-title {
-    font-size: 18px; font-weight: 700; margin: 0; color: var(--text-main);
+    font-size: 16px; font-weight: 500; margin: 0; color: var(--text-main);
   }
   .card-subtitle {
-    font-size: 13px; color: var(--text-muted); font-weight: 500; margin-top: 4px;
+    font-size: 13px; color: var(--text-light); font-weight: 400; margin-top: 4px;
   }
   
   /* KPI Cards */
-  .kpi-card { display: flex; flex-direction: column; padding: 28px; }
-  .kpi-label { font-size: 14px; font-weight: 600; color: var(--text-muted); }
-  .kpi-value { font-size: 38px; font-weight: 800; margin: 12px 0; color: var(--text-main); line-height: 1; }
-  .kpi-trend { font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 6px; }
-  .trend-good { color: var(--green); }
-  .trend-bad { color: var(--red); }
-  .trend-neutral { color: var(--primary); }
+  .kpi-card { display: flex; flex-direction: column; padding: 32px; }
+  .kpi-label { font-size: 12px; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px; }
+  .kpi-value { font-size: 42px; font-weight: 300; margin: 16px 0; color: var(--text-main); line-height: 1; letter-spacing: -1px; }
+  .kpi-trend { font-size: 13px; font-weight: 400; display: flex; align-items: center; gap: 6px; color: var(--text-muted); }
 
-  /* Lists (Rankings) */
+  /* Lists (Rankings) - Sin fondos de colores */
   .ranking-list { list-style: none; padding: 0; margin: 0; }
   .ranking-item {
     display: flex; align-items: center; justify-content: space-between;
@@ -124,22 +125,23 @@
   }
   .ranking-item:last-child { border-bottom: none; padding-bottom: 0; }
   .r-info { display: flex; flex-direction: column; gap: 4px; }
-  .r-name { font-weight: 700; font-size: 15px; color: var(--text-main); }
-  .r-branch { font-size: 13px; color: var(--text-muted); font-weight: 500; }
-  .r-time { font-weight: 800; font-size: 15px; background: #F8FAFC; padding: 6px 12px; border-radius: 10px; border: 1px solid var(--border);}
-  .time-early { color: var(--green); }
-  .time-late { color: var(--red); }
-
-  /* Tables */
-  .table-container { overflow-x: auto; margin-top: 20px; }
+  .r-name { font-weight: 500; font-size: 14px; color: var(--text-main); }
+  .r-branch { font-size: 12px; color: var(--text-light); font-weight: 400; }
+  .r-time { font-weight: 500; font-size: 14px; color: var(--text-main); }
+  
+  /* Tables - Clean */
+  .table-container { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; text-align: left; }
-  th { padding: 14px 16px; font-size: 13px; text-transform: uppercase; color: var(--text-muted); border-bottom: 2px solid var(--border); font-weight: 700; letter-spacing: 0.5px;}
-  td { padding: 18px 16px; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); font-weight: 500; }
-  .status-badge {
-    padding: 8px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; display: inline-block;
+  th { padding: 16px 0; font-size: 12px; text-transform: uppercase; color: var(--text-light); border-bottom: 1px solid var(--border-dark); font-weight: 500; letter-spacing: 1px;}
+  td { padding: 20px 0; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); font-weight: 400; }
+  
+  /* Dots minimalistas en lugar de badges grandes */
+  .status-dot {
+    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);
   }
-  .status-ok { background: #ECFDF5; color: var(--green); border: 1px solid #A7F3D0; }
-  .status-late { background: #FEF2F2; color: var(--red); border: 1px solid #FECACA;}
+  .dot { width: 6px; height: 6px; border-radius: 50%; }
+  .dot-green { background: #10B981; }
+  .dot-red { background: #EF4444; }
 </style>
 </head>
 <body>
@@ -147,11 +149,18 @@
 <nav class="navbar">
   <div class="brand">
     <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
+    <div class="brand-divider"></div>
     <span class="badge-admin">Panel Directivo</span>
   </div>
   <div class="nav-user">
-    <div class="nav-user-icon">👤</div>
-    Hola, Estefanía Longoria
+    <div class="nav-user-icon">
+      <!-- Icono de usuario SVG minimalista -->
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+        <circle cx="12" cy="7" r="4"></circle>
+      </svg>
+    </div>
+    Estefanía Longoria
   </div>
 </nav>
 
@@ -159,34 +168,48 @@
   
   <div class="header-section">
     <div>
-      <h1>Tablero de Asistencia Global</h1>
+      <h1>Asistencia Global</h1>
       <p id="fechaHoy">Cargando fecha...</p>
     </div>
   </div>
 
   <div class="info-box">
-    <span style="font-size: 18px;">ℹ️</span>
+    <!-- Icono de info SVG -->
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"></circle>
+      <line x1="12" y1="16" x2="12" y2="12"></line>
+      <line x1="12" y1="8" x2="12.01" y2="8"></line>
+    </svg>
     <div>
-      <strong>Horarios configurados:</strong> Tijuana (L-D 10:00am a 6:00pm) | Ensenada, Mexicali Obregón y Villaverde (L-V 10:00am a 6:00pm, Sáb. 9:00am a 5:00pm).
+      <strong>Horarios:</strong> Tijuana (L-D 10:00 a 18:00) · Ensenada, Obregón y Villaverde (L-V 10:00 a 18:00, Sáb. 09:00 a 17:00).
     </div>
   </div>
 
   <!-- KPI Cards -->
   <div class="kpi-grid">
     <div class="card kpi-card">
-      <div class="kpi-label">Puntualidad Global</div>
+      <div class="kpi-label">Puntualidad</div>
       <div class="kpi-value">85%</div>
-      <div class="kpi-trend trend-good"><span>↗</span> 5% mejor que ayer</div>
+      <div class="kpi-trend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+        5% mejor que ayer
+      </div>
     </div>
     <div class="card kpi-card">
-      <div class="kpi-label">Clínica Más Puntual</div>
-      <div class="kpi-value" style="color: var(--teal);">Tijuana</div>
-      <div class="kpi-trend trend-neutral"><span>★</span> 100% empleados a tiempo</div>
+      <div class="kpi-label">Mejor Clínica</div>
+      <div class="kpi-value">Tijuana</div>
+      <div class="kpi-trend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        Asistencia completa
+      </div>
     </div>
     <div class="card kpi-card">
-      <div class="kpi-label">Total Retardos Hoy</div>
-      <div class="kpi-value" style="color: var(--red);">3</div>
-      <div class="kpi-trend trend-bad"><span>⚠</span> Revisar Mexicali Villaverde</div>
+      <div class="kpi-label">Retardos</div>
+      <div class="kpi-value">3</div>
+      <div class="kpi-trend">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#EF4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg>
+        Revisar Villaverde
+      </div>
     </div>
   </div>
 
@@ -194,10 +217,16 @@
   <div class="dashboard-grid">
     <div class="card">
       <div class="card-header-icon">
-        <div class="c-icon" style="background:#ECFDF5; color:var(--green);">🏆</div>
+        <div class="c-icon">
+          <!-- Icono SVG Trending Up -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
         <div>
-          <h3 class="card-title">Llegaron más temprano</h3>
-          <div class="card-subtitle">Récord de entrada por clínica</div>
+          <h3 class="card-title">Entradas tempranas</h3>
+          <div class="card-subtitle">Mejores registros del día</div>
         </div>
       </div>
       <ul class="ranking-list">
@@ -206,31 +235,38 @@
             <span class="r-name">María Fernanda Pérez</span>
             <span class="r-branch">Tijuana</span>
           </div>
-          <span class="r-time time-early">09:42 am</span>
+          <span class="r-time">09:42 am</span>
         </li>
         <li class="ranking-item">
           <div class="r-info">
             <span class="r-name">Roberto Gómez</span>
             <span class="r-branch">Ensenada</span>
           </div>
-          <span class="r-time time-early">09:45 am</span>
+          <span class="r-time">09:45 am</span>
         </li>
         <li class="ranking-item">
           <div class="r-info">
             <span class="r-name">Lucía Hernández</span>
             <span class="r-branch">Mexicali - Obregón</span>
           </div>
-          <span class="r-time time-early">09:51 am</span>
+          <span class="r-time">09:51 am</span>
         </li>
       </ul>
     </div>
 
     <div class="card">
       <div class="card-header-icon">
-        <div class="c-icon" style="background:#FEF2F2; color:var(--red);">⚠️</div>
+        <div class="c-icon">
+          <!-- Icono SVG Alert -->
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+            <line x1="12" y1="9" x2="12" y2="13"></line>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+        </div>
         <div>
-          <h3 class="card-title">Llegaron más tarde</h3>
-          <div class="card-subtitle">Mayores retardos del día</div>
+          <h3 class="card-title">Retardos</h3>
+          <div class="card-subtitle">Requieren atención</div>
         </div>
       </div>
       <ul class="ranking-list">
@@ -239,33 +275,43 @@
             <span class="r-name">Jorge Salgado</span>
             <span class="r-branch">Mexicali - Villa Verde</span>
           </div>
-          <span class="r-time time-late">10:45 am</span>
+          <span class="r-time">10:45 am</span>
         </li>
         <li class="ranking-item">
           <div class="r-info">
             <span class="r-name">Ana Victoria Ruiz</span>
             <span class="r-branch">Ensenada</span>
           </div>
-          <span class="r-time time-late">10:22 am</span>
+          <span class="r-time">10:22 am</span>
         </li>
         <li class="ranking-item">
           <div class="r-info">
             <span class="r-name">Carlos Mendoza</span>
             <span class="r-branch">Mexicali - Obregón</span>
           </div>
-          <span class="r-time time-late">10:15 am</span>
+          <span class="r-time">10:15 am</span>
         </li>
       </ul>
     </div>
   </div>
 
   <!-- Full Table -->
-  <div class="card" style="padding-top: 24px;">
-    <div class="card-header-icon" style="margin-bottom: 0;">
-      <div class="c-icon">📋</div>
+  <div class="card" style="padding-top: 40px;">
+    <div class="card-header-icon" style="margin-bottom: 24px;">
+      <div class="c-icon">
+        <!-- Icono SVG Lista -->
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+      </div>
       <div>
         <h3 class="card-title">Registro General</h3>
-        <div class="card-subtitle">Datos en vivo (modo de prueba)</div>
+        <div class="card-subtitle">Datos en vivo</div>
       </div>
     </div>
     
@@ -281,46 +327,60 @@
         </thead>
         <tbody>
           <tr>
-            <td><strong>María Fernanda Pérez</strong></td>
-            <td>Tijuana</td>
+            <td style="font-weight: 500;">María Fernanda Pérez</td>
+            <td style="color: var(--text-muted);">Tijuana</td>
             <td>09:42 am</td>
-            <td><span class="status-badge status-ok">A Tiempo</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>
+            </td>
           </tr>
           <tr>
-            <td><strong>Roberto Gómez</strong></td>
-            <td>Ensenada</td>
+            <td style="font-weight: 500;">Roberto Gómez</td>
+            <td style="color: var(--text-muted);">Ensenada</td>
             <td>09:45 am</td>
-            <td><span class="status-badge status-ok">A Tiempo</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>
+            </td>
           </tr>
           <tr>
-            <td><strong>Lucía Hernández</strong></td>
-            <td>Mexicali - Obregón</td>
+            <td style="font-weight: 500;">Lucía Hernández</td>
+            <td style="color: var(--text-muted);">Mexicali - Obregón</td>
             <td>09:51 am</td>
-            <td><span class="status-badge status-ok">A Tiempo</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>
+            </td>
           </tr>
           <tr>
-            <td><strong>Daniela Castro</strong></td>
-            <td>Tijuana</td>
+            <td style="font-weight: 500;">Daniela Castro</td>
+            <td style="color: var(--text-muted);">Tijuana</td>
             <td>09:58 am</td>
-            <td><span class="status-badge status-ok">A Tiempo</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>
+            </td>
           </tr>
           <tr>
-            <td><strong>Carlos Mendoza</strong></td>
-            <td>Mexicali - Obregón</td>
+            <td style="font-weight: 500;">Carlos Mendoza</td>
+            <td style="color: var(--text-muted);">Mexicali - Obregón</td>
             <td>10:15 am</td>
-            <td><span class="status-badge status-late">Retardo (+15 min)</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-red"></span> Retardo (+15 min)</div>
+            </td>
           </tr>
           <tr>
-            <td><strong>Ana Victoria Ruiz</strong></td>
-            <td>Ensenada</td>
+            <td style="font-weight: 500;">Ana Victoria Ruiz</td>
+            <td style="color: var(--text-muted);">Ensenada</td>
             <td>10:22 am</td>
-            <td><span class="status-badge status-late">Retardo (+22 min)</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-red"></span> Retardo (+22 min)</div>
+            </td>
           </tr>
           <tr>
-            <td><strong>Jorge Salgado</strong></td>
-            <td>Mexicali - Villa Verde</td>
+            <td style="font-weight: 500;">Jorge Salgado</td>
+            <td style="color: var(--text-muted);">Mexicali - Villa Verde</td>
             <td>10:45 am</td>
-            <td><span class="status-badge status-late">Retardo (+45 min)</span></td>
+            <td>
+              <div class="status-dot"><span class="dot dot-red"></span> Retardo (+45 min)</div>
+            </td>
           </tr>
         </tbody>
       </table>
