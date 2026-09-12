@@ -6,51 +6,42 @@
 <title>Reloj Checador · Dental Más Fácil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Variables de Color (Tema Claro por defecto) */
+  /* Variables Minimalistas */
   :root {
-    --bg-color: #F4F7F9;
+    --bg-color: #F8FAFC;
     --surface: #FFFFFF;
-    --text-main: #1E293B;
+    --text-main: #0F172A;
     --text-muted: #64748B;
-    --border: #E2E8F0;
-    --primary: #1D4ED8; 
-    --primary-hover: #1E40AF;
-    --primary-btn-bg: #0c3b5e;
-    --primary-btn-hover: #082a45;
+    --text-light: #94A3B8;
+    --border: #F1F5F9;
+    --border-dark: #E2E8F0;
+    --primary: #0F172A; 
+    --primary-hover: #1E293B;
     --teal: #0D9488;
-    --teal-light: #CCFBF1;
     --green: #10B981;
     --red: #EF4444;
-    --input-bg: #F8FAFC;
-    --icon-bg: #EFF6FF;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    --radius-lg: 32px;
-    --radius-md: 16px; 
-    --hover-ent: #ECFDF5;
-    --hover-sal: #FEF2F2;
+    --radius-lg: 24px;
+    --radius-md: 12px; 
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.02);
+    --hover-bg: #F8FAFC;
   }
 
-  /* Tema Oscuro */
+  /* Tema Oscuro Minimalista */
   body.dark-theme {
-    --bg-color: #0F172A;
-    --surface: #1E293B;
+    --bg-color: #0B1120;
+    --surface: #0F172A;
     --text-main: #F8FAFC;
     --text-muted: #94A3B8;
-    --border: #334155;
-    --input-bg: #0B1120;
-    --icon-bg: #0F172A;
-    --teal-light: #134E4A;
-    --teal: #2DD4BF;
-    --primary-btn-bg: #3B82F6;
-    --primary-btn-hover: #2563EB;
-    --hover-ent: rgba(16, 185, 129, 0.1);
-    --hover-sal: rgba(239, 68, 68, 0.1);
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+    --text-light: #64748B;
+    --border: #1E293B;
+    --border-dark: #334155;
+    --primary: #F8FAFC;
+    --primary-hover: #E2E8F0;
+    --hover-bg: #1E293B;
   }
+  body.dark-theme .btn-primary { color: #0F172A; }
 
   * { box-sizing: border-box; }
   body {
@@ -63,33 +54,25 @@
     transition: background-color 0.3s, color 0.3s;
   }
   
+  svg { display: block; }
+  
   /* Navbar */
   .navbar {
     background: var(--surface);
-    height: 70px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 24px;
-    border-bottom: 1px solid var(--border);
-    box-shadow: var(--shadow-sm);
+    padding: 0 40px;
+    border-bottom: 1px solid var(--border-dark);
     position: sticky;
     top: 0;
     z-index: 10;
     transition: background-color 0.3s, border-color 0.3s;
   }
   
-  /* Logo */
-  .brand { 
-    display: flex; 
-    align-items: center; 
-  }
-  .brand-img {
-    height: 55px;
-    width: auto;
-    object-fit: contain;
-    border-radius: 6px;
-  }
+  .brand { display: flex; align-items: center; }
+  .brand-img { height: 45px; width: auto; object-fit: contain; }
 
   /* Menú de Opciones (Nav Actions) */
   .nav-actions { 
@@ -97,214 +80,162 @@
     margin-left: auto;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 16px;
   }
 
-  /* Date Pill */
+  /* Date Pill Minimalista */
   .date-pill {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    border-radius: 24px;
-    background: var(--surface);
-    font-size: 14px;
-    color: var(--text-main);
-    font-weight: 600;
-    transition: border-color 0.3s;
+    display: flex; align-items: center; gap: 8px;
+    padding: 8px 16px; border: 1px solid var(--border-dark);
+    border-radius: 24px; background: transparent;
+    font-size: 13px; color: var(--text-main); font-weight: 500;
   }
-  .dot-orange {
-    width: 8px; height: 8px;
-    background-color: #F59E0B; /* Naranja */
-    border-radius: 50%;
-  }
-  .date-text .fw-normal {
-    font-weight: 400;
-    color: var(--text-muted);
-  }
+  .dot-orange { width: 6px; height: 6px; background-color: #F59E0B; border-radius: 50%; }
+  .date-text .fw-normal { font-weight: 400; color: var(--text-muted); }
 
   /* Custom Gear Button */
   .btn-settings-outline {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text-muted);
-    width: 42px; height: 42px;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    cursor: pointer;
-    transition: all 0.2s;
+    background: transparent; border: 1px solid var(--border-dark);
+    color: var(--text-muted); width: 40px; height: 40px; border-radius: 12px;
+    display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
   }
   .btn-settings-outline:hover {
-    border-color: #0EA5E9; /* Azul claro estilo la captura */
-    color: #0EA5E9;
-    background: #F0F9FF; /* Fondo azul muy sutil */
-  }
-  body.dark-theme .btn-settings-outline:hover {
-    background: #0C4A6E; /* Fondo oscuro sutil */
+    border-color: var(--text-main); color: var(--text-main);
   }
   
-  /* Dropdown Menú */
+  /* Dropdown Menú Limpio */
   .dropdown-menu {
     position: absolute; right: 0; top: 56px; background: var(--surface);
-    border: 1px solid var(--border); border-radius: var(--radius-md);
-    box-shadow: var(--shadow-md); min-width: 220px; z-index: 100;
-    overflow: hidden;
+    border: 1px solid var(--border-dark); border-radius: var(--radius-md);
+    box-shadow: var(--shadow-soft); min-width: 200px; z-index: 100;
+    overflow: hidden; padding: 8px 0;
     transform-origin: top right; transition: opacity 0.2s, transform 0.2s;
   }
   .dropdown-menu.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
   
   .dropdown-header {
-    padding: 12px 16px; font-size: 11px; font-weight: 700; color: var(--text-muted); 
-    text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); 
-    background: var(--bg-color);
+    padding: 8px 16px; font-size: 11px; font-weight: 500; color: var(--text-light); 
+    text-transform: uppercase; letter-spacing: 1px;
   }
   .dropdown-item {
-    display: flex; align-items: center; gap: 10px; width: 100%; padding: 12px 16px; border: none;
-    background: var(--surface); color: var(--text-main); font-size: 14px; font-weight: 500; 
+    display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 16px; border: none;
+    background: transparent; color: var(--text-main); font-size: 13px; font-weight: 500; 
     cursor: pointer; text-align: left; font-family: inherit; transition: background 0.1s;
   }
-  .dropdown-item:hover { background: var(--input-bg); }
-  .dropdown-divider { height: 1px; background: var(--border); }
+  .dropdown-item:hover { background: var(--hover-bg); }
+  .dropdown-item span { display: flex; color: var(--text-muted); }
+  .dropdown-divider { height: 1px; background: var(--border-dark); margin: 8px 0; }
   .text-red { color: var(--red); }
+  .text-red span { color: var(--red); }
 
   /* Layout */
-  .container {
-    max-width: 600px;
-    margin: 40px auto;
-    padding: 0 20px;
-  }
+  .container { max-width: 560px; margin: 60px auto; padding: 0 20px; }
 
-  /* Cards */
+  /* Cards Ultra Limpias */
   .card {
     background: var(--surface);
+    border: 1px solid var(--border-dark);
     border-radius: var(--radius-lg);
-    border: 1px solid var(--border);
-    padding: 30px;
-    box-shadow: var(--shadow-sm);
-    margin-bottom: 20px;
+    padding: 40px;
+    box-shadow: var(--shadow-soft);
+    margin-bottom: 24px;
     transition: background-color 0.3s, border-color 0.3s;
   }
 
   .card-header {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 12px;
-    margin-bottom: 24px;
+    display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 32px;
   }
   .card-icon {
-    background: var(--icon-bg);
-    color: var(--primary);
-    width: 48px; height: 48px;
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 24px;
+    color: var(--text-muted); margin-bottom: 16px;
   }
   .card-title-group h2 {
-    margin: 0; font-size: 18px; font-weight: 700; color: var(--text-main);
+    margin: 0; font-size: 20px; font-weight: 500; color: var(--text-main); letter-spacing: -0.5px;
   }
   .card-title-group p {
-    margin: 4px 0 0; font-size: 14px; color: var(--text-muted);
+    margin: 8px 0 0; font-size: 14px; font-weight: 400; color: var(--text-muted);
   }
 
-  /* Forms */
-  .form-group { margin-bottom: 20px; text-align: left; }
+  /* Forms Minimalistas */
+  .form-group { margin-bottom: 24px; text-align: left; }
   .form-group label {
-    display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 8px;
+    display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;
   }
   .form-control {
-    width: 100%;
-    padding: 14px 16px;
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border);
-    background: var(--input-bg);
-    font-size: 15px;
-    color: var(--text-main);
-    font-family: inherit;
-    transition: all 0.2s;
+    width: 100%; padding: 14px 16px; border-radius: var(--radius-md);
+    border: 1px solid var(--border-dark); background: transparent;
+    font-size: 14px; font-weight: 400; color: var(--text-main); font-family: inherit; transition: all 0.2s;
   }
-  .form-control:focus {
-    outline: none; border-color: var(--primary); background: var(--surface); box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
-  }
-
+  .form-control:focus { outline: none; border-color: var(--text-main); }
+  
   select.form-control {
     appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    background-size: 16px;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
   }
 
-  /* Buttons */
+  /* Buttons Minimalistas */
   .btn {
     display: inline-flex; align-items: center; justify-content: center;
-    padding: 14px 24px; border-radius: var(--radius-md); font-weight: 600; font-size: 15px;
+    padding: 14px 24px; border-radius: var(--radius-md); font-weight: 500; font-size: 14px;
     cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; width: 100%;
   }
-  .btn-primary {
-    background: var(--primary-btn-bg); color: white;
-  }
-  .btn-primary:hover { background: var(--primary-btn-hover); }
-
+  .btn-primary { background: var(--primary); color: var(--surface); }
+  .btn-primary:hover { background: var(--primary-hover); }
   .btn-text {
-    background: none; color: var(--text-muted); font-size: 14px; width: auto; padding: 14px 16px;
-    text-decoration: underline; text-underline-offset: 4px; border: none; cursor: pointer; font-family: inherit;
+    background: transparent; color: var(--text-muted); font-size: 14px; font-weight: 400;
+    width: auto; padding: 14px 16px; border: none; cursor: pointer; font-family: inherit;
   }
   .btn-text:hover { color: var(--text-main); }
 
-  /* Punch View Specifics */
+  /* Punch View Minimalista */
   .user-badge {
     display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding-bottom: 24px; border-bottom: 1px solid var(--border); margin-bottom: 24px;
+    padding-bottom: 32px; border-bottom: 1px solid var(--border-dark); margin-bottom: 32px;
   }
   .user-badge-info h1 {
-    margin: 0 0 8px 0; font-size: 26px; font-weight: 700; color: var(--text-main);
+    margin: 0 0 8px 0; font-size: 28px; font-weight: 300; color: var(--text-main); letter-spacing: -1px;
   }
   .user-badge-info .sucursal-tag {
-    display: inline-block; background: var(--teal-light); color: var(--teal);
-    padding: 6px 14px; border-radius: 8px; font-size: 13px; font-weight: 700;
+    font-size: 13px; font-weight: 500; color: var(--text-muted);
   }
 
   .punch-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
   }
   @media (max-width: 500px) {
     .punch-grid { grid-template-columns: 1fr; }
-    
-    /* Responsive nav */
-    .date-pill { padding: 6px 10px; font-size: 12px; }
+    .navbar { padding: 0 20px; }
     .date-text .fw-normal { display: none; }
+    .card { padding: 24px; }
   }
 
   .btn-punch {
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 32px 16px; border-radius: var(--radius-lg); border: 2px solid transparent;
-    cursor: pointer; transition: transform 0.1s, box-shadow 0.2s, background 0.2s; background: var(--surface);
-    font-family: inherit;
+    padding: 32px 16px; border-radius: var(--radius-lg); 
+    border: 1px solid var(--border-dark); background: transparent;
+    cursor: pointer; transition: transform 0.1s, border-color 0.2s; font-family: inherit;
   }
-  .btn-punch:active { transform: scale(0.97); }
+  .btn-punch:active { transform: scale(0.98); }
   
-  .btn-punch.entrada {
-    border-color: var(--green); box-shadow: 0 8px 20px -5px rgba(16, 185, 129, 0.15);
-  }
-  .btn-punch.entrada:hover { background: var(--hover-ent); }
+  .btn-punch.entrada { color: var(--text-main); }
+  .btn-punch.entrada:hover { border-color: var(--green); }
+  .btn-punch.entrada .punch-icon { color: var(--green); }
   
-  .btn-punch.salida {
-    border-color: var(--red); box-shadow: 0 8px 20px -5px rgba(239, 68, 68, 0.15);
-  }
-  .btn-punch.salida:hover { background: var(--hover-sal); }
+  .btn-punch.salida { color: var(--text-main); }
+  .btn-punch.salida:hover { border-color: var(--red); }
+  .btn-punch.salida .punch-icon { color: var(--red); }
 
-  .punch-icon { font-size: 32px; margin-bottom: 12px; }
-  .punch-label { font-size: 18px; font-weight: 700; color: var(--text-main); margin-bottom: 4px; }
-  .punch-sub { font-size: 13px; color: var(--text-muted); }
+  .punch-icon { margin-bottom: 16px; }
+  .punch-label { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+  .punch-sub { font-size: 13px; font-weight: 400; color: var(--text-muted); }
 
   .status-message {
-    margin-top: 24px; padding: 16px; border-radius: var(--radius-md);
-    text-align: center; font-weight: 600; font-size: 15px; display: none;
+    margin-top: 32px; padding: 16px; border-radius: var(--radius-md);
+    text-align: center; font-weight: 500; font-size: 14px; display: none;
   }
-  .status-message.success { background: var(--hover-ent); color: var(--green); display: block; border: 1px solid var(--green); }
+  .status-message.success { 
+    background: transparent; color: var(--green); display: block; border: 1px solid var(--border-dark);
+  }
   
   /* Utilities */
   .display-none { display: none !important; }
@@ -327,20 +258,31 @@
     </div>
 
     <button class="btn-settings-outline" id="btnSettings" onclick="toggleMenu()" title="Configuración">
-      <!-- Icono de engranaje en SVG de alta definición -->
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <!-- Icono de engranaje en SVG fino -->
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"></circle>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
       </svg>
     </button>
     
     <div id="settingsMenu" class="dropdown-menu hidden">
-      <div class="dropdown-header">Opciones de la App</div>
-      <button class="dropdown-item" onclick="editarUsuario()"><span>👤</span> Editar usuario</button>
-      <button class="dropdown-item" id="btnTheme" onclick="toggleTheme()"><span>🌙</span> Modo oscuro</button>
-      <button class="dropdown-item" onclick="mostrarAyuda()"><span>❓</span> Ayuda y soporte</button>
+      <div class="dropdown-header">Opciones</div>
+      <button class="dropdown-item" onclick="editarUsuario()">
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
+        Editar perfil
+      </button>
+      <button class="dropdown-item" id="btnTheme" onclick="toggleTheme()">
+        <!-- El JS inyecta el SVG de luna o sol aquí -->
+      </button>
+      <button class="dropdown-item" onclick="mostrarAyuda()">
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
+        Ayuda y soporte
+      </button>
       <div class="dropdown-divider"></div>
-      <button class="dropdown-item text-red" onclick="cerrarSesion()"><span>🚪</span> Cerrar sesión</button>
+      <button class="dropdown-item text-red" onclick="cerrarSesion()">
+        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span>
+        Cerrar sesión
+      </button>
     </div>
   </div>
 </nav>
@@ -350,20 +292,22 @@
   <!-- VISTA: SETUP/EDITAR USUARIO -->
   <div id="view-setup" class="card display-none">
     <div class="card-header">
-      <div class="card-icon">👤</div>
+      <div class="card-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+      </div>
       <div class="card-title-group">
-        <h2 id="setupTitle">Crear perfil de empleado</h2>
-        <p id="setupDesc">Solo necesitas configurar esto la primera vez.</p>
+        <h2 id="setupTitle">Perfil de Empleado</h2>
+        <p id="setupDesc">Configura tu perfil para poder registrar asistencias.</p>
       </div>
     </div>
     
     <div class="form-group">
-      <label>Nombre completo *</label>
+      <label>Nombre completo</label>
       <input type="text" id="inputNombre" class="form-control" placeholder="Escribe tu nombre y apellido" autocomplete="off">
     </div>
     
     <div class="form-group">
-      <label>Sucursal *</label>
+      <label>Sucursal</label>
       <select id="inputSucursal" class="form-control">
         <option value="">Selecciona una sucursal</option>
         <option value="Tijuana">Tijuana</option>
@@ -373,7 +317,7 @@
       </select>
     </div>
     
-    <div style="display: flex; gap: 12px; align-items: center; margin-top: 10px;">
+    <div style="display: flex; gap: 12px; align-items: center; margin-top: 32px;">
       <button class="btn btn-primary" style="flex: 1;" onclick="guardarUsuario()">Guardar perfil</button>
       <button class="btn-text display-none" id="btnCancelar" onclick="cancelarEdicion()">Cancelar</button>
     </div>
@@ -389,19 +333,23 @@
       </div>
     </div>
 
-    <div style="text-align: center; margin-bottom: 24px;">
-      <p style="color: var(--text-muted); font-size: 14px; margin: 0;">¿Qué deseas registrar en este momento?</p>
+    <div style="text-align: center; margin-bottom: 32px;">
+      <p style="color: var(--text-muted); font-size: 14px; font-weight: 400; margin: 0;">¿Qué deseas registrar en este momento?</p>
     </div>
 
     <div class="punch-grid">
       <button class="btn-punch entrada" onclick="registrar('Entrada')">
-        <div class="punch-icon">☀️</div>
+        <div class="punch-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+        </div>
         <div class="punch-label">Entrada</div>
         <div class="punch-sub">Al llegar a tu turno</div>
       </button>
       
       <button class="btn-punch salida" onclick="registrar('Salida')">
-        <div class="punch-icon">🌙</div>
+        <div class="punch-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+        </div>
         <div class="punch-label">Salida</div>
         <div class="punch-sub">Al terminar tu turno</div>
       </button>
@@ -418,6 +366,10 @@
   const KEY_BRANCH = 'dmf_emp_sucursal';
   const KEY_THEME = 'dmf_theme';
   
+  // Iconos SVG para el switch de tema
+  const sunSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+  const moonSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
   // Elementos DOM
   const viewSetup = document.getElementById('view-setup');
   const viewPunch = document.getElementById('view-punch');
@@ -443,8 +395,8 @@
       viewPunch.classList.remove('display-none');
       viewSetup.classList.add('display-none');
     } else {
-      document.getElementById('setupTitle').textContent = "Crear perfil de empleado";
-      document.getElementById('setupDesc').textContent = "Solo necesitas configurar esto la primera vez.";
+      document.getElementById('setupTitle').textContent = "Perfil de Empleado";
+      document.getElementById('setupDesc').textContent = "Configura tu perfil para poder registrar asistencias.";
       btnCancelar.classList.add('display-none'); 
       viewSetup.classList.remove('display-none');
       viewPunch.classList.add('display-none');
@@ -482,10 +434,10 @@
     
     if (isDark) {
       document.body.classList.add('dark-theme');
-      btnTheme.innerHTML = '<span>☀️</span> Modo claro';
+      btnTheme.innerHTML = `<span>${sunSvg}</span> Modo claro`;
     } else {
       document.body.classList.remove('dark-theme');
-      btnTheme.innerHTML = '<span>🌙</span> Modo oscuro';
+      btnTheme.innerHTML = `<span>${moonSvg}</span> Modo oscuro`;
     }
   }
 
@@ -493,7 +445,7 @@
     const isDark = document.body.classList.contains('dark-theme');
     localStorage.setItem(KEY_THEME, isDark ? 'light' : 'dark');
     aplicarTema();
-    toggleMenu(); // Cierra el menú al hacer clic
+    toggleMenu();
   }
 
   /* ====== FUNCIONES DEL PERFIL ====== */
@@ -551,7 +503,7 @@
     const now = new Date();
     const timeString = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
     
-    msgStatus.textContent = `¡${tipo} registrada exitosamente a las ${timeString}!`;
+    msgStatus.textContent = `¡${tipo} registrada a las ${timeString}!`;
     msgStatus.className = 'status-message success';
 
     setTimeout(() => {
