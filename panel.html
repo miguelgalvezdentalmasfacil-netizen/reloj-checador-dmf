@@ -505,13 +505,22 @@
 
   async function cargarDatosEnVivo() {
     try {
+      const dateNow = new Date();
       // Evitar caché de Google
-      const noCacheUrl = `${API_URL}?action=leer&t=${new Date().getTime()}`;
+      const noCacheUrl = `${API_URL}?action=leer&t=${dateNow.getTime()}`;
       const response = await fetch(noCacheUrl);
       const data = await response.json();
       globalData = data; 
       procesarDatosHoy(data);
       procesarDatosMensuales(data);
+
+      // Actualizar indicador de última conexión
+      const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      let fechaStr = dateNow.toLocaleDateString('es-MX', opciones);
+      fechaStr = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
+      let horaActual = dateNow.toLocaleTimeString('es-MX', {hour: '2-digit', minute:'2-digit'});
+      document.querySelector('#fechaHoy span').textContent = `${fechaStr}  —  Actualizado: ${horaActual}`;
+
     } catch (error) {
       console.error("Error cargando base de datos:", error);
       document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--red); padding: 40px 0; justify-content: center;">Error de conexión. Intenta de nuevo.</td></tr>`;
@@ -918,9 +927,13 @@
 
   // Cargar tema inicial
   aplicarTema();
-  // Ejecutar al inicio
+  // Init
   cargarDatosEnVivo();
 
+  // Auto-actualización silenciosa cada 30 segundos
+  setInterval(() => {
+    cargarDatosEnVivo();
+  }, 30000);
 </script>
 
 </body>
