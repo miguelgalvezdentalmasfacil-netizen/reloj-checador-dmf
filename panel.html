@@ -344,7 +344,9 @@
     btnAct.innerHTML = `<svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Actualizando...`;
 
     try {
-      const response = await fetch(`${API_URL}?action=leer`);
+      // Evitar caché de Google
+      const noCacheUrl = `${API_URL}?action=leer&t=${new Date().getTime()}`;
+      const response = await fetch(noCacheUrl);
       const data = await response.json();
       globalData = data; 
       procesarDatosHoy(data);
@@ -357,13 +359,40 @@
     }
   }
 
+  function parseTimeMinutes(timeStr) {
+    if(!timeStr) return 0;
+    let isPM = /p/i.test(timeStr);
+    let isAM = /a/i.test(timeStr);
+    let clean = timeStr.replace(/[^0-9:]/g, '');
+    let p = clean.split(':');
+    if(p.length < 2) return 0;
+    let h = parseInt(p[0], 10);
+    let m = parseInt(p[1], 10);
+    if(isPM && h !== 12) h += 12;
+    if(isAM && h === 12) h = 0;
+    return (h * 60) + m;
+  }
+
+  function isDateToday(dateStr) {
+    if(!dateStr) return false;
+    let parts = dateStr.split(/[-/]/);
+    if(parts.length < 3) return false;
+    let d = parseInt(parts[0], 10);
+    let m = parseInt(parts[1], 10);
+    let y = parseInt(parts[2], 10);
+    if (y < 1000) y += 2000;
+    
+    let hoy = new Date();
+    return (d === hoy.getDate() && m === (hoy.getMonth() + 1) && y === hoy.getFullYear());
+  }
+
   function procesarDatosHoy(data) {
     if(!data || data.length === 0) {
       mostrarVacio();
       return;
     }
 
-    const registrosHoy = data.filter(d => d.fecha === hoyStr);
+    const registrosHoy = data.filter(d => isDateToday(d.fecha));
     if(registrosHoy.length === 0) {
       mostrarVacio();
       return;
@@ -388,19 +417,16 @@
 
       if (reg.tipo === "Entrada") {
         entradas++;
-        let expectedHour = 10;
+        let expectedMinutes = 10 * 60; // 10:00 AM = 600 min
         
         if (reg.sucursal !== "Tijuana" && numDia === 6) {
-          expectedHour = 9;
+          expectedMinutes = 9 * 60; // 9:00 AM = 540 min
         }
 
-        let parts = reg.hora.split(':');
-        if (parts.length >= 2) {
-          let h = parseInt(parts[0], 10);
-          let m = parseInt(parts[1], 10);
-          if (h > expectedHour || (h === expectedHour && m > 5)) {
-            isLate = true;
-          }
+        let actualMinutes = parseTimeMinutes(reg.hora);
+        // Tolerancia 5 minutos
+        if (actualMinutes > (expectedMinutes + 5)) {
+          isLate = true;
         }
 
         if (isLate) {
@@ -512,14 +538,11 @@
        let dateObj = new Date(parts[2], parts[1]-1, parts[0]);
        let dayOfWeek = dateObj.getDay();
 
-       let expectedHour = 10;
-       if (reg.sucursal !== 'Tijuana' && dayOfWeek === 6) expectedHour = 9;
+       let expectedMinutes = 10 * 60;
+       if (reg.sucursal !== 'Tijuana' && dayOfWeek === 6) expectedMinutes = 9 * 60;
 
-       let hParts = reg.hora.split(':');
-       if(hParts.length < 2) return;
-       let h = parseInt(hParts[0], 10);
-       let min = parseInt(hParts[1], 10);
-       let isLate = (h > expectedHour || (h === expectedHour && min > 5));
+       let actualMinutes = parseTimeMinutes(reg.hora);
+       let isLate = (actualMinutes > (expectedMinutes + 5));
 
        if(!empStats[reg.nombre]) empStats[reg.nombre] = { nombre: reg.nombre, sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
        if(!branchStats[reg.sucursal]) branchStats[reg.sucursal] = { sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
