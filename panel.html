@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Panel Directivo · Dental Más Fácil</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -95,10 +95,32 @@
   .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
   
   @media (max-width: 768px) {
-    .header-section { flex-direction: column; align-items: flex-start; gap: 20px; }
-    .kpi-grid { grid-template-columns: 1fr; }
-    .dashboard-grid { grid-template-columns: 1fr; }
-    .navbar { padding: 0 20px; }
+    .navbar { padding: 0 20px; height: 70px; }
+    .brand-img { height: 36px; }
+    .badge-admin { display: none; } /* Ocultar texto para hacer espacio */
+    .nav-user { font-size: 0; gap: 8px; } /* Ocultar nombre, dejar solo icono */
+    .nav-user-icon { width: 32px; height: 32px; }
+    .btn-theme-toggle { width: 32px; height: 32px; }
+    
+    .container { margin: 20px auto; padding: 0 16px; }
+    .header-section { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
+    .header-section h1 { font-size: 20px; }
+    
+    .header-buttons { flex-direction: column; width: 100%; }
+    .btn-outline { width: 100%; justify-content: center; padding: 14px; }
+    
+    .kpi-grid, .dashboard-grid { grid-template-columns: 1fr; gap: 16px; margin-bottom: 24px; }
+    .card { padding: 20px; }
+    .kpi-card { padding: 24px 20px; }
+    .kpi-value { font-size: 32px; }
+
+    /* Magia para convertir la tabla en Tarjetas Móviles */
+    table, thead, tbody, th, td, tr { display: block; width: 100%; }
+    thead tr { display: none; } /* Ocultar encabezados */
+    tr { border: 1px solid var(--border-dark); border-radius: 12px; margin-bottom: 16px; padding: 16px; background: var(--surface); }
+    td { border: none !important; padding: 8px 0 !important; display: flex; justify-content: space-between; align-items: center; text-align: right; }
+    td::before { content: attr(data-label); font-weight: 500; color: var(--text-muted); font-size: 12px; text-transform: uppercase; margin-right: 16px; text-align: left; }
+    td:last-child { margin-top: 8px; padding-top: 12px !important; border-top: 1px dashed var(--border-dark) !important; justify-content: center; }
   }
 
   /* Cards ultra limpias */
@@ -282,7 +304,7 @@
         </thead>
         <tbody id="tablaRegistros">
           <tr>
-            <td colspan="5" style="text-align: center; color: var(--text-light); padding: 40px 0;">
+            <td style="text-align: center; color: var(--text-light); padding: 40px 0; justify-content: center;">
               Conectando a la base de datos...
             </td>
           </tr>
@@ -402,7 +424,7 @@
       procesarDatosHoy(data);
     } catch (error) {
       console.error("Error cargando base de datos:", error);
-      document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--red); padding: 40px 0;">Error de conexión. Intenta de nuevo.</td></tr>`;
+      document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--red); padding: 40px 0; justify-content: center;">Error de conexión. Intenta de nuevo.</td></tr>`;
     } finally {
       btnAct.disabled = false;
       btnAct.innerHTML = originalBtn;
@@ -506,11 +528,11 @@
 
       htmlTabla += `
         <tr>
-          <td style="font-weight: 500;">${reg.nombre}</td>
-          <td style="color: var(--text-muted);">${reg.sucursal}</td>
-          <td>${reg.tipo}</td>
-          <td>${reg.hora}</td>
-          <td>${statusHtml}</td>
+          <td data-label="Empleado" style="font-weight: 500;">${reg.nombre}</td>
+          <td data-label="Clínica" style="color: var(--text-muted);">${reg.sucursal}</td>
+          <td data-label="Movimiento">${reg.tipo}</td>
+          <td data-label="Hora">${reg.hora}</td>
+          <td data-label="Estado">${statusHtml}</td>
         </tr>
       `;
     });
@@ -560,7 +582,7 @@
   }
 
   function mostrarVacio() {
-    document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-light); padding: 40px 0;">Aún no hay registros el día de hoy.</td></tr>`;
+    document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--text-light); padding: 40px 0; justify-content: center;">Aún no hay registros el día de hoy.</td></tr>`;
     document.getElementById('kpiPuntualidad').textContent = "0%";
     document.getElementById('kpiPuntSub').textContent = "Esperando registros";
     document.getElementById('kpiRetardos').textContent = "0";
