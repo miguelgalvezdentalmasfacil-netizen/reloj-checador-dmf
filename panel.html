@@ -413,19 +413,19 @@
 
     registrosHoy.reverse().forEach(reg => {
       let isLate = false;
-      let statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Salida registrada</div>`;
+      let statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Registro</div>`;
+
+      let actualMinutes = parseTimeMinutes(reg.hora);
 
       if (reg.tipo === "Entrada") {
         entradas++;
         let expectedMinutes = 10 * 60; // 10:00 AM = 600 min
-        
         if (reg.sucursal !== "Tijuana" && numDia === 6) {
           expectedMinutes = 9 * 60; // 9:00 AM = 540 min
         }
 
-        let actualMinutes = parseTimeMinutes(reg.hora);
-        // Tolerancia 5 minutos
-        if (actualMinutes > (expectedMinutes + 5)) {
+        // Estricto: mayor a la hora esperada es retardo (10:01 ya es tarde)
+        if (actualMinutes > expectedMinutes) {
           isLate = true;
         }
 
@@ -439,6 +439,19 @@
           if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].aTiempo++;
         }
         if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].total++;
+      
+      } else if (reg.tipo === "Salida") {
+        let expectedExitMinutes = 18 * 60; // 6:00 PM = 1080 min
+        if (reg.sucursal !== "Tijuana" && numDia === 6) {
+          expectedExitMinutes = 17 * 60; // 5:00 PM = 1020 min
+        }
+
+        // Estricto: menor a la hora de salida es salida anticipada
+        if (actualMinutes < expectedExitMinutes) {
+          statusHtml = `<div class="status-dot"><span class="dot" style="background:#F59E0B;"></span> Salida anticipada</div>`;
+        } else {
+          statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Salida a tiempo</div>`;
+        }
       }
 
       htmlTabla += `
@@ -542,7 +555,7 @@
        if (reg.sucursal !== 'Tijuana' && dayOfWeek === 6) expectedMinutes = 9 * 60;
 
        let actualMinutes = parseTimeMinutes(reg.hora);
-       let isLate = (actualMinutes > (expectedMinutes + 5));
+       let isLate = (actualMinutes > expectedMinutes);
 
        if(!empStats[reg.nombre]) empStats[reg.nombre] = { nombre: reg.nombre, sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
        if(!branchStats[reg.sucursal]) branchStats[reg.sucursal] = { sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
