@@ -45,21 +45,10 @@
   .brand { display: flex; align-items: center; gap: 20px; }
   .brand-img { height: 45px; width: auto; object-fit: contain; }
   
-  .brand-divider {
-    width: 1px; height: 24px; background: var(--border-dark);
-  }
-  .badge-admin { 
-    color: var(--text-muted); 
-    font-size: 13px; font-weight: 500; 
-    letter-spacing: 0.5px;
-  }
-
-  .nav-user {
-    display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 14px; color: var(--text-main);
-  }
-  .nav-user-icon {
-    color: var(--text-muted); display: flex; align-items: center; justify-content: center;
-  }
+  .brand-divider { width: 1px; height: 24px; background: var(--border-dark); }
+  .badge-admin { color: var(--text-muted); font-size: 13px; font-weight: 500; letter-spacing: 0.5px; }
+  .nav-user { display: flex; align-items: center; gap: 10px; font-weight: 500; font-size: 14px; color: var(--text-main); }
+  .nav-user-icon { color: var(--text-muted); display: flex; align-items: center; justify-content: center; }
   
   /* Layout */
   .container { max-width: 1100px; margin: 50px auto; padding: 0 20px; }
@@ -68,32 +57,28 @@
   .header-section h1 { margin: 0; font-size: 22px; color: var(--text-main); font-weight: 500; letter-spacing: -0.5px; }
   .header-section p { margin: 8px 0 0; color: var(--text-muted); font-size: 14px; font-weight: 400; display: flex; align-items: center; gap: 8px;}
   
+  .header-buttons { display: flex; gap: 12px; }
+  
   .btn-outline {
-    display: flex; align-items: center; gap: 8px;
-    background: transparent; border: 1px solid var(--border-dark);
-    padding: 10px 16px; border-radius: var(--radius-md);
-    font-size: 13px; font-weight: 500; color: var(--text-main);
+    display: flex; align-items: center; gap: 8px; background: transparent; border: 1px solid var(--border-dark);
+    padding: 10px 16px; border-radius: var(--radius-md); font-size: 13px; font-weight: 500; color: var(--text-main);
     cursor: pointer; transition: all 0.2s; font-family: inherit;
   }
   .btn-outline:hover { background: #F8FAFC; border-color: var(--text-main); }
+  .btn-outline:disabled { opacity: 0.5; cursor: not-allowed; }
 
   /* Info Box Minimalista */
   .info-box {
-    display: flex; align-items: flex-start; gap: 12px;
-    padding: 16px 0; margin-bottom: 40px; 
-    font-size: 13px; color: var(--text-muted); line-height: 1.5;
-    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 12px; padding: 16px 0; margin-bottom: 40px; 
+    font-size: 13px; color: var(--text-muted); line-height: 1.5; border-bottom: 1px solid var(--border);
   }
   .info-box svg { color: var(--text-light); flex-shrink: 0; }
   .info-box strong { font-weight: 600; color: var(--text-main); }
 
   /* Grid Layouts */
-  .kpi-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px;
-  }
-  .dashboard-grid {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px;
-  }
+  .kpi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 40px; }
+  .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
+  
   @media (max-width: 768px) {
     .header-section { flex-direction: column; align-items: flex-start; gap: 20px; }
     .kpi-grid { grid-template-columns: 1fr; }
@@ -103,18 +88,11 @@
 
   /* Cards ultra limpias */
   .card {
-    background: var(--surface); 
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg); 
-    padding: 32px; 
-    box-shadow: var(--shadow-soft);
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); 
+    padding: 32px; box-shadow: var(--shadow-soft);
   }
-  .card-header-icon {
-    display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px;
-  }
-  .card-header-left {
-    display: flex; align-items: center; gap: 16px;
-  }
+  .card-header-icon { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+  .card-header-left { display: flex; align-items: center; gap: 16px; }
   .c-icon { color: var(--text-muted); }
   .card-title { font-size: 16px; font-weight: 500; margin: 0; color: var(--text-main); }
   .card-subtitle { font-size: 13px; color: var(--text-light); font-weight: 400; margin-top: 4px; }
@@ -127,10 +105,7 @@
 
   /* Lists (Rankings) */
   .ranking-list { list-style: none; padding: 0; margin: 0; }
-  .ranking-item {
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 16px 0; border-bottom: 1px solid var(--border);
-  }
+  .ranking-item { display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid var(--border); }
   .ranking-item:last-child { border-bottom: none; padding-bottom: 0; }
   .r-info { display: flex; flex-direction: column; gap: 4px; }
   .r-name { font-weight: 500; font-size: 14px; color: var(--text-main); }
@@ -144,13 +119,15 @@
   td { padding: 20px 0; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); font-weight: 400; }
   
   /* Dots minimalistas */
-  .status-dot {
-    display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted);
-  }
+  .status-dot { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
   .dot { width: 6px; height: 6px; border-radius: 50%; }
   .dot-green { background: #10B981; }
   .dot-red { background: #EF4444; }
   .dot-gray { background: #94A3B8; }
+
+  /* Spinners */
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .spinner { animation: spin 1s linear infinite; }
 </style>
 </head>
 <body>
@@ -179,49 +156,55 @@
         <span>Cargando fecha...</span>
       </p>
     </div>
-    <button class="btn-outline" onclick="descargarReporte()">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-      Descargar Reporte Mensual
-    </button>
+    <div class="header-buttons">
+      <button class="btn-outline" id="btnActualizar" onclick="cargarDatosEnVivo()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+        Actualizar Datos
+      </button>
+      <button class="btn-outline" onclick="descargarReporte()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Descargar Reporte Completo
+      </button>
+    </div>
   </div>
 
   <div class="info-box">
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
     <div>
-      <strong>Horarios configurados:</strong> Tijuana (L-D 10:00 a 18:00) · Ensenada, Obregón y Villaverde (L-V 10:00 a 18:00, Sáb. 09:00 a 17:00).<br>
-      <em>Esperando primera sincronización con la base de datos...</em>
+      <strong>Conexión en vivo activa:</strong> Se sincroniza automáticamente con la Base de Datos (Google Sheets).<br>
+      <em>Horarios: Tijuana (L-D 10:00 a 18:00) · Ensenada, Obregón y Villaverde (L-V 10:00 a 18:00, Sáb. 09:00 a 17:00).</em>
     </div>
   </div>
 
-  <!-- KPI Cards (Reiniciados) -->
+  <!-- KPI Cards -->
   <div class="kpi-grid">
     <div class="card kpi-card">
-      <div class="kpi-label">Puntualidad Global</div>
-      <div class="kpi-value">0%</div>
+      <div class="kpi-label">Puntualidad Global Hoy</div>
+      <div class="kpi-value" id="kpiPuntualidad">--%</div>
       <div class="kpi-trend">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"></line></svg>
-        Esperando registros de hoy
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
+        <span id="kpiPuntSub">Analizando datos...</span>
       </div>
     </div>
     <div class="card kpi-card">
-      <div class="kpi-label">Mejor Clínica</div>
-      <div class="kpi-value" style="font-size: 28px; line-height: 42px;">---</div>
+      <div class="kpi-label">Mejor Clínica Hoy</div>
+      <div class="kpi-value" id="kpiMejorClinica" style="font-size: 26px; line-height: 42px;">---</div>
       <div class="kpi-trend">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
-        Sin datos suficientes
+        Mayor porcentaje a tiempo
       </div>
     </div>
     <div class="card kpi-card">
-      <div class="kpi-label">Total Retardos</div>
-      <div class="kpi-value">0</div>
+      <div class="kpi-label">Retardos Detectados</div>
+      <div class="kpi-value" id="kpiRetardos">0</div>
       <div class="kpi-trend">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-        Todos a tiempo (por ahora)
+        Revisar listado inferior
       </div>
     </div>
   </div>
 
-  <!-- Rankings Grid (Reiniciados) -->
+  <!-- Rankings Grid -->
   <div class="dashboard-grid">
     <div class="card">
       <div class="card-header-icon">
@@ -230,14 +213,14 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
           </div>
           <div>
-            <h3 class="card-title">Entradas tempranas</h3>
-            <div class="card-subtitle">Mejores registros del día</div>
+            <h3 class="card-title">Top: Entradas más tempranas</h3>
+            <div class="card-subtitle">Registros del día de hoy</div>
           </div>
         </div>
       </div>
       <ul class="ranking-list" id="listaTemprano">
         <li class="ranking-item">
-          <span class="r-name" style="color: var(--text-light); font-weight:400;">Aún no hay registros el día de hoy.</span>
+          <span class="r-name" style="color: var(--text-light); font-weight:400;">Cargando...</span>
         </li>
       </ul>
     </div>
@@ -249,20 +232,20 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
           </div>
           <div>
-            <h3 class="card-title">Retardos</h3>
-            <div class="card-subtitle">Requieren atención</div>
+            <h3 class="card-title">Alertas: Retardos</h3>
+            <div class="card-subtitle">Registros del día de hoy</div>
           </div>
         </div>
       </div>
       <ul class="ranking-list" id="listaTarde">
         <li class="ranking-item">
-          <span class="r-name" style="color: var(--text-light); font-weight:400;">No se han detectado retardos.</span>
+          <span class="r-name" style="color: var(--text-light); font-weight:400;">Cargando...</span>
         </li>
       </ul>
     </div>
   </div>
 
-  <!-- Full Table (Reiniciada y Lista) -->
+  <!-- Full Table -->
   <div class="card" style="padding-top: 40px;">
     <div class="card-header-icon" style="margin-bottom: 24px;">
       <div class="card-header-left">
@@ -270,8 +253,8 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
         </div>
         <div>
-          <h3 class="card-title">Registro General Diario</h3>
-          <div class="card-subtitle">Bitácora completa de movimientos</div>
+          <h3 class="card-title">Bitácora General de Hoy</h3>
+          <div class="card-subtitle">Movimientos en tiempo real</div>
         </div>
       </div>
     </div>
@@ -288,10 +271,9 @@
           </tr>
         </thead>
         <tbody id="tablaRegistros">
-          <!-- Fila vacía de estado inicial -->
           <tr>
             <td colspan="5" style="text-align: center; color: var(--text-light); padding: 40px 0;">
-              Esperando que los empleados comiencen a registrar su asistencia...
+              Conectando a la base de datos...
             </td>
           </tr>
         </tbody>
@@ -302,15 +284,206 @@
 </div>
 
 <script>
-  // Mostrar la fecha de hoy
+  // Setup Fecha UI
   const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
   let fechaStr = new Date().toLocaleDateString('es-MX', opciones);
   fechaStr = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
   document.querySelector('#fechaHoy span').textContent = fechaStr;
 
-  function descargarReporte() {
-    alert("Para descargar el reporte mensual real, necesitamos conectar la Base de Datos primero. Se generará un PDF/Excel con la puntualidad de cada clínica y persona.");
+  // Fecha para comparar con la base de datos (DD/MM/YYYY)
+  const hoyStr = new Date().toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
+  const numDia = new Date().getDay(); // 0 = Dom, 6 = Sab
+
+  // API URL de la hoja de cálculo
+  const API_URL = "https://script.google.com/macros/s/AKfycbw-Yw0IHg7MCInYfncbsnHfXmTsE8tWFVVONc_gjmpmuz6OM7o9meYbbFSliAoZo9FRmA/exec";
+  let globalData = []; // Para el archivo CSV
+
+  async function cargarDatosEnVivo() {
+    const btnAct = document.getElementById('btnActualizar');
+    const originalBtn = btnAct.innerHTML;
+    btnAct.disabled = true;
+    btnAct.innerHTML = `<svg class="spinner" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Actualizando...`;
+
+    try {
+      const response = await fetch(`${API_URL}?action=leer`);
+      const data = await response.json();
+      globalData = data; // Guardar todo para reporte
+      procesarDatosHoy(data);
+    } catch (error) {
+      console.error("Error cargando base de datos:", error);
+      document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--red); padding: 40px 0;">Error de conexión. Intenta de nuevo.</td></tr>`;
+    } finally {
+      btnAct.disabled = false;
+      btnAct.innerHTML = originalBtn;
+    }
   }
+
+  function procesarDatosHoy(data) {
+    if(!data || data.length === 0) {
+      mostrarVacio();
+      return;
+    }
+
+    // Filtrar solo los de HOY para las estadísticas
+    const registrosHoy = data.filter(d => d.fecha === hoyStr);
+    
+    if(registrosHoy.length === 0) {
+      mostrarVacio();
+      return;
+    }
+
+    let entradas = 0;
+    let retardos = 0;
+    let tempranoList = [];
+    let tardeList = [];
+    let htmlTabla = '';
+
+    const clinicasStats = {
+      "Tijuana": { total: 0, aTiempo: 0 },
+      "Ensenada": { total: 0, aTiempo: 0 },
+      "Mexicali - Obregón": { total: 0, aTiempo: 0 },
+      "Mexicali - Villa Verde": { total: 0, aTiempo: 0 }
+    };
+
+    // Procesar de atrás para adelante (más recientes primero en tabla)
+    registrosHoy.reverse().forEach(reg => {
+      let isLate = false;
+      let statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Salida registrada</div>`;
+
+      if (reg.tipo === "Entrada") {
+        entradas++;
+        let expectedHour = 10;
+        
+        // Regla: Sábado en otras sucursales que no son Tijuana es a las 9am. Domingos cerrados (lo marcamos tarde si checan o ignoramos).
+        if (reg.sucursal !== "Tijuana" && numDia === 6) {
+          expectedHour = 9;
+        }
+
+        // Dividir hora "10:15"
+        let parts = reg.hora.split(':');
+        if (parts.length >= 2) {
+          let h = parseInt(parts[0], 10);
+          let m = parseInt(parts[1], 10);
+          
+          // Margen de gracia: 5 minutos
+          if (h > expectedHour || (h === expectedHour && m > 5)) {
+            isLate = true;
+          }
+        }
+
+        if (isLate) {
+          retardos++;
+          tardeList.push(reg);
+          statusHtml = `<div class="status-dot"><span class="dot dot-red"></span> Retardo</div>`;
+        } else {
+          tempranoList.push(reg);
+          statusHtml = `<div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>`;
+          if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].aTiempo++;
+        }
+        if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].total++;
+      }
+
+      htmlTabla += `
+        <tr>
+          <td style="font-weight: 500;">${reg.nombre}</td>
+          <td style="color: var(--text-muted);">${reg.sucursal}</td>
+          <td>${reg.tipo}</td>
+          <td>${reg.hora}</td>
+          <td>${statusHtml}</td>
+        </tr>
+      `;
+    });
+
+    document.getElementById('tablaRegistros').innerHTML = htmlTabla;
+
+    // Actualizar KPIs
+    if (entradas > 0) {
+      let porcentaje = Math.round(((entradas - retardos) / entradas) * 100);
+      document.getElementById('kpiPuntualidad').textContent = `${porcentaje}%`;
+      document.getElementById('kpiPuntSub').textContent = `${entradas} entradas procesadas`;
+    }
+    
+    document.getElementById('kpiRetardos').textContent = retardos;
+
+    // Calcular Mejor Clínica
+    let mejorClinica = "---";
+    let mejorPorcentaje = -1;
+    for (const [clinica, stats] of Object.entries(clinicasStats)) {
+      if (stats.total > 0) {
+        let p = stats.aTiempo / stats.total;
+        if (p > mejorPorcentaje) {
+          mejorPorcentaje = p;
+          mejorClinica = clinica;
+        }
+      }
+    }
+    document.getElementById('kpiMejorClinica').textContent = mejorClinica;
+
+    // Actualizar Rankings
+    // Ordenar temprano (los que llegaron más temprano primero, hora menor)
+    tempranoList.sort((a,b) => a.hora.localeCompare(b.hora));
+    if(tempranoList.length > 0) {
+      document.getElementById('listaTemprano').innerHTML = tempranoList.slice(0,4).map(r => `
+      <li class="ranking-item">
+        <div class="r-info"><span class="r-name">${r.nombre}</span><span class="r-branch">${r.sucursal}</span></div>
+        <span class="r-time">${r.hora}</span>
+      </li>`).join('');
+    }
+
+    // Ordenar tarde (los que llegaron más tarde primero, hora mayor)
+    tardeList.sort((a,b) => b.hora.localeCompare(a.hora));
+    if(tardeList.length > 0) {
+      document.getElementById('listaTarde').innerHTML = tardeList.slice(0,4).map(r => `
+      <li class="ranking-item">
+        <div class="r-info"><span class="r-name">${r.nombre}</span><span class="r-branch">${r.sucursal}</span></div>
+        <span class="r-time">${r.hora}</span>
+      </li>`).join('');
+    } else {
+      document.getElementById('listaTarde').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">No hay retardos el día de hoy.</span></li>`;
+    }
+  }
+
+  function mostrarVacio() {
+    document.getElementById('tablaRegistros').innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-light); padding: 40px 0;">Aún no hay registros el día de hoy.</td></tr>`;
+    document.getElementById('kpiPuntualidad').textContent = "0%";
+    document.getElementById('kpiPuntSub').textContent = "Esperando registros";
+    document.getElementById('kpiRetardos').textContent = "0";
+    document.getElementById('kpiMejorClinica').textContent = "---";
+    document.getElementById('listaTemprano').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">Aún no hay entradas tempranas.</span></li>`;
+    document.getElementById('listaTarde').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">No se han detectado retardos.</span></li>`;
+  }
+
+  // Lógica de descarga de CSV completo
+  function descargarReporte() {
+    if (!globalData || globalData.length === 0) {
+      alert("No hay registros en la base de datos para exportar.");
+      return;
+    }
+
+    let csvContent = "Fecha,Hora,Nombre,Sucursal,Tipo Movimiento\n";
+    
+    globalData.forEach(row => {
+      // Escapar comas en los textos
+      let nombre = `"${row.nombre || ''}"`;
+      let sucursal = `"${row.sucursal || ''}"`;
+      csvContent += `${row.fecha},${row.hora},${nombre},${sucursal},${row.tipo}\n`;
+    });
+
+    const blob = new Blob([new Uint8Array([0xEF, 0xBB, 0xBF]), csvContent], { type: "text/csv;charset=utf-8;" }); 
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Reporte_General_Asistencia_${hoyStr.replace(/\//g, '-')}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  }
+
+  // Ejecutar al inicio
+  cargarDatosEnVivo();
+
 </script>
 
 </body>

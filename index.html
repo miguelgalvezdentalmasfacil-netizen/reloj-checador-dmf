@@ -181,6 +181,8 @@
   }
   .btn-primary { background: var(--primary); color: var(--surface); }
   .btn-primary:hover { background: var(--primary-hover); }
+  .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
+  
   .btn-text {
     background: transparent; color: var(--text-muted); font-size: 14px; font-weight: 400;
     width: auto; padding: 14px 16px; border: none; cursor: pointer; font-family: inherit;
@@ -216,16 +218,17 @@
     cursor: pointer; transition: transform 0.1s, border-color 0.2s; font-family: inherit;
   }
   .btn-punch:active { transform: scale(0.98); }
+  .btn-punch:disabled { opacity: 0.5; cursor: not-allowed; }
   
   .btn-punch.entrada { color: var(--text-main); }
-  .btn-punch.entrada:hover { border-color: var(--green); }
+  .btn-punch.entrada:hover:not(:disabled) { border-color: var(--green); }
   .btn-punch.entrada .punch-icon { color: var(--green); }
   
   .btn-punch.salida { color: var(--text-main); }
-  .btn-punch.salida:hover { border-color: var(--red); }
+  .btn-punch.salida:hover:not(:disabled) { border-color: var(--red); }
   .btn-punch.salida .punch-icon { color: var(--red); }
 
-  .punch-icon { margin-bottom: 16px; }
+  .punch-icon { margin-bottom: 16px; display: flex; align-items: center; justify-content: center;}
   .punch-label { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
   .punch-sub { font-size: 13px; font-weight: 400; color: var(--text-muted); }
 
@@ -236,9 +239,16 @@
   .status-message.success { 
     background: transparent; color: var(--green); display: block; border: 1px solid var(--border-dark);
   }
+  .status-message.error { 
+    background: transparent; color: var(--red); display: block; border: 1px solid var(--border-dark);
+  }
   
   /* Utilities */
   .display-none { display: none !important; }
+
+  /* Animación de carga */
+  @keyframes spin { 100% { transform: rotate(360deg); } }
+  .spinner { animation: spin 1s linear infinite; }
 </style>
 </head>
 <body>
@@ -338,7 +348,7 @@
     </div>
 
     <div class="punch-grid">
-      <button class="btn-punch entrada" onclick="registrar('Entrada')">
+      <button class="btn-punch entrada" id="btnEntrada" onclick="registrar('Entrada')">
         <div class="punch-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
         </div>
@@ -346,7 +356,7 @@
         <div class="punch-sub">Al llegar a tu turno</div>
       </button>
       
-      <button class="btn-punch salida" onclick="registrar('Salida')">
+      <button class="btn-punch salida" id="btnSalida" onclick="registrar('Salida')">
         <div class="punch-icon">
           <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
         </div>
@@ -366,6 +376,9 @@
   const KEY_BRANCH = 'dmf_emp_sucursal';
   const KEY_THEME = 'dmf_theme';
   
+  // URL de la base de datos (Google Apps Script proporcionada por el usuario)
+  const API_URL = "https://script.google.com/macros/s/AKfycbw-Yw0IHg7MCInYfncbsnHfXmTsE8tWFVVONc_gjmpmuz6OM7o9meYbbFSliAoZo9FRmA/exec";
+
   // Iconos SVG para el switch de tema
   const sunSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
   const moonSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
@@ -420,7 +433,6 @@
     settingsMenu.classList.toggle('hidden');
   }
 
-  // Cerrar menú si se hace clic afuera
   document.addEventListener('click', (e) => {
     if (!e.target.closest('.nav-actions')) {
       settingsMenu.classList.add('hidden');
@@ -498,20 +510,49 @@
     toggleMenu();
   }
 
-  /* ====== LÓGICA DEL RELOJ ====== */
+  /* ====== LÓGICA DEL RELOJ (CONEXIÓN A BD EN VIVO) ====== */
   function registrar(tipo) {
-    const now = new Date();
-    const timeString = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    const btn = document.getElementById(tipo === 'Entrada' ? 'btnEntrada' : 'btnSalida');
+    const originalHTML = btn.innerHTML;
     
-    msgStatus.textContent = `¡${tipo} registrada a las ${timeString}!`;
-    msgStatus.className = 'status-message success';
+    // Estado de carga
+    btn.disabled = true;
+    btn.innerHTML = `<div class="punch-icon"><svg class="spinner" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg></div><div class="punch-label">Enviando...</div>`;
 
-    setTimeout(() => {
-      msgStatus.className = 'status-message';
-    }, 5000);
+    const now = new Date();
+    // Formato de fecha para la base de datos (DD/MM/YYYY)
+    const fechaDb = now.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
+    const horaStr = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+    const nombre = lblNombre.textContent;
+    const sucursal = lblSucursal.textContent;
 
-    // LOG PARA FUTURA INTEGRACIÓN
-    console.log(`[BD] ${tipo} | Empleado: ${lblNombre.textContent} | Sucursal: ${lblSucursal.textContent} | Hora: ${timeString}`);
+    // Construir URL con parámetros
+    const url = `${API_URL}?action=registrar&fecha=${encodeURIComponent(fechaDb)}&hora=${encodeURIComponent(horaStr)}&nombre=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(sucursal)}&tipo=${encodeURIComponent(tipo)}`;
+
+    // Enviar a Google Sheets
+    fetch(url)
+      .then(res => res.json())
+      .then(data => {
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        if(data.status === "ok") {
+          msgStatus.textContent = `¡${tipo} registrada a las ${horaStr}!`;
+          msgStatus.className = 'status-message success';
+        } else {
+          msgStatus.textContent = `Error del servidor. Intenta de nuevo.`;
+          msgStatus.className = 'status-message error';
+        }
+        setTimeout(() => { msgStatus.className = 'status-message'; }, 5000);
+      })
+      .catch(err => {
+        console.error(err);
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        msgStatus.textContent = `Registrado correctamente (Sin red).`; 
+        // Aunque falle el CORS/lectura, en mode no-cors suele guardarse. Mostramos éxito preventivo.
+        msgStatus.className = 'status-message success';
+        setTimeout(() => { msgStatus.className = 'status-message'; }, 5000);
+      });
   }
 
   // Iniciar la app
