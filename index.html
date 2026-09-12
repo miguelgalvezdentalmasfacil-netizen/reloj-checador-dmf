@@ -277,8 +277,7 @@
       <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
     </div>
     <h2 id="modalTitle" class="modal-title">¡Registro Exitoso!</h2>
-    <p id="modalMessage" class="modal-message"></p>
-    <button onclick="closeModal()" class="modal-btn">Aceptar</button>
+    <p id="modalMessage" class="modal-message" style="margin-bottom: 0;"></p>
   </div>
 </div>
 
@@ -361,6 +360,11 @@
     
     overlay.style.display = 'flex';
     setTimeout(() => overlay.classList.add('show'), 10);
+
+    // Auto-cerrar después de 3.5 segundos
+    setTimeout(() => {
+      closeModal();
+    }, 3500);
   }
 
   function closeModal() {
