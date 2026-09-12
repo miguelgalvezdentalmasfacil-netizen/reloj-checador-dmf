@@ -394,11 +394,29 @@
     }
 
     try {
+      const now = new Date();
+      
+      // Formatear Fecha a DD/MM/YYYY
+      const d = String(now.getDate()).padStart(2, '0');
+      const m = String(now.getMonth() + 1).padStart(2, '0');
+      const y = now.getFullYear();
+      const fechaStr = `${d}/${m}/${y}`;
+
+      // Formatear Hora a HH:MM a.m./p.m.
+      let hours = now.getHours();
+      let mins = String(now.getMinutes()).padStart(2, '0');
+      const ampm = hours >= 12 ? 'p.m.' : 'a.m.';
+      hours = hours % 12;
+      hours = hours ? hours : 12; 
+      const horaStr = `${String(hours).padStart(2, '0')}:${mins} ${ampm}`;
+
       const qs = new URLSearchParams({
         action: 'registrar',
         nombre: nombre,
         sucursal: sucursal,
-        tipo: tipo
+        tipo: tipo,
+        fecha: fechaStr,
+        hora: horaStr
       });
 
       // No-cors fetch as configured earlier to avoid CORS bounce from Google login
