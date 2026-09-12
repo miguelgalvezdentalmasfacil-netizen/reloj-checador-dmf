@@ -424,8 +424,8 @@
           expectedMinutes = 9 * 60; // 9:00 AM = 540 min
         }
 
-        // Estricto: mayor a la hora esperada es retardo (10:01 ya es tarde)
-        if (actualMinutes > expectedMinutes) {
+        // Retardo: después de los 5 minutos de tolerancia
+        if (actualMinutes > (expectedMinutes + 5)) {
           isLate = true;
         }
 
@@ -446,8 +446,8 @@
           expectedExitMinutes = 17 * 60; // 5:00 PM = 1020 min
         }
 
-        // Estricto: menor a la hora de salida es salida anticipada
-        if (actualMinutes < expectedExitMinutes) {
+        // Tolerancia de 5 minutos antes de la salida (ej. 5:55 PM)
+        if (actualMinutes < (expectedExitMinutes - 5)) {
           statusHtml = `<div class="status-dot"><span class="dot" style="background:#F59E0B;"></span> Salida anticipada</div>`;
         } else {
           statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Salida a tiempo</div>`;
@@ -555,7 +555,7 @@
        if (reg.sucursal !== 'Tijuana' && dayOfWeek === 6) expectedMinutes = 9 * 60;
 
        let actualMinutes = parseTimeMinutes(reg.hora);
-       let isLate = (actualMinutes > expectedMinutes);
+       let isLate = (actualMinutes > (expectedMinutes + 5));
 
        if(!empStats[reg.nombre]) empStats[reg.nombre] = { nombre: reg.nombre, sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
        if(!branchStats[reg.sucursal]) branchStats[reg.sucursal] = { sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
