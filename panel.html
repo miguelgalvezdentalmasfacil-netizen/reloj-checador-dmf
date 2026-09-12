@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Panel Directivo · Dental Más Fácil</title>
+<link rel="icon" type="image/png" href="https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo.png">
+<link rel="apple-touch-icon" href="https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Panel DMF">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -51,11 +57,10 @@
   /* Navbar Minimalista */
   .navbar {
     background: var(--surface);
-    height: 80px; 
+    padding: calc(env(safe-area-inset-top) + 20px) 40px 20px 40px; 
     display: flex; align-items: center; justify-content: space-between;
-    padding: 0 40px; 
-    border-bottom: 1px solid var(--border);
-    position: sticky; top: 0; z-index: 10;
+    border-bottom: 1px solid var(--border-dark);
+    position: sticky; top: 0; z-index: 100;
     transition: background-color 0.3s, border-color 0.3s;
   }
   .brand { display: flex; align-items: center; gap: 20px; }
@@ -95,14 +100,14 @@
   .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 40px; }
   
   @media (max-width: 768px) {
-    .navbar { padding: 0 20px; height: 70px; }
+    .navbar { padding: calc(env(safe-area-inset-top) + 16px) 20px 16px 20px; }
     .brand-img { height: 36px; }
     .badge-admin { display: none; } /* Ocultar texto para hacer espacio */
     .nav-user { font-size: 0; gap: 8px; } /* Ocultar nombre, dejar solo icono */
     .nav-user-icon { width: 32px; height: 32px; }
     .btn-theme-toggle { width: 32px; height: 32px; }
     
-    .container { margin: 20px auto; padding: 0 16px; }
+    .container { margin: 20px auto; padding: 0 16px calc(env(safe-area-inset-bottom) + 24px) 16px; }
     .header-section { flex-direction: column; align-items: flex-start; gap: 16px; margin-bottom: 24px; }
     .header-section h1 { font-size: 20px; }
     
