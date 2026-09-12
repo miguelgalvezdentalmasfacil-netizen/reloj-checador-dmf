@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  /* Variables Minimalistas */
+  /* Paleta de colores ultra minimalista */
   :root {
     --bg-color: #F8FAFC;
     --surface: #FFFFFF;
@@ -17,15 +17,12 @@
     --text-light: #94A3B8;
     --border: #F1F5F9;
     --border-dark: #E2E8F0;
-    --primary: #0F172A; 
+    --primary: #0F172A;
     --primary-hover: #1E293B;
-    --teal: #0D9488;
-    --green: #10B981;
-    --red: #EF4444;
-    --radius-lg: 24px;
-    --radius-md: 12px; 
-    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.02);
     --hover-bg: #F8FAFC;
+    --radius-lg: 24px;
+    --radius-md: 12px;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.02);
   }
 
   /* Tema Oscuro Minimalista */
@@ -40,8 +37,8 @@
     --primary: #F8FAFC;
     --primary-hover: #E2E8F0;
     --hover-bg: #1E293B;
+    --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.2);
   }
-  body.dark-theme .btn-primary { color: #0F172A; }
 
   * { box-sizing: border-box; }
   body {
@@ -50,24 +47,19 @@
     color: var(--text-main);
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
-    min-height: 100vh;
     transition: background-color 0.3s, color 0.3s;
   }
   
   svg { display: block; }
-  
-  /* Navbar */
+
+  /* Navbar Minimalista */
   .navbar {
     background: var(--surface);
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 40px;
-    border-bottom: 1px solid var(--border-dark);
-    position: sticky;
-    top: 0;
-    z-index: 10;
+    height: 80px; 
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 40px; 
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
     transition: background-color 0.3s, border-color 0.3s;
   }
   
@@ -76,134 +68,44 @@
 
   /* Menú de Opciones (Nav Actions) */
   .nav-actions { 
-    position: relative; 
-    margin-left: auto;
-    display: flex;
-    align-items: center;
-    gap: 16px;
+    display: flex; align-items: center; gap: 16px;
   }
-
-  /* Date Pill Minimalista */
   .date-pill {
     display: flex; align-items: center; gap: 8px;
-    padding: 8px 16px; border: 1px solid var(--border-dark);
-    border-radius: 24px; background: transparent;
-    font-size: 13px; color: var(--text-main); font-weight: 500;
+    background: var(--bg-color); border: 1px solid var(--border-dark);
+    padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+    color: var(--text-muted); transition: background-color 0.3s, border-color 0.3s;
   }
-  .dot-orange { width: 6px; height: 6px; background-color: #F59E0B; border-radius: 50%; }
-  .date-text .fw-normal { font-weight: 400; color: var(--text-muted); }
-
-  /* Custom Gear Button */
   .btn-settings-outline {
-    background: transparent; border: 1px solid var(--border-dark);
-    color: var(--text-muted); width: 40px; height: 40px; border-radius: 12px;
-    display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
+    background: transparent; border: 1px solid var(--border-dark); border-radius: 50%;
+    width: 40px; height: 40px; display: flex; align-items: center; justify-content: center;
+    color: var(--text-muted); cursor: pointer; transition: all 0.2s;
   }
-  .btn-settings-outline:hover {
-    border-color: var(--text-main); color: var(--text-main);
-  }
-  
-  /* Dropdown Menú Limpio */
-  .dropdown-menu {
-    position: absolute; right: 0; top: 56px; background: var(--surface);
-    border: 1px solid var(--border-dark); border-radius: var(--radius-md);
-    box-shadow: var(--shadow-soft); min-width: 200px; z-index: 100;
-    overflow: hidden; padding: 8px 0;
-    transform-origin: top right; transition: opacity 0.2s, transform 0.2s;
-  }
-  .dropdown-menu.hidden { opacity: 0; transform: scale(0.95); pointer-events: none; }
-  
-  .dropdown-header {
-    padding: 8px 16px; font-size: 11px; font-weight: 500; color: var(--text-light); 
-    text-transform: uppercase; letter-spacing: 1px;
-  }
-  .dropdown-item {
-    display: flex; align-items: center; gap: 12px; width: 100%; padding: 10px 16px; border: none;
-    background: transparent; color: var(--text-main); font-size: 13px; font-weight: 500; 
-    cursor: pointer; text-align: left; font-family: inherit; transition: background 0.1s;
-  }
-  .dropdown-item:hover { background: var(--hover-bg); }
-  .dropdown-item span { display: flex; color: var(--text-muted); }
-  .dropdown-divider { height: 1px; background: var(--border-dark); margin: 8px 0; }
-  .text-red { color: var(--red); }
-  .text-red span { color: var(--red); }
+  .btn-settings-outline:hover { color: var(--text-main); border-color: var(--text-main); }
 
-  /* Layout */
-  .container { max-width: 560px; margin: 60px auto; padding: 0 20px; }
-
-  /* Cards Ultra Limpias */
+  /* Layout principal */
+  .container { max-width: 600px; margin: 60px auto; padding: 0 20px; }
+  
   .card {
-    background: var(--surface);
-    border: 1px solid var(--border-dark);
-    border-radius: var(--radius-lg);
-    padding: 40px;
-    box-shadow: var(--shadow-soft);
-    margin-bottom: 24px;
-    transition: background-color 0.3s, border-color 0.3s;
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius-lg); padding: 48px;
+    box-shadow: var(--shadow-soft); transition: background-color 0.3s, border-color 0.3s;
   }
 
-  .card-header {
-    display: flex; flex-direction: column; align-items: center; text-align: center; margin-bottom: 32px;
-  }
-  .card-icon {
-    color: var(--text-muted); margin-bottom: 16px;
-  }
-  .card-title-group h2 {
-    margin: 0; font-size: 20px; font-weight: 500; color: var(--text-main); letter-spacing: -0.5px;
-  }
-  .card-title-group p {
-    margin: 8px 0 0; font-size: 14px; font-weight: 400; color: var(--text-muted);
-  }
-
-  /* Forms Minimalistas */
-  .form-group { margin-bottom: 24px; text-align: left; }
-  .form-group label {
-    display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px;
-  }
-  .form-control {
-    width: 100%; padding: 14px 16px; border-radius: var(--radius-md);
-    border: 1px solid var(--border-dark); background: transparent;
-    font-size: 14px; font-weight: 400; color: var(--text-main); font-family: inherit; transition: all 0.2s;
-  }
-  .form-control:focus { outline: none; border-color: var(--text-main); }
-  
-  select.form-control {
-    appearance: none;
-    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748B' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-    background-repeat: no-repeat; background-position: right 14px center; background-size: 16px;
-  }
-
-  /* Buttons Minimalistas */
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center;
-    padding: 14px 24px; border-radius: var(--radius-md); font-weight: 500; font-size: 14px;
-    cursor: pointer; transition: all 0.2s; border: none; font-family: inherit; width: 100%;
-  }
-  .btn-primary { background: var(--primary); color: var(--surface); }
-  .btn-primary:hover { background: var(--primary-hover); }
-  .btn-primary:disabled { opacity: 0.7; cursor: not-allowed; }
-  
-  .btn-text {
-    background: transparent; color: var(--text-muted); font-size: 14px; font-weight: 400;
-    width: auto; padding: 14px 16px; border: none; cursor: pointer; font-family: inherit;
-  }
-  .btn-text:hover { color: var(--text-main); }
-
-  /* Punch View Minimalista */
+  /* Textos y Etiquetas */
   .user-badge {
-    display: flex; flex-direction: column; align-items: center; text-align: center;
-    padding-bottom: 32px; border-bottom: 1px solid var(--border-dark); margin-bottom: 32px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding-bottom: 24px; border-bottom: 1px solid var(--border);
+    margin-bottom: 32px;
   }
-  .user-badge-info h1 {
-    margin: 0 0 8px 0; font-size: 28px; font-weight: 300; color: var(--text-main); letter-spacing: -1px;
-  }
-  .user-badge-info .sucursal-tag {
-    font-size: 13px; font-weight: 500; color: var(--text-muted);
-  }
+  .user-badge-info h1 { margin: 0; font-size: 24px; font-weight: 500; letter-spacing: -0.5px; color: var(--text-main); }
+  .user-badge-info p { margin: 4px 0 0; font-size: 14px; color: var(--text-muted); font-weight: 400; }
 
+  /* Grid de Botones de Registro */
   .punch-grid {
     display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
   }
+  
   @media (max-width: 600px) {
     body { background-color: var(--surface); }
     .navbar { padding: 0 20px; height: 70px; border-bottom: 1px solid var(--border-dark); }
@@ -220,41 +122,73 @@
   }
 
   .btn-punch {
+    background: transparent; border: 1px solid var(--border-dark);
+    padding: 32px 24px; border-radius: var(--radius-lg);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
-    padding: 32px 16px; border-radius: var(--radius-lg); 
-    border: 1px solid var(--border-dark); background: transparent;
-    cursor: pointer; transition: transform 0.1s, border-color 0.2s; font-family: inherit;
+    cursor: pointer; transition: all 0.2s; font-family: inherit; position: relative; overflow: hidden;
   }
-  .btn-punch:active { transform: scale(0.98); }
-  .btn-punch:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn-punch:hover { border-color: var(--text-main); background: var(--hover-bg); transform: translateY(-2px); }
+  .btn-punch:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+  .btn-punch svg { margin-bottom: 16px; color: var(--text-main); }
+  .btn-punch span { font-size: 13px; color: var(--text-muted); margin-top: 6px; font-weight: 400; }
   
-  .btn-punch.entrada { color: var(--text-main); }
-  .btn-punch.entrada:hover:not(:disabled) { border-color: var(--green); }
-  .btn-punch.entrada .punch-icon { color: var(--green); }
-  
-  .btn-punch.salida { color: var(--text-main); }
-  .btn-punch.salida:hover:not(:disabled) { border-color: var(--red); }
-  .btn-punch.salida .punch-icon { color: var(--red); }
+  /* Botones específicos */
+  .btn-entrada { color: var(--text-main); font-weight: 500; font-size: 16px; }
+  .btn-entrada svg { color: #10B981; }
+  .btn-salida { color: var(--text-main); font-weight: 500; font-size: 16px; }
+  .btn-salida svg { color: #EF4444; }
 
-  .punch-icon { margin-bottom: 16px; display: flex; align-items: center; justify-content: center;}
-  .punch-label { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-  .punch-sub { font-size: 13px; font-weight: 400; color: var(--text-muted); }
-
-  .status-message {
-    margin-top: 32px; padding: 16px; border-radius: var(--radius-md);
-    text-align: center; font-weight: 500; font-size: 14px; display: none;
+  /* Formulario (Configuración) */
+  .form-group { margin-bottom: 24px; text-align: left; }
+  .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+  .form-input {
+    width: 100%; padding: 14px 16px; border: 1px solid var(--border-dark); border-radius: var(--radius-md);
+    background: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.2s;
   }
-  .status-message.success { 
-    background: transparent; color: var(--green); display: block; border: 1px solid var(--border-dark);
-  }
-  .status-message.error { 
-    background: transparent; color: var(--red); display: block; border: 1px solid var(--border-dark);
-  }
+  .form-input:focus { border-color: var(--text-main); }
   
+  .btn-guardar {
+    background: var(--primary); color: var(--bg-color); border: none; width: 100%;
+    padding: 16px; border-radius: var(--radius-md); font-size: 15px; font-weight: 500;
+    cursor: pointer; transition: background-color 0.2s; font-family: inherit;
+  }
+  body.dark-theme .btn-guardar { color: var(--surface); }
+  .btn-guardar:hover { background: var(--primary-hover); }
+
   /* Utilities */
   .display-none { display: none !important; }
 
-  /* Animación de carga */
+  /* Modal Personalizado */
+  .modal-overlay {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px);
+    display: flex; align-items: center; justify-content: center;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal-card {
+    background: var(--surface); padding: 40px 32px;
+    border-radius: var(--radius-lg); text-align: center;
+    max-width: 90%; width: 400px; box-shadow: var(--shadow-soft);
+    transform: translateY(20px); transition: transform 0.3s; border: 1px solid var(--border);
+  }
+  .modal-overlay.show .modal-card { transform: translateY(0); }
+  .modal-icon {
+    width: 64px; height: 64px; background: #ECFDF5; color: #10B981;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 24px;
+  }
+  body.dark-theme .modal-icon { background: rgba(16, 185, 129, 0.15); }
+  .modal-title { font-size: 22px; font-weight: 600; margin: 0 0 12px; color: var(--text-main); }
+  .modal-message { font-size: 16px; color: var(--text-muted); margin: 0 0 32px; line-height: 1.5; font-weight: 400; }
+  .modal-btn {
+    background: var(--text-main); color: var(--bg-color); border: none;
+    padding: 16px; border-radius: var(--radius-md); font-size: 16px;
+    font-weight: 600; width: 100%; cursor: pointer; transition: opacity 0.2s;
+  }
+  .modal-btn:hover { opacity: 0.9; }
+
+  /* Spinners */
   @keyframes spin { 100% { transform: rotate(360deg); } }
   .spinner { animation: spin 1s linear infinite; }
 </style>
@@ -262,202 +196,107 @@
 <body>
 
 <nav class="navbar">
-  <!-- Logo -->
   <div class="brand">
     <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
   </div>
-  
-  <!-- Contenedor derecho: Fecha y Engranaje HD -->
   <div class="nav-actions">
-    
-    <div class="date-pill" id="datePill">
-      <span class="dot-orange"></span>
-      <span class="date-text"><span class="fw-normal">Hoy:</span> <span id="currentDate">Cargando...</span></span>
+    <div class="date-pill">
+      <span style="width: 6px; height: 6px; background: #F59E0B; border-radius: 50%; display: block;"></span>
+      <span id="fechaHoy"></span>
     </div>
-
-    <button class="btn-settings-outline" id="btnSettings" onclick="toggleMenu()" title="Configuración">
-      <!-- Icono de engranaje en SVG fino -->
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3"></circle>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-      </svg>
+    <button class="btn-settings-outline" id="btnThemeToggle" onclick="toggleTheme()" title="Cambiar tema">
+      <!-- Icono inyectado por JS -->
     </button>
-    
-    <div id="settingsMenu" class="dropdown-menu hidden">
-      <div class="dropdown-header">Opciones</div>
-      <button class="dropdown-item" onclick="editarUsuario()">
-        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span>
-        Editar perfil
-      </button>
-      <button class="dropdown-item" id="btnTheme" onclick="toggleTheme()">
-        <!-- El JS inyecta el SVG de luna o sol aquí -->
-      </button>
-      <button class="dropdown-item" onclick="mostrarAyuda()">
-        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></span>
-        Ayuda y soporte
-      </button>
-      <div class="dropdown-divider"></div>
-      <button class="dropdown-item text-red" onclick="cerrarSesion()">
-        <span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg></span>
-        Cerrar sesión
-      </button>
-    </div>
   </div>
 </nav>
 
 <div class="container">
   
-  <!-- VISTA: SETUP/EDITAR USUARIO -->
-  <div id="view-setup" class="card display-none">
-    <div class="card-header">
-      <div class="card-icon">
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-      </div>
-      <div class="card-title-group">
-        <h2 id="setupTitle">Perfil de Empleado</h2>
-        <p id="setupDesc">Configura tu perfil para poder registrar asistencias.</p>
-      </div>
-    </div>
+  <div class="card">
     
-    <div class="form-group">
-      <label>Nombre completo</label>
-      <input type="text" id="inputNombre" class="form-control" placeholder="Escribe tu nombre y apellido" autocomplete="off">
-    </div>
-    
-    <div class="form-group">
-      <label>Sucursal</label>
-      <select id="inputSucursal" class="form-control">
-        <option value="">Selecciona una sucursal</option>
-        <option value="Tijuana">Tijuana</option>
-        <option value="Mexicali - Obregón">Mexicali - Obregón</option>
-        <option value="Mexicali - Villa Verde">Mexicali - Villa Verde</option>
-        <option value="Ensenada">Ensenada</option>
-      </select>
-    </div>
-    
-    <div style="display: flex; gap: 12px; align-items: center; margin-top: 32px;">
-      <button class="btn btn-primary" style="flex: 1;" onclick="guardarUsuario()">Guardar perfil</button>
-      <button class="btn-text display-none" id="btnCancelar" onclick="cancelarEdicion()">Cancelar</button>
-    </div>
-  </div>
-
-
-  <!-- VISTA: RELOJ CHECADOR -->
-  <div id="view-punch" class="card display-none">
-    <div class="user-badge">
-      <div class="user-badge-info">
-        <h1 id="lblNombre">Cargando...</h1>
-        <div class="sucursal-tag" id="lblSucursal">Sucursal</div>
+    <!-- Paso 1: Configuración de Perfil (Oculto si ya hay datos) -->
+    <div id="configSection">
+      <div style="text-align: center; margin-bottom: 24px;">
+        <h2 style="margin: 0 0 8px; font-size: 20px; color: var(--text-main); font-weight: 500;">Configurar Dispositivo</h2>
+        <p style="margin: 0; color: var(--text-muted); font-size: 14px;">Ingresa tus datos para comenzar</p>
       </div>
-    </div>
-
-    <div style="text-align: center; margin-bottom: 32px;">
-      <p style="color: var(--text-muted); font-size: 14px; font-weight: 400; margin: 0;">¿Qué deseas registrar en este momento?</p>
-    </div>
-
-    <div class="punch-grid">
-      <button class="btn-punch entrada" id="btnEntrada" onclick="registrar('Entrada')">
-        <div class="punch-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-        </div>
-        <div class="punch-label">Entrada</div>
-        <div class="punch-sub">Al llegar a tu turno</div>
-      </button>
       
-      <button class="btn-punch salida" id="btnSalida" onclick="registrar('Salida')">
-        <div class="punch-icon">
-          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-        </div>
-        <div class="punch-label">Salida</div>
-        <div class="punch-sub">Al terminar tu turno</div>
+      <div class="form-group">
+        <label class="form-label" for="nombre">Nombre Completo</label>
+        <input type="text" id="nombre" class="form-input" placeholder="Ej. Juan Pérez" autocomplete="off">
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="sucursal">Selecciona tu Clínica</label>
+        <select id="sucursal" class="form-input">
+          <option value="">-- Elige una opción --</option>
+          <option value="Tijuana">Tijuana</option>
+          <option value="Ensenada">Ensenada</option>
+          <option value="Mexicali - Obregón">Mexicali - Obregón</option>
+          <option value="Mexicali - Villa Verde">Mexicali - Villa Verde</option>
+        </select>
+      </div>
+      <button class="btn-guardar" onclick="guardarConfiguracion()">Guardar y Continuar</button>
+    </div>
+
+    <!-- Paso 2: Reloj Checador (Visible si ya hay datos) -->
+    <div class="user-badge" id="userBadge" style="display: none;">
+      <div class="user-badge-info">
+        <p style="font-size: 16px; margin: 0 0 4px; color: var(--text-muted);">¡Hola,</p>
+        <h1 id="badgeNombre" style="font-size: 26px; line-height: 1.2; margin: 0;"></h1>
+        <p id="badgeSucursal" style="margin: 6px 0 0; color: var(--text-light); font-size: 14px;"></p>
+      </div>
+      <button class="btn-settings-outline" onclick="mostrarConfiguracion()" title="Cambiar Sucursal o Usuario">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
       </button>
     </div>
 
-    <div id="msgStatus" class="status-message"></div>
+    <div id="punchSection" style="display: none; margin-top: 32px;">
+      <p style="text-align: center; color: var(--text-light); margin-bottom: 24px; font-size: 14px;">¿Qué deseas registrar en este momento?</p>
+      <div class="punch-grid">
+        <button class="btn-punch btn-entrada" id="btnEntrada" onclick="registrar('Entrada')">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          Entrada
+          <span>Al llegar a tu turno</span>
+        </button>
+        
+        <button class="btn-punch btn-salida" id="btnSalida" onclick="registrar('Salida')">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          Salida
+          <span>Al terminar tu turno</span>
+        </button>
+      </div>
+    </div>
+    
   </div>
+</div>
 
+<!-- Modal de Éxito -->
+<div id="successModal" class="modal-overlay" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-icon">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    </div>
+    <h2 id="modalTitle" class="modal-title">¡Registro Exitoso!</h2>
+    <p id="modalMessage" class="modal-message"></p>
+    <button onclick="closeModal()" class="modal-btn">Aceptar</button>
+  </div>
 </div>
 
 <script>
-  // Variables globales
-  const KEY_USER = 'dmf_emp_nombre';
-  const KEY_BRANCH = 'dmf_emp_sucursal';
+  // TEMA OSCURO
   const KEY_THEME = 'dmf_theme';
-  
-  // URL de la base de datos (Google Apps Script proporcionada por el usuario)
-  const API_URL = "https://script.google.com/macros/s/AKfycbw-Yw0IHg7MCInYfncbsnHfXmTsE8tWFVVONc_gjmpmuz6OM7o9meYbbFSliAoZo9FRmA/exec";
-
-  // Iconos SVG para el switch de tema
   const sunSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
   const moonSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
 
-  // Elementos DOM
-  const viewSetup = document.getElementById('view-setup');
-  const viewPunch = document.getElementById('view-punch');
-  const inputNombre = document.getElementById('inputNombre');
-  const inputSucursal = document.getElementById('inputSucursal');
-  const lblNombre = document.getElementById('lblNombre');
-  const lblSucursal = document.getElementById('lblSucursal');
-  const msgStatus = document.getElementById('msgStatus');
-  const settingsMenu = document.getElementById('settingsMenu');
-  const btnCancelar = document.getElementById('btnCancelar');
-
-  // Inicialización principal
-  function init() {
-    aplicarTema();
-    actualizarFecha();
-
-    const savedName = localStorage.getItem(KEY_USER);
-    const savedBranch = localStorage.getItem(KEY_BRANCH);
-
-    if (savedName && savedBranch) {
-      lblNombre.textContent = savedName;
-      lblSucursal.textContent = savedBranch;
-      viewPunch.classList.remove('display-none');
-      viewSetup.classList.add('display-none');
-    } else {
-      document.getElementById('setupTitle').textContent = "Perfil de Empleado";
-      document.getElementById('setupDesc').textContent = "Configura tu perfil para poder registrar asistencias.";
-      btnCancelar.classList.add('display-none'); 
-      viewSetup.classList.remove('display-none');
-      viewPunch.classList.add('display-none');
-    }
-  }
-  
-  function actualizarFecha() {
-    const dias = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-    const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
-    const hoy = new Date();
-    
-    const nombreDia = dias[hoy.getDay()];
-    const numeroDia = hoy.getDate();
-    const nombreMes = meses[hoy.getMonth()];
-    
-    document.getElementById('currentDate').textContent = `${nombreDia}, ${numeroDia} De ${nombreMes}`;
-  }
-
-  /* ====== LÓGICA DEL MENÚ SUPERIOR ====== */
-  function toggleMenu() {
-    settingsMenu.classList.toggle('hidden');
-  }
-
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('.nav-actions')) {
-      settingsMenu.classList.add('hidden');
-    }
-  });
-
-  /* ====== TEMA OSCURO / CLARO ====== */
   function aplicarTema() {
     const isDark = localStorage.getItem(KEY_THEME) === 'dark';
-    const btnTheme = document.getElementById('btnTheme');
-    
+    const btnTheme = document.getElementById('btnThemeToggle');
     if (isDark) {
       document.body.classList.add('dark-theme');
-      btnTheme.innerHTML = `<span>${sunSvg}</span> Modo claro`;
+      btnTheme.innerHTML = sunSvg;
     } else {
       document.body.classList.remove('dark-theme');
-      btnTheme.innerHTML = `<span>${moonSvg}</span> Modo oscuro`;
+      btnTheme.innerHTML = moonSvg;
     }
   }
 
@@ -465,107 +304,131 @@
     const isDark = document.body.classList.contains('dark-theme');
     localStorage.setItem(KEY_THEME, isDark ? 'light' : 'dark');
     aplicarTema();
-    toggleMenu();
   }
 
-  /* ====== FUNCIONES DEL PERFIL ====== */
-  function guardarUsuario() {
-    const nombre = inputNombre.value.trim();
-    const sucursal = inputSucursal.value;
+  aplicarTema();
 
-    if (!nombre) { alert("Por favor, escribe tu nombre completo."); return; }
-    if (!sucursal) { alert("Por favor, selecciona una sucursal."); return; }
+  // Fecha UI
+  const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
+  let fechaFormat = new Date().toLocaleDateString('es-MX', opciones);
+  document.getElementById('fechaHoy').textContent = "Hoy: " + fechaFormat.charAt(0).toUpperCase() + fechaFormat.slice(1);
 
-    localStorage.setItem(KEY_USER, nombre);
-    localStorage.setItem(KEY_BRANCH, sucursal);
-    
-    msgStatus.className = 'status-message';
-    init();
-  }
+  const API_URL = "https://script.google.com/macros/s/AKfycbw-Yw0IHg7MCInYfncbsnHfXmTsE8tWFVVONc_gjmpmuz6OM7o9meYbbFSliAoZo9FRmA/exec";
 
-  function editarUsuario() {
-    inputNombre.value = localStorage.getItem(KEY_USER) || '';
-    inputSucursal.value = localStorage.getItem(KEY_BRANCH) || '';
-    
-    document.getElementById('setupTitle').textContent = "Editar perfil";
-    document.getElementById('setupDesc').textContent = "Actualiza tu nombre o cambia de sucursal.";
-    
-    btnCancelar.classList.remove('display-none');
-    
-    viewPunch.classList.add('display-none');
-    viewSetup.classList.remove('display-none');
-    toggleMenu();
-  }
-
-  function cancelarEdicion() {
-    init();
-  }
-
-  function cerrarSesion() {
-    if(confirm("¿Seguro que deseas cerrar sesión? Borrará tus datos de este dispositivo.")){
-      localStorage.removeItem(KEY_USER);
-      localStorage.removeItem(KEY_BRANCH);
-      inputNombre.value = '';
-      inputSucursal.value = '';
-      msgStatus.className = 'status-message';
-      init();
+  function cargarDatosGuardados() {
+    const nombre = localStorage.getItem('dmf_nombre');
+    const sucursal = localStorage.getItem('dmf_sucursal');
+    if (nombre && sucursal) {
+      document.getElementById('configSection').classList.add('display-none');
+      document.getElementById('badgeNombre').textContent = nombre;
+      document.getElementById('badgeSucursal').textContent = sucursal;
+      document.getElementById('userBadge').style.display = 'flex';
+      document.getElementById('punchSection').style.display = 'block';
+    } else {
+      mostrarConfiguracion();
     }
-    toggleMenu();
   }
 
-  function mostrarAyuda() {
-    alert("Soporte: Para cualquier problema con el reloj checador, contacta al administrador o a Recursos Humanos de Dental Más Fácil.");
-    toggleMenu();
+  function mostrarConfiguracion() {
+    document.getElementById('configSection').classList.remove('display-none');
+    document.getElementById('userBadge').style.display = 'none';
+    document.getElementById('punchSection').style.display = 'none';
+    document.getElementById('nombre').value = localStorage.getItem('dmf_nombre') || '';
+    document.getElementById('sucursal').value = localStorage.getItem('dmf_sucursal') || '';
   }
 
-  /* ====== LÓGICA DEL RELOJ (CONEXIÓN A BD EN VIVO) ====== */
-  function registrar(tipo) {
-    const btn = document.getElementById(tipo === 'Entrada' ? 'btnEntrada' : 'btnSalida');
-    const originalHTML = btn.innerHTML;
+  function guardarConfiguracion() {
+    const nombre = document.getElementById('nombre').value.trim();
+    const sucursal = document.getElementById('sucursal').value;
+    if (!nombre || !sucursal) {
+      alert("Por favor completa tu nombre y elige una clínica.");
+      return;
+    }
+    localStorage.setItem('dmf_nombre', nombre);
+    localStorage.setItem('dmf_sucursal', sucursal);
+    cargarDatosGuardados();
+  }
+
+  function showModal(isEntrada) {
+    const overlay = document.getElementById('successModal');
+    const msg = document.getElementById('modalMessage');
     
-    // Estado de carga
-    btn.disabled = true;
-    btn.innerHTML = `<div class="punch-icon"><svg class="spinner" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg></div><div class="punch-label">Enviando...</div>`;
-
-    const now = new Date();
-    // Formato de fecha para la base de datos (DD/MM/YYYY)
-    const fechaDb = now.toLocaleDateString('es-MX', {day:'2-digit', month:'2-digit', year:'numeric'});
-    const horaStr = now.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-    const nombre = lblNombre.textContent;
-    const sucursal = lblSucursal.textContent;
-
-    // Construir URL con parámetros
-    const url = `${API_URL}?action=registrar&fecha=${encodeURIComponent(fechaDb)}&hora=${encodeURIComponent(horaStr)}&nombre=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(sucursal)}&tipo=${encodeURIComponent(tipo)}`;
-
-    // Enviar a Google Sheets
-    fetch(url)
-      .then(res => res.json())
-      .then(data => {
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-        if(data.status === "ok") {
-          msgStatus.textContent = `¡${tipo} registrada a las ${horaStr}!`;
-          msgStatus.className = 'status-message success';
-        } else {
-          msgStatus.textContent = `Error del servidor. Intenta de nuevo.`;
-          msgStatus.className = 'status-message error';
-        }
-        setTimeout(() => { msgStatus.className = 'status-message'; }, 5000);
-      })
-      .catch(err => {
-        console.error(err);
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-        msgStatus.textContent = `Registrado correctamente (Sin red).`; 
-        // Aunque falle el CORS/lectura, en mode no-cors suele guardarse. Mostramos éxito preventivo.
-        msgStatus.className = 'status-message success';
-        setTimeout(() => { msgStatus.className = 'status-message'; }, 5000);
-      });
+    if (isEntrada) {
+      msg.textContent = "Que tengas muy buen turno, excelente día.";
+    } else {
+      msg.textContent = "Muchas gracias por tu trabajo, que tengas buen día.";
+    }
+    
+    overlay.style.display = 'flex';
+    setTimeout(() => overlay.classList.add('show'), 10);
   }
 
-  // Iniciar la app
-  init();
-</script>
+  function closeModal() {
+    const overlay = document.getElementById('successModal');
+    overlay.classList.remove('show');
+    setTimeout(() => overlay.style.display = 'none', 300);
+  }
 
+  async function registrar(tipo) {
+    const nombre = localStorage.getItem('dmf_nombre');
+    const sucursal = localStorage.getItem('dmf_sucursal');
+    if (!nombre || !sucursal) return;
+
+    const btnEntrada = document.getElementById('btnEntrada');
+    const btnSalida = document.getElementById('btnSalida');
+    const isEntrada = tipo === 'Entrada';
+    
+    const originalHtml = isEntrada ? btnEntrada.innerHTML : btnSalida.innerHTML;
+    const loaderHtml = `<svg class="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Registrando...`;
+
+    if(isEntrada) {
+      btnEntrada.disabled = true;
+      btnEntrada.innerHTML = loaderHtml;
+    } else {
+      btnSalida.disabled = true;
+      btnSalida.innerHTML = loaderHtml;
+    }
+
+    try {
+      const qs = new URLSearchParams({
+        action: 'registrar',
+        nombre: nombre,
+        sucursal: sucursal,
+        tipo: tipo
+      });
+
+      // No-cors fetch as configured earlier to avoid CORS bounce from Google login
+      await fetch(API_URL + '?' + qs.toString(), { mode: 'no-cors' });
+
+      // Ocultar spinners
+      if(isEntrada) {
+        btnEntrada.disabled = false;
+        btnEntrada.innerHTML = originalHtml;
+      } else {
+        btnSalida.disabled = false;
+        btnSalida.innerHTML = originalHtml;
+      }
+
+      // Mostrar mensaje custom
+      showModal(isEntrada);
+
+    } catch (error) {
+      console.error(error);
+      alert("Ocurrió un error de red. Por favor intenta de nuevo.");
+      
+      if(isEntrada) {
+        btnEntrada.disabled = false;
+        btnEntrada.innerHTML = originalHtml;
+      } else {
+        btnSalida.disabled = false;
+        btnSalida.innerHTML = originalHtml;
+      }
+    }
+  }
+
+  // Init
+  cargarDatosGuardados();
+
+</script>
 </body>
 </html>
