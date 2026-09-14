@@ -1,9 +1,9 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Panel Directivo Â· Dental MÃ¡s FÃ¡cil</title>
+<title>Panel Directivo · Dental Más Fácil</title>
 <link rel="icon" type="image/png" href="https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo.png">
 <link rel="apple-touch-icon" href="https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -13,7 +13,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-<!-- LibrerÃ­a para generar PDFs -->
+<!-- Librería para generar PDFs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
   /* Paleta ultra minimalista */
@@ -120,7 +120,7 @@
     .kpi-card { padding: 24px 20px; }
     .kpi-value { font-size: 32px; }
 
-    /* Magia para convertir la tabla en Tarjetas MÃ³viles */
+    /* Magia para convertir la tabla en Tarjetas Móviles */
     table, thead, tbody, th, td, tr { display: block; width: 100%; }
     thead tr { display: none; } /* Ocultar encabezados */
     tr { border: 1px solid var(--border-dark); border-radius: 12px; margin-bottom: 16px; padding: 16px; background: var(--surface); }
@@ -182,85 +182,13 @@
   /* Spinners */
   @keyframes spin { 100% { transform: rotate(360deg); } }
   .spinner { animation: spin 1s linear infinite; }
-  /* Sidebar Layout */
-  #app-layout { display: flex; min-height: 100vh; }
-  .sidebar { width: 250px; background: var(--surface); border-right: 1px solid var(--border-dark); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.3s ease; }
-  .sidebar-header { padding: calc(env(safe-area-inset-top) + 24px) 24px 24px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-dark); }
-  .sidebar-menu { flex: 1; padding: 24px 0; overflow-y: auto; }
-  .menu-item { padding: 12px 24px; display: flex; align-items: center; gap: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-weight: 500; text-decoration: none; border: none; background: transparent; width: 100%; text-align: left; font-size: 15px; font-family: inherit; }
-  .menu-item:hover { background: var(--hover-bg); color: var(--text-main); }
-  .menu-item.active { background: rgba(16, 185, 129, 0.1); color: #10B981; border-right: 3px solid #10B981; }
-  .sidebar-footer { padding: 24px 24px calc(env(safe-area-inset-bottom) + 24px) 24px; border-top: 1px solid var(--border-dark); }
-  .main-content { flex: 1; margin-left: 250px; display: flex; flex-direction: column; min-height: 100vh; width: calc(100% - 250px); }
-  .menu-toggle { display: none; background: transparent; border: none; color: var(--text-main); cursor: pointer; padding: 8px; margin-left: -8px; }
-  .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
-  .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
-  
-  @media (max-width: 768px) {
-    .sidebar { transform: translateX(-100%); }
-    .sidebar.open { transform: translateX(0); }
-    .main-content { margin-left: 0; width: 100%; }
-    .menu-toggle { display: block; }
-  }
-  
-  /* Modal para PDF */
-  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
-  .modal-overlay.show { opacity: 1; pointer-events: auto; }
-  .modal-card { background: var(--surface); padding: 40px 32px; border-radius: var(--radius-lg); max-width: 90%; width: 400px; box-shadow: var(--shadow-soft); transform: translateY(20px); transition: transform 0.3s; border: 1px solid var(--border); }
-  .modal-overlay.show .modal-card { transform: translateY(0); }
 </style>
 </head>
 <body>
 
-<div id="app-layout">
-  <!-- Sidebar Overlay for mobile -->
-  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
-
-  <!-- Sidebar -->
-  <aside id="sidebar" class="sidebar">
-    <div class="sidebar-header">
-      <img src="logo.png" alt="Dental MÃ¡s FÃ¡cil" style="height: 32px; border-radius: 8px;">
-      <span style="font-weight: 600; font-size: 16px;">Panel DMF</span>
-    </div>
-    <div class="sidebar-menu">
-      <button class="menu-item active" onclick="setClinicFilter('Global', this)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
-        Vista Global
-      </button>
-      <div style="padding: 16px 24px 8px; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">ClÃ­nicas</div>
-      <button class="menu-item" onclick="setClinicFilter('Tijuana', this)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Tijuana
-      </button>
-      <button class="menu-item" onclick="setClinicFilter('Ensenada', this)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Ensenada
-      </button>
-      <button class="menu-item" onclick="setClinicFilter('Mexicali - ObregÃ³n', this)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Mexicali - ObregÃ³n
-      </button>
-      <button class="menu-item" onclick="setClinicFilter('Mexicali - Villa Verde', this)">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-        Mexicali - Villa Verde
-      </button>
-    </div>
-    <div class="sidebar-footer">
-      <button class="btn-outline" style="width: 100%; border-color: var(--border-dark); color: var(--text-main);" onclick="abrirPdfModal()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Generar PDF
-      </button>
-    </div>
-  </aside>
-
-  <!-- Main Content -->
-  <main class="main-content">
 <nav class="navbar">
   <div class="brand">
-    <button class="menu-toggle" onclick="toggleMenu()">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
-    </button>
-    <img src="logo.png" alt="Dental MÃ¡s FÃ¡cil" class="brand-img" style="margin-left: 8px;">
+    <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
     <div class="brand-divider"></div>
     <span class="badge-admin">Panel Directivo</span>
   </div>
@@ -271,7 +199,7 @@
     <div class="nav-user-icon">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
     </div>
-    EstefanÃ­a Longoria
+    Estefanía Longoria
   </div>
 </nav>
 
@@ -285,12 +213,17 @@
         <span>Cargando fecha...</span>
       </p>
     </div>
-    <div class="header-buttons"></div>
+    <div class="header-buttons">
+      <button class="btn-outline" id="btnDescargar" onclick="descargarReportePDF()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Generar PDF Mensual
+      </button>
+    </div>
   </div>
 
   <div class="tabs-container">
     <button class="tab-btn active" onclick="switchTab('diario', this)">Monitoreo Diario (Hoy)</button>
-    <button class="tab-btn" onclick="switchTab('mensual', this)">MÃ©tricas del Mes</button>
+    <button class="tab-btn" onclick="switchTab('mensual', this)">Métricas del Mes</button>
   </div>
 
   <div id="view-diario" class="view-section active">
@@ -305,7 +238,7 @@
       </div>
     </div>
     <div class="card kpi-card">
-      <div class="kpi-label">Mejor ClÃ­nica Hoy</div>
+      <div class="kpi-label">Mejor Clínica Hoy</div>
       <div class="kpi-value" id="kpiMejorClinica" style="font-size: 26px; line-height: 42px;">---</div>
       <div class="kpi-trend">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
@@ -331,8 +264,8 @@
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
           </div>
           <div>
-            <h3 class="card-title">Top: Entradas mÃ¡s tempranas</h3>
-            <div class="card-subtitle">Registros del dÃ­a de hoy</div>
+            <h3 class="card-title">Top: Entradas más tempranas</h3>
+            <div class="card-subtitle">Registros del día de hoy</div>
           </div>
         </div>
       </div>
@@ -351,7 +284,7 @@
           </div>
           <div>
             <h3 class="card-title">Alertas: Retardos</h3>
-            <div class="card-subtitle">Registros del dÃ­a de hoy</div>
+            <div class="card-subtitle">Registros del día de hoy</div>
           </div>
         </div>
       </div>
@@ -371,7 +304,7 @@
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
         </div>
         <div>
-          <h3 class="card-title">BitÃ¡cora General de Hoy</h3>
+          <h3 class="card-title">Bitácora General de Hoy</h3>
           <div class="card-subtitle">Movimientos en tiempo real</div>
         </div>
       </div>
@@ -382,7 +315,7 @@
         <thead>
           <tr>
             <th>Empleado</th>
-            <th>ClÃ­nica</th>
+            <th>Clínica</th>
             <th>Movimiento</th>
             <th>Hora</th>
             <th>Estado</th>
@@ -413,7 +346,7 @@
         </div>
       </div>
       <div class="card kpi-card">
-        <div class="kpi-label">Mejor ClÃ­nica (Mes)</div>
+        <div class="kpi-label">Mejor Clínica (Mes)</div>
         <div class="kpi-value" id="kpiMejorClinicaMes" style="font-size: 26px; line-height: 42px;">---</div>
         <div class="kpi-trend">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle></svg>
@@ -439,7 +372,7 @@
               <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline><polyline points="16 7 22 7 22 13"></polyline></svg>
             </div>
             <div>
-              <h3 class="card-title">Top: Empleados MÃ¡s Puntuales</h3>
+              <h3 class="card-title">Top: Empleados Más Puntuales</h3>
               <div class="card-subtitle">En lo que va del mes</div>
             </div>
           </div>
@@ -467,44 +400,16 @@
       </div>
     </div>
 
-    <!-- Desglose ClÃ­nicas (Mes) -->
-    <h3 style="margin: 32px 0 16px; font-size: 18px; font-weight: 500; color: var(--text-main);">Desglose por ClÃ­nica (Este Mes)</h3>
+    <!-- Desglose Clínicas (Mes) -->
+    <h3 style="margin: 32px 0 16px; font-size: 18px; font-weight: 500; color: var(--text-main);">Desglose por Clínica (Este Mes)</h3>
     <div class="dashboard-grid" id="gridClinicasMes">
-      <!-- Llenado dinÃ¡micamente -->
+      <!-- Llenado dinámicamente -->
     </div>
   </div> <!-- Fin de view-mensual -->
+
 </div> <!-- FIN CONTAINER GENERAL -->
-      </div> <!-- Fin container -->
-  </main>
-</div> <!-- Fin app-layout -->
 
-<!-- PDF Download Modal -->
-<div id="pdfModal" class="modal-overlay">
-  <div class="modal-card">
-    <h2 style="margin-top: 0; margin-bottom: 8px; font-size: 20px; color: var(--text-main);">Descargar PDF Mensual</h2>
-    <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">Â¿QuÃ© informaciÃ³n deseas incluir en el reporte?</p>
-    
-    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Global')">
-       <span style="display:inline-block; width: 24px;">ðŸŒ</span> Reporte Global (Todas las clÃ­nicas)
-    </button>
-    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Tijuana')">
-       <span style="display:inline-block; width: 24px;">ðŸ“</span> Tijuana
-    </button>
-    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Ensenada')">
-       <span style="display:inline-block; width: 24px;">ðŸ“</span> Ensenada
-    </button>
-    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Mexicali - ObregÃ³n')">
-       <span style="display:inline-block; width: 24px;">ðŸ“</span> Mexicali - ObregÃ³n
-    </button>
-    <button class="btn-outline" style="width: 100%; margin-bottom: 24px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Mexicali - Villa Verde')">
-       <span style="display:inline-block; width: 24px;">ðŸ“</span> Mexicali - Villa Verde
-    </button>
-    
-    <button class="btn-outline" style="width: 100%; justify-content: center; color: var(--text-muted); border-color: transparent;" onclick="cerrarPdfModal()">Cancelar</button>
-  </div>
-</div>
-
-<!-- CONTENEDOR OCULTO PARA EL REPORTE PDF (Sus colores son fijos para la impresiÃ³n) -->
+<!-- CONTENEDOR OCULTO PARA EL REPORTE PDF (Sus colores son fijos para la impresión) -->
 <div id="pdfWrapper" style="position: absolute; left: -9999px; top: 0;">
   <div id="reporteMensual" style="width: 740px; box-sizing: border-box; padding: 40px; font-family: 'Inter', sans-serif; color: #0F172A; background: #FFF;">
     <!-- Encabezado del PDF -->
@@ -512,7 +417,7 @@
       <!-- Se usa el logo directamente -->
       <img src="logo.png" style="height: 50px; margin-right: 20px; border-radius: 12px;">
       <div>
-        <h1 id="repTitulo" style="margin: 0; font-size: 22px; color: #0F172A; font-weight: 600;">Reporte de Asistencia y Puntualidad</h1>
+        <h1 style="margin: 0; font-size: 22px; color: #0F172A; font-weight: 600;">Reporte de Asistencia y Puntualidad</h1>
         <p style="margin: 4px 0 0; color: #64748B; font-size: 13px;" id="repFechaG"></p>
       </div>
     </div>
@@ -525,99 +430,40 @@
         <div style="font-size: 24px; font-weight: 600; color: #0F172A;" id="repPuntualidad">0%</div>
       </div>
       <div style="flex: 1; background: #F8FAFC; padding: 15px; border-radius: 8px; border: 1px solid #E2E8F0; box-sizing: border-box;">
-        <div style="font-size: 11px; color: #64748B; text-transform: uppercase;">Mejor ClÃ­nica</div>
+        <div style="font-size: 11px; color: #64748B; text-transform: uppercase;">Mejor Clínica</div>
         <div style="font-size: 24px; font-weight: 600; color: #0D9488;" id="repMejorClinica">---</div>
       </div>
     </div>
 
-    <!-- RÃ©cords Globales -->
-    <h2 style="font-size: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; margin-bottom: 20px; color: #0F172A;">Top RÃ©cords Globales</h2>
+    <!-- Récords Globales -->
+    <h2 style="font-size: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; margin-bottom: 20px; color: #0F172A;">Top Récords Globales</h2>
     <table style="width: 100%; text-align: left; margin-bottom: 30px; border-collapse: collapse; font-size: 14px; table-layout: fixed;">
       <tr>
         <td style="padding: 12px; background: #ECFDF5; border: 1px solid #A7F3D0; border-radius: 8px 0 0 8px; width: 50%; color: #0F172A;">
-          <strong style="color: #065F46;">MÃ¡s puntual (Global):</strong><br>
+          <strong style="color: #065F46;">Más puntual (Global):</strong><br>
           <span id="repTopOk" style="display: inline-block; margin-top: 5px;">---</span>
         </td>
         <td style="padding: 12px; background: #FEF2F2; border: 1px solid #FECACA; border-radius: 0 8px 8px 0; width: 50%; color: #0F172A;">
-          <strong style="color: #991B1B;">MÃ¡s retardos (Global):</strong><br>
+          <strong style="color: #991B1B;">Más retardos (Global):</strong><br>
           <span id="repTopBad" style="display: inline-block; margin-top: 5px;">---</span>
         </td>
       </tr>
     </table>
 
-    <!-- Desglose por ClÃ­nica -->
-    <h2 style="font-size: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; margin-bottom: 20px; color: #0F172A;">Desglose por ClÃ­nica</h2>
+    <!-- Desglose por Clínica -->
+    <h2 style="font-size: 16px; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; margin-bottom: 20px; color: #0F172A;">Desglose por Clínica</h2>
     <div id="repClinicasContainer" style="display: flex; flex-wrap: wrap; gap: 20px;">
-      <!-- Llenado dinÃ¡micamente -->
+      <!-- Llenado dinámicamente -->
     </div>
     
     <!-- Footer PDF -->
     <div style="margin-top: 40px; text-align: center; font-size: 11px; color: #94A3B8; border-top: 1px solid #E2E8F0; padding-top: 20px;">
-      Este documento es generado automÃ¡ticamente por el Panel Administrativo de Dental MÃ¡s FÃ¡cil.
+      Este documento es generado automáticamente por el Panel Administrativo de Dental Más Fácil.
     </div>
   </div>
 </div>
 
 <script>
-  let currentClinicFilter = 'Global';
-  
-  // Toggle MenÃº MÃ³vil
-  function toggleMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    sidebar.classList.toggle('open');
-    if(overlay.classList.contains('show')) {
-        overlay.classList.remove('show');
-        setTimeout(() => overlay.style.display = 'none', 300);
-    } else {
-        overlay.style.display = 'block';
-        setTimeout(() => overlay.classList.add('show'), 10);
-    }
-  }
-
-  // Filtrado de ClÃ­nica
-  function setClinicFilter(clinic, element) {
-    currentClinicFilter = clinic;
-    
-    // Actualizar tÃ­tulo
-    const titulo = document.getElementById('filtroActivoTitulo');
-    if(titulo) titulo.textContent = clinic === 'Global' ? 'Asistencia Global' : 'Asistencia: ' + clinic;
-    
-    // Actualizar estilos del menÃº
-    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
-    element.classList.add('active');
-
-    // Cerrar menÃº en mÃ³viles
-    const sidebar = document.getElementById('sidebar');
-    if(sidebar.classList.contains('open')) {
-      toggleMenu();
-    }
-
-    // Refrescar vistas
-    if (typeof globalData !== 'undefined' && globalData.length > 0) {
-      procesarDatosHoy(globalData);
-      procesarDatosMensuales(globalData);
-    }
-  }
-
-  // Modal PDF
-  function abrirPdfModal() {
-    document.getElementById('pdfModal').style.display = 'flex';
-    setTimeout(() => document.getElementById('pdfModal').classList.add('show'), 10);
-  }
-
-  function cerrarPdfModal() {
-    const modal = document.getElementById('pdfModal');
-    modal.classList.remove('show');
-    setTimeout(() => modal.style.display = 'none', 300);
-  }
-
-  // FunciÃ³n de transiciÃ³n hacia el generador
-  function prepararYDescargarPDF(scope) {
-    cerrarPdfModal();
-    descargarReportePDF(scope);
-  }
-
   // Variables globales
   const KEY_THEME = 'dmf_theme';
 
@@ -666,7 +512,7 @@
   async function cargarDatosEnVivo() {
     try {
       const dateNow = new Date();
-      // Evitar cachÃ© de Google
+      // Evitar caché de Google
       const noCacheUrl = `${API_URL}?action=leer&t=${dateNow.getTime()}`;
       const response = await fetch(noCacheUrl);
       const data = await response.json();
@@ -674,16 +520,16 @@
       procesarDatosHoy(data);
       procesarDatosMensuales(data);
 
-      // Actualizar indicador de Ãºltima conexiÃ³n
+      // Actualizar indicador de última conexión
       const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
       let fechaStr = dateNow.toLocaleDateString('es-MX', opciones);
       fechaStr = fechaStr.charAt(0).toUpperCase() + fechaStr.slice(1);
       let horaActual = dateNow.toLocaleTimeString('es-MX', {hour: '2-digit', minute:'2-digit'});
-      document.querySelector('#fechaHoy span').textContent = `${fechaStr}  â€”  Actualizado: ${horaActual}`;
+      document.querySelector('#fechaHoy span').textContent = `${fechaStr}  —  Actualizado: ${horaActual}`;
 
     } catch (error) {
       console.error("Error cargando base de datos:", error);
-      document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--red); padding: 40px 0; justify-content: center;">Error de conexiÃ³n. Intenta de nuevo.</td></tr>`;
+      document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--red); padding: 40px 0; justify-content: center;">Error de conexión. Intenta de nuevo.</td></tr>`;
     }
   }
 
@@ -767,11 +613,11 @@
         <span class="r-time" style="color: #EF4444;">${r.retardos} retardos</span>
       </li>`).join('');
     } else {
-      document.getElementById('listaTardeMes').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">Nadie tiene retardos. Â¡Excelente!</span></li>`;
+      document.getElementById('listaTardeMes').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">Nadie tiene retardos. ¡Excelente!</span></li>`;
     }
 
     let htmlClinicas = '';
-    const todasLasClinicas = ["Tijuana", "Ensenada", "Mexicali - ObregÃ³n", "Mexicali - Villa Verde"];
+    const todasLasClinicas = ["Tijuana", "Ensenada", "Mexicali - Obregón", "Mexicali - Villa Verde"];
     
     todasLasClinicas.forEach(suc => {
         let b = branchArray.find(x => x.sucursal === suc);
@@ -788,8 +634,8 @@
               <span style="font-size:14px; font-weight:600; color: #0D9488;">${pPunt}% Puntualidad</span>
             </div>
             <div style="font-size: 13px; color: var(--text-muted); line-height: 1.8;">
-                <div><strong style="color:#10B981;">â†‘ MÃ¡s puntual:</strong> ${bTopOk ? bTopOk.nombre : 'Sin datos'}</div>
-                <div><strong style="color:#EF4444;">â†“ MÃ¡s retardos:</strong> ${(bTopBad && bTopBad.retardos > 0) ? bTopBad.nombre + ' ('+bTopBad.retardos+')' : 'Ninguno'}</div>
+                <div><strong style="color:#10B981;">↑ Más puntual:</strong> ${bTopOk ? bTopOk.nombre : 'Sin datos'}</div>
+                <div><strong style="color:#EF4444;">↓ Más retardos:</strong> ${(bTopBad && bTopBad.retardos > 0) ? bTopBad.nombre + ' ('+bTopBad.retardos+')' : 'Ninguno'}</div>
             </div>
           </div>
         `;
@@ -847,7 +693,7 @@
     const clinicasStats = {
       "Tijuana": { total: 0, aTiempo: 0 },
       "Ensenada": { total: 0, aTiempo: 0 },
-      "Mexicali - ObregÃ³n": { total: 0, aTiempo: 0 },
+      "Mexicali - Obregón": { total: 0, aTiempo: 0 },
       "Mexicali - Villa Verde": { total: 0, aTiempo: 0 }
     };
 
@@ -864,7 +710,7 @@
           expectedMinutes = 9 * 60; // 9:00 AM = 540 min
         }
 
-        // Retardo: despuÃ©s de los 5 minutos de tolerancia
+        // Retardo: después de los 5 minutos de tolerancia
         if (actualMinutes > (expectedMinutes + 5)) {
           isLate = true;
         }
@@ -897,7 +743,7 @@
       htmlTabla += `
         <tr>
           <td data-label="Empleado" style="font-weight: 500;">${reg.nombre}</td>
-          <td data-label="ClÃ­nica" style="color: var(--text-muted);">${reg.sucursal}</td>
+          <td data-label="Clínica" style="color: var(--text-muted);">${reg.sucursal}</td>
           <td data-label="Movimiento">${reg.tipo}</td>
           <td data-label="Hora">${reg.hora}</td>
           <td data-label="Estado">${statusHtml}</td>
@@ -945,37 +791,38 @@
         <span class="r-time">${r.hora}</span>
       </li>`).join('');
     } else {
-      document.getElementById('listaTarde').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">No hay retardos el dÃ­a de hoy.</span></li>`;
+      document.getElementById('listaTarde').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">No hay retardos el día de hoy.</span></li>`;
     }
   }
 
   function mostrarVacio() {
-    document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--text-light); padding: 40px 0; justify-content: center;">AÃºn no hay registros el dÃ­a de hoy.</td></tr>`;
+    document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--text-light); padding: 40px 0; justify-content: center;">Aún no hay registros el día de hoy.</td></tr>`;
     document.getElementById('kpiPuntualidad').textContent = "0%";
     document.getElementById('kpiPuntSub').textContent = "Esperando registros";
     document.getElementById('kpiRetardos').textContent = "0";
     document.getElementById('kpiMejorClinica').textContent = "---";
-    document.getElementById('listaTemprano').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">AÃºn no hay entradas tempranas.</span></li>`;
+    document.getElementById('listaTemprano').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">Aún no hay entradas tempranas.</span></li>`;
     document.getElementById('listaTarde').innerHTML = `<li class="ranking-item"><span class="r-name" style="color: var(--text-light); font-weight:400;">No se han detectado retardos.</span></li>`;
   }
 
   // ==========================================
-  // GENERACIÃ“N DE REPORTE PDF (ESTADÃSTICAS MENSUALES)
+  // GENERACIÓN DE REPORTE PDF (ESTADÍSTICAS MENSUALES)
   // ==========================================
   function descargarReportePDF(scope) {
-    cerrarPdfModal();
     if (!globalData || globalData.length === 0) {
       alert("No hay registros suficientes en la base de datos para generar un reporte.");
       return;
     }
 
+    // Ocultar modal primero (si es que está usando el modal viejo pero nosotros creamos uno nuevo que llama a descargar directamente, o a la proxy prepararYDescargarPDF)
+    // El modal loader es buena idea pero dejémoslo simple por ahora.
     setTimeout(() => {
       construirYDescargarPDF(scope);
-    }, 200);
+    }, 100);
   }
 
   function construirYDescargarPDF(scope) {
-    let dataToProcess = scope === 'Global' ? globalData : globalData.filter(d => d.sucursal === scope);
+    let dataToProcess = (!scope || scope === 'Global') ? globalData : globalData.filter(d => d.sucursal === scope);
     let empStats = {};
     let branchStats = {};
     let totalEntradas = 0;
@@ -1022,24 +869,24 @@
     let masRetardos = [...empArray].sort((a,b) => b.retardos - a.retardos);
     let clinicaGanadora = [...branchArray].sort((a,b) => (b.aTiempo / b.total) - (a.aTiempo / a.total))[0];
 
-    document.getElementById('repTitulo').textContent = scope === 'Global' ? 'Reporte de Asistencia Global' : 'Reporte de Asistencia: ' + scope;
-    document.getElementById('repFechaG').textContent = Generado el:  a las ;
+    document.getElementById('repTitulo').textContent = (!scope || scope === 'Global') ? 'Reporte de Asistencia Global' : 'Reporte de Asistencia: ' + scope;
+    document.getElementById('repFechaG').textContent = `Generado el: ${new Date().toLocaleDateString('es-MX')} a las ${new Date().toLocaleTimeString('es-MX')}`;
     
     let puntGlobal = Math.round(((totalEntradas - totalRetardos) / totalEntradas) * 100) || 0;
-    document.getElementById('repPuntualidad').textContent = ${puntGlobal}%;
+    document.getElementById('repPuntualidad').textContent = `${puntGlobal}%`;
     document.getElementById('repMejorClinica').textContent = clinicaGanadora ? clinicaGanadora.sucursal : 'N/A';
 
-    document.getElementById('repTopOk').innerHTML = ${masPuntuales[0].nombre} ()<br><span style="font-size:12px; font-weight:normal; color:#065F46;"> asistencias exactas</span>;
+    document.getElementById('repTopOk').innerHTML = `${masPuntuales[0].nombre} (${masPuntuales[0].sucursal})<br><span style="font-size:12px; font-weight:normal; color:#065F46;">${masPuntuales[0].aTiempo} asistencias exactas</span>`;
     
     let peor = masRetardos[0];
     if(peor && peor.retardos > 0) {
-        document.getElementById('repTopBad').innerHTML = ${peor.nombre} ()<br><span style="font-size:12px; font-weight:normal; color:#991B1B;"> retardos acumulados</span>;
+        document.getElementById('repTopBad').innerHTML = `${peor.nombre} (${peor.sucursal})<br><span style="font-size:12px; font-weight:normal; color:#991B1B;">${peor.retardos} retardos acumulados</span>`;
     } else {
-        document.getElementById('repTopBad').innerHTML = ¡Excelente!<br><span style="font-size:12px; font-weight:normal; color:#991B1B;">Nadie tiene retardos</span>;
+        document.getElementById('repTopBad').innerHTML = `¡Excelente!<br><span style="font-size:12px; font-weight:normal; color:#991B1B;">Nadie tiene retardos</span>`;
     }
 
     let htmlClinicas = '';
-    const clinicasAMostrar = scope === 'Global' ? ["Tijuana", "Ensenada", "Mexicali - Obregón", "Mexicali - Villa Verde"] : [scope];
+    const clinicasAMostrar = (!scope || scope === 'Global') ? ["Tijuana", "Ensenada", "Mexicali - Obregón", "Mexicali - Villa Verde"] : [scope];
     
     clinicasAMostrar.forEach(suc => {
         let b = branchArray.find(x => x.sucursal === suc);
@@ -1049,18 +896,18 @@
         let bTopOk = emps.length > 0 ? [...emps].sort((a,x) => (x.aTiempo / x.total) - (a.aTiempo / a.total))[0] : null;
         let bTopBad = emps.length > 0 ? [...emps].sort((a,x) => x.retardos - a.retardos)[0] : null;
 
-        htmlClinicas += 
+        htmlClinicas += `
           <div style="width: calc(50% - 10px); box-sizing: border-box; border: 1px solid #E2E8F0; padding: 16px; border-radius: 8px; background: #F8FAFC;">
              <div style="display:flex; justify-content: space-between; align-items:center; border-bottom: 1px solid #E2E8F0; padding-bottom: 8px; margin-bottom: 8px;">
-               <h3 style="margin: 0; font-size: 14px; color: #0F172A;"></h3>
-               <span style="font-size:12px; font-weight:600; color:#0D9488;">% Puntualidad</span>
+               <h3 style="margin: 0; font-size: 14px; color: #0F172A;">${suc}</h3>
+               <span style="font-size:12px; font-weight:600; color:#0D9488;">${pPunt}% Puntualidad</span>
              </div>
              <div style="font-size: 12px; color: #334155; line-height: 1.6;">
-                <div><strong style="color:#065F46;">🏆 El más puntual:</strong> </div>
-                <div><strong style="color:#991B1B;">⚠️ Más retardos:</strong> </div>
+                <div><strong style="color:#065F46;">↑ El más puntual:</strong> ${bTopOk ? bTopOk.nombre : 'Sin datos'}</div>
+                <div><strong style="color:#991B1B;">↓ Más retardos:</strong> ${(bTopBad && bTopBad.retardos > 0) ? bTopBad.nombre + ' ('+bTopBad.retardos+')' : 'Ninguno / Sin datos'}</div>
              </div>
           </div>
-        ;
+        `;
     });
     document.getElementById('repClinicasContainer').innerHTML = htmlClinicas;
 
@@ -1074,10 +921,7 @@
       jsPDF:        { unit: 'mm', format: 'letter', orientation: 'portrait' }
     };
 
-    html2pdf().set(opt).from(element).save().then(() => {
-       btn.disabled = false;
-       btn.innerHTML = origHtml;
-    });
+    html2pdf().set(opt).from(element).save();
   }
 
   // Cargar tema inicial
@@ -1085,7 +929,7 @@
   // Init
   cargarDatosEnVivo();
 
-  // Auto-actualizaciÃ³n silenciosa cada 10 segundos
+  // Auto-actualización silenciosa cada 10 segundos
   setInterval(() => {
     cargarDatosEnVivo();
   }, 10000);
@@ -1093,4 +937,3 @@
 
 </body>
 </html>
-
