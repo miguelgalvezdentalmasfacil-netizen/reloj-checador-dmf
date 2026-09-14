@@ -191,16 +191,20 @@
   .menu-item:hover { background: var(--hover-bg); color: var(--text-main); }
   .menu-item.active { background: rgba(16, 185, 129, 0.1); color: #10B981; border-right: 3px solid #10B981; }
   .sidebar-footer { padding: 24px 24px calc(env(safe-area-inset-bottom) + 24px) 24px; border-top: 1px solid var(--border-dark); }
-  .main-content { flex: 1; margin-left: 250px; display: flex; flex-direction: column; min-height: 100vh; width: calc(100% - 250px); }
-  .menu-toggle { display: none; background: transparent; border: none; color: var(--text-main); cursor: pointer; padding: 8px; margin-left: -8px; }
+  .main-content { flex: 1; margin-left: 250px; display: flex; flex-direction: column; min-height: 100vh; width: calc(100% - 250px); transition: margin-left 0.3s ease, width 0.3s ease; }
+  .menu-toggle { display: block; background: transparent; border: none; color: var(--text-main); cursor: pointer; padding: 8px; margin-left: -8px; border-radius: 8px; transition: background 0.2s; }
+  .menu-toggle:hover { background: var(--border); }
   .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
   .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
   
+  body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
+  body.sidebar-collapsed .main-content { margin-left: 0; width: 100%; }
+
   @media (max-width: 768px) {
     .sidebar { transform: translateX(-100%); }
     .sidebar.open { transform: translateX(0); }
     .main-content { margin-left: 0; width: 100%; }
-    .menu-toggle { display: block; }
+    body.sidebar-collapsed .sidebar { transform: translateX(-100%); }
   }
   
   /* Modal para PDF */
@@ -486,19 +490,24 @@
     <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">¿Qué información deseas incluir en el reporte?</p>
     
     <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Global')">
-       <span style="display:inline-block; width: 24px;">🌐</span> Reporte Global (Todas las clínicas)
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+       Reporte Global (Todas las clínicas)
     </button>
     <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Tijuana')">
-       <span style="display:inline-block; width: 24px;">📍</span> Tijuana
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+       Tijuana
     </button>
     <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Ensenada')">
-       <span style="display:inline-block; width: 24px;">📍</span> Ensenada
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+       Ensenada
     </button>
     <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Mexicali - Obregón')">
-       <span style="display:inline-block; width: 24px;">📍</span> Mexicali - Obregón
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+       Mexicali - Obregón
     </button>
     <button class="btn-outline" style="width: 100%; margin-bottom: 24px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Mexicali - Villa Verde')">
-       <span style="display:inline-block; width: 24px;">📍</span> Mexicali - Villa Verde
+       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+       Mexicali - Villa Verde
     </button>
     
     <button class="btn-outline" style="width: 100%; justify-content: center; color: var(--text-muted); border-color: transparent;" onclick="cerrarPdfModal()">Cancelar</button>
@@ -562,17 +571,23 @@
 <script>
   let currentClinicFilter = 'Global';
   
-  // Toggle Menú Móvil
+  // Toggle Menú Móvil y PC
   function toggleMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('sidebarOverlay');
-    sidebar.classList.toggle('open');
-    if(overlay.classList.contains('show')) {
-        overlay.classList.remove('show');
-        setTimeout(() => overlay.style.display = 'none', 300);
+    if (window.innerWidth <= 768) {
+      // Comportamiento móvil
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('sidebarOverlay');
+      sidebar.classList.toggle('open');
+      if(overlay.classList.contains('show')) {
+          overlay.classList.remove('show');
+          setTimeout(() => overlay.style.display = 'none', 300);
+      } else {
+          overlay.style.display = 'block';
+          setTimeout(() => overlay.classList.add('show'), 10);
+      }
     } else {
-        overlay.style.display = 'block';
-        setTimeout(() => overlay.classList.add('show'), 10);
+      // Comportamiento de PC
+      document.body.classList.toggle('sidebar-collapsed');
     }
   }
 
