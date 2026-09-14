@@ -182,13 +182,85 @@
   /* Spinners */
   @keyframes spin { 100% { transform: rotate(360deg); } }
   .spinner { animation: spin 1s linear infinite; }
+  /* Sidebar Layout */
+  #app-layout { display: flex; min-height: 100vh; }
+  .sidebar { width: 250px; background: var(--surface); border-right: 1px solid var(--border-dark); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; z-index: 200; transition: transform 0.3s ease; }
+  .sidebar-header { padding: calc(env(safe-area-inset-top) + 24px) 24px 24px 24px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid var(--border-dark); }
+  .sidebar-menu { flex: 1; padding: 24px 0; overflow-y: auto; }
+  .menu-item { padding: 12px 24px; display: flex; align-items: center; gap: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; font-weight: 500; text-decoration: none; border: none; background: transparent; width: 100%; text-align: left; font-size: 15px; font-family: inherit; }
+  .menu-item:hover { background: var(--hover-bg); color: var(--text-main); }
+  .menu-item.active { background: rgba(16, 185, 129, 0.1); color: #10B981; border-right: 3px solid #10B981; }
+  .sidebar-footer { padding: 24px 24px calc(env(safe-area-inset-bottom) + 24px) 24px; border-top: 1px solid var(--border-dark); }
+  .main-content { flex: 1; margin-left: 250px; display: flex; flex-direction: column; min-height: 100vh; width: calc(100% - 250px); }
+  .menu-toggle { display: none; background: transparent; border: none; color: var(--text-main); cursor: pointer; padding: 8px; margin-left: -8px; }
+  .sidebar-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 150; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .sidebar-overlay.show { opacity: 1; pointer-events: auto; }
+  
+  @media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.open { transform: translateX(0); }
+    .main-content { margin-left: 0; width: 100%; }
+    .menu-toggle { display: block; }
+  }
+  
+  /* Modal para PDF */
+  .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+  .modal-overlay.show { opacity: 1; pointer-events: auto; }
+  .modal-card { background: var(--surface); padding: 40px 32px; border-radius: var(--radius-lg); max-width: 90%; width: 400px; box-shadow: var(--shadow-soft); transform: translateY(20px); transition: transform 0.3s; border: 1px solid var(--border); }
+  .modal-overlay.show .modal-card { transform: translateY(0); }
 </style>
 </head>
 <body>
 
+<div id="app-layout">
+  <!-- Sidebar Overlay for mobile -->
+  <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleMenu()"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-header">
+      <img src="logo.png" alt="Dental Más Fácil" style="height: 32px; border-radius: 8px;">
+      <span style="font-weight: 600; font-size: 16px;">Panel DMF</span>
+    </div>
+    <div class="sidebar-menu">
+      <button class="menu-item active" onclick="setClinicFilter('Global', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+        Vista Global
+      </button>
+      <div style="padding: 16px 24px 8px; font-size: 12px; font-weight: 600; color: var(--text-light); text-transform: uppercase; letter-spacing: 1px;">Clínicas</div>
+      <button class="menu-item" onclick="setClinicFilter('Tijuana', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Tijuana
+      </button>
+      <button class="menu-item" onclick="setClinicFilter('Ensenada', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Ensenada
+      </button>
+      <button class="menu-item" onclick="setClinicFilter('Mexicali - Obregón', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Mexicali - Obregón
+      </button>
+      <button class="menu-item" onclick="setClinicFilter('Mexicali - Villa Verde', this)">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+        Mexicali - Villa Verde
+      </button>
+    </div>
+    <div class="sidebar-footer">
+      <button class="btn-outline" style="width: 100%; border-color: var(--border-dark); color: var(--text-main);" onclick="abrirPdfModal()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right: 8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        Generar PDF
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main-content">
 <nav class="navbar">
   <div class="brand">
-    <img src="logo.png" alt="Dental Más Fácil" class="brand-img">
+    <button class="menu-toggle" onclick="toggleMenu()">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+    </button>
+    <img src="logo.png" alt="Dental Más Fácil" class="brand-img" style="margin-left: 8px;">
     <div class="brand-divider"></div>
     <span class="badge-admin">Panel Directivo</span>
   </div>
@@ -213,12 +285,7 @@
         <span>Cargando fecha...</span>
       </p>
     </div>
-    <div class="header-buttons">
-      <button class="btn-outline" id="btnDescargar" onclick="descargarReportePDF()">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Generar PDF Mensual
-      </button>
-    </div>
+    <div class="header-buttons"></div>
   </div>
 
   <div class="tabs-container">
@@ -408,6 +475,35 @@
   </div> <!-- Fin de view-mensual -->
 
 </div> <!-- FIN CONTAINER GENERAL -->
+      </div> <!-- Fin container -->
+  </main>
+</div> <!-- Fin app-layout -->
+
+<!-- PDF Download Modal -->
+<div id="pdfModal" class="modal-overlay">
+  <div class="modal-card">
+    <h2 style="margin-top: 0; margin-bottom: 8px; font-size: 20px; color: var(--text-main);">Descargar PDF Mensual</h2>
+    <p style="color: var(--text-muted); margin-bottom: 24px; font-size: 14px;">¿Qué información deseas incluir en el reporte?</p>
+    
+    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Global')">
+       <span style="display:inline-block; width: 24px;">🌐</span> Reporte Global (Todas las clínicas)
+    </button>
+    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Tijuana')">
+       <span style="display:inline-block; width: 24px;">📍</span> Tijuana
+    </button>
+    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Ensenada')">
+       <span style="display:inline-block; width: 24px;">📍</span> Ensenada
+    </button>
+    <button class="btn-outline" style="width: 100%; margin-bottom: 12px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Mexicali - Obregón')">
+       <span style="display:inline-block; width: 24px;">📍</span> Mexicali - Obregón
+    </button>
+    <button class="btn-outline" style="width: 100%; margin-bottom: 24px; justify-content: flex-start;" onclick="prepararYDescargarPDF('Mexicali - Villa Verde')">
+       <span style="display:inline-block; width: 24px;">📍</span> Mexicali - Villa Verde
+    </button>
+    
+    <button class="btn-outline" style="width: 100%; justify-content: center; color: var(--text-muted); border-color: transparent;" onclick="cerrarPdfModal()">Cancelar</button>
+  </div>
+</div>
 
 <!-- CONTENEDOR OCULTO PARA EL REPORTE PDF (Sus colores son fijos para la impresión) -->
 <div id="pdfWrapper" style="position: absolute; left: -9999px; top: 0;">
@@ -417,7 +513,7 @@
       <!-- Se usa el logo directamente -->
       <img src="logo.png" style="height: 50px; margin-right: 20px; border-radius: 12px;">
       <div>
-        <h1 style="margin: 0; font-size: 22px; color: #0F172A; font-weight: 600;">Reporte de Asistencia y Puntualidad</h1>
+        <h1 id="repTitulo" style="margin: 0; font-size: 22px; color: #0F172A; font-weight: 600;">Reporte de Asistencia y Puntualidad</h1>
         <p style="margin: 4px 0 0; color: #64748B; font-size: 13px;" id="repFechaG"></p>
       </div>
     </div>
@@ -464,6 +560,65 @@
 </div>
 
 <script>
+  let currentClinicFilter = 'Global';
+  
+  // Toggle Menú Móvil
+  function toggleMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('open');
+    if(overlay.classList.contains('show')) {
+        overlay.classList.remove('show');
+        setTimeout(() => overlay.style.display = 'none', 300);
+    } else {
+        overlay.style.display = 'block';
+        setTimeout(() => overlay.classList.add('show'), 10);
+    }
+  }
+
+  // Filtrado de Clínica
+  function setClinicFilter(clinic, element) {
+    currentClinicFilter = clinic;
+    
+    // Actualizar título
+    const titulo = document.querySelector('.header-section h1');
+    if(titulo) titulo.textContent = clinic === 'Global' ? 'Asistencia Global' : 'Asistencia: ' + clinic;
+    
+    // Actualizar estilos del menú
+    document.querySelectorAll('.menu-item').forEach(el => el.classList.remove('active'));
+    element.classList.add('active');
+
+    // Cerrar menú en móviles
+    const sidebar = document.getElementById('sidebar');
+    if(sidebar.classList.contains('open')) {
+      toggleMenu();
+    }
+
+    // Refrescar vistas
+    if (typeof globalData !== 'undefined' && globalData.length > 0) {
+      procesarDatosHoy(globalData);
+      procesarDatosMensuales(globalData);
+    }
+  }
+
+  // Modal PDF
+  function abrirPdfModal() {
+    document.getElementById('pdfModal').style.display = 'flex';
+    setTimeout(() => document.getElementById('pdfModal').classList.add('show'), 10);
+  }
+
+  function cerrarPdfModal() {
+    const modal = document.getElementById('pdfModal');
+    modal.classList.remove('show');
+    setTimeout(() => modal.style.display = 'none', 300);
+  }
+
+  // Función de transición hacia el generador
+  function prepararYDescargarPDF(scope) {
+    cerrarPdfModal();
+    descargarReportePDF(scope);
+  }
+
   // Variables globales
   const KEY_THEME = 'dmf_theme';
 
