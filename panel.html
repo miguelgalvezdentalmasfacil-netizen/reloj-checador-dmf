@@ -390,6 +390,7 @@
             <th>Clínica</th>
             <th>Movimiento</th>
             <th>Hora</th>
+            <th>Ubicación</th>
             <th>Estado</th>
           </tr>
         </thead>
@@ -996,12 +997,20 @@
           }
         }
 
+        let locationHtml = `--`;
+        if (reg.ubicacion && reg.ubicacion !== "Sin ubicación") {
+           locationHtml = `<a href="https://www.google.com/maps/search/?api=1&query=${reg.ubicacion}" target="_blank" title="Ver en Google Maps" style="color: #3B82F6; text-decoration: none; display: inline-flex; align-items: center; gap: 4px;"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg> Mapa</a>`;
+        } else if (reg.ubicacion === "Sin ubicación") {
+           locationHtml = `<span style="color: var(--text-light); font-size: 13px;">Sin GPS</span>`;
+        }
+
         htmlTabla += `
           <tr>
             <td data-label="Empleado" style="font-weight: 500;">${reg.nombre}</td>
             <td data-label="Clínica" style="color: var(--text-muted);">${reg.sucursal}</td>
             <td data-label="Movimiento">${reg.tipo}</td>
             <td data-label="Hora">${reg.hora}</td>
+            <td data-label="Ubicación">${locationHtml}</td>
             <td data-label="Estado">${statusHtml}</td>
           </tr>
         `;

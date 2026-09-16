@@ -629,7 +629,7 @@
     const isEntrada = tipo === 'Entrada';
     
     const originalHtml = isEntrada ? btnEntrada.innerHTML : btnSalida.innerHTML;
-    const loaderHtml = `<svg class="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Registrando...`;
+    const loaderHtml = `<svg class="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Obteniendo GPS...`;
 
     if(isEntrada) {
       btnEntrada.disabled = true;
@@ -639,7 +639,28 @@
       btnSalida.innerHTML = loaderHtml;
     }
 
+    // Promesa para obtener ubicación
+    const obtenerUbicacion = () => {
+      return new Promise((resolve, reject) => {
+        if (!navigator.geolocation) {
+          reject("El navegador no soporta geolocalización.");
+        } else {
+          navigator.geolocation.getCurrentPosition(
+            position => {
+              resolve(`${position.coords.latitude},${position.coords.longitude}`);
+            },
+            error => {
+              reject("No se pudo obtener la ubicación. Por favor permite el acceso al GPS.");
+            },
+            { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+          );
+        }
+      });
+    };
+
     try {
+      let ubicacionStr = await obtenerUbicacion();
+      
       const now = new Date();
       
       // Formatear Fecha a DD/MM/YYYY
@@ -656,16 +677,23 @@
       hours = hours ? hours : 12; 
       const horaStr = `${String(hours).padStart(2, '0')}:${mins} ${ampm}`;
 
+      if(isEntrada) {
+         btnEntrada.innerHTML = `<svg class="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Enviando...`;
+      } else {
+         btnSalida.innerHTML = `<svg class="spinner" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 12px;"><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg> Enviando...`;
+      }
+
       const qs = new URLSearchParams({
         action: 'registrar',
         nombre: nombre,
         sucursal: sucursal,
         tipo: tipo,
         fecha: fechaStr,
-        hora: horaStr
+        hora: horaStr,
+        ubicacion: ubicacionStr
       });
 
-      // No-cors fetch as configured earlier to avoid CORS bounce from Google login
+      // No-cors fetch
       await fetch(API_URL + '?' + qs.toString(), { mode: 'no-cors' });
 
       // Ocultar spinners
@@ -677,13 +705,11 @@
         btnSalida.innerHTML = originalHtml;
       }
 
-      // Mostrar mensaje custom
       showModal(isEntrada);
 
     } catch (error) {
-      console.error(error);
-      alert("Ocurrió un error de red. Por favor intenta de nuevo.");
-      
+      // Si falla GPS o red
+      alert(error);
       if(isEntrada) {
         btnEntrada.disabled = false;
         btnEntrada.innerHTML = originalHtml;
