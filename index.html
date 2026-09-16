@@ -168,8 +168,10 @@
   .form-group { margin-bottom: 24px; text-align: left; }
   .form-label { display: block; font-size: 13px; font-weight: 500; color: var(--text-muted); margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
   .form-input {
+    display: block;
     width: 100%; padding: 14px 16px; border: 1px solid var(--border-dark); border-radius: var(--radius-md);
     background: var(--bg-color); color: var(--text-main); font-family: inherit; font-size: 15px; outline: none; transition: border-color 0.2s;
+    box-sizing: border-box; max-width: 100%;
   }
   .form-input:focus { border-color: var(--text-main); }
   
