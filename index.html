@@ -214,6 +214,73 @@
   /* Spinners */
   @keyframes spin { 100% { transform: rotate(360deg); } }
   .spinner { animation: spin 1s linear infinite; }
+  
+  /* Toggle Switch Minimalista */
+  .day-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    padding: 12px;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-dark);
+    margin-bottom: 8px;
+    transition: opacity 0.2s;
+  }
+  .day-row.disabled { opacity: 0.5; }
+  
+  .day-toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-main);
+    cursor: pointer;
+    width: 110px;
+  }
+  
+  .day-toggle input { display: none; }
+  
+  .toggle-switch {
+    position: relative;
+    width: 36px;
+    height: 20px;
+    background: var(--text-light);
+    border-radius: 10px;
+    transition: background 0.3s;
+    flex-shrink: 0;
+  }
+  .toggle-switch::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    width: 16px;
+    height: 16px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s;
+  }
+  .day-toggle input:checked + .toggle-switch { background: #10B981; }
+  .day-toggle input:checked + .toggle-switch::after { transform: translateX(16px); }
+
+  .time-inputs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .time-input {
+    background: transparent;
+    border: 1px solid var(--border-dark);
+    color: var(--text-main);
+    font-family: inherit;
+    font-size: 13px;
+    padding: 6px;
+    border-radius: 6px;
+    outline: none;
+  }
+  .time-input:focus { border-color: var(--text-muted); }
 </style>
 </head>
 <body>
@@ -240,8 +307,8 @@
     <!-- Paso 1: Configuración de Perfil (Oculto si ya hay datos) -->
     <div id="configSection">
       <div style="text-align: center; margin-bottom: 24px;">
-        <h2 style="margin: 0 0 8px; font-size: 20px; color: var(--text-main); font-weight: 500;">Configurar Dispositivo</h2>
-        <p style="margin: 0; color: var(--text-muted); font-size: 14px;">Ingresa tus datos para comenzar</p>
+        <h2 style="margin: 0 0 8px; font-size: 20px; color: var(--text-main); font-weight: 500;">Configuración de Perfil</h2>
+        <p style="margin: 0; color: var(--text-muted); font-size: 14px;">Actualiza tus datos y horarios</p>
       </div>
       
       <div class="form-group">
@@ -258,7 +325,38 @@
           <option value="Mexicali - Villa Verde">Mexicali - Villa Verde</option>
         </select>
       </div>
-      <button class="btn-guardar" onclick="guardarConfiguracion()">Guardar y Continuar</button>
+
+      <!-- HORARIOS -->
+      <div style="margin-top: 32px; margin-bottom: 16px;">
+        <h3 style="font-size: 16px; color: var(--text-main); margin-bottom: 8px;">Horario Semanal</h3>
+        <p style="font-size: 13px; color: var(--text-light); margin: 0;">Define a qué hora entras y sales cada día. Si no trabajas, apaga el interruptor.</p>
+      </div>
+      
+      <div id="horariosContainer"></div>
+
+      <button class="btn-guardar" id="btnGuardarConfig" onclick="guardarConfiguracion()" style="margin-top: 24px;">Guardar Perfil y Horario</button>
+
+      <!-- SECCION EXCEPCIONES -->
+      <div id="excepcionesSection" style="display: none; margin-top: 40px; padding-top: 24px; border-top: 1px solid var(--border-dark);">
+        <h3 style="font-size: 16px; color: var(--text-main); margin-bottom: 8px;">Aviso de Inasistencia</h3>
+        <p style="font-size: 13px; color: var(--text-light); margin: 0 0 16px 0;">Avisa si faltarás un día en específico para que el panel directivo lo tome en cuenta.</p>
+        
+        <div class="form-group">
+          <label class="form-label">Fecha de inasistencia</label>
+          <input type="date" id="excFecha" class="form-input">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Motivo</label>
+          <select id="excMotivo" class="form-input">
+            <option value="Falta justificada">Falta justificada</option>
+            <option value="Vacaciones">Vacaciones</option>
+            <option value="Día festivo / Descanso extra">Día festivo / Descanso extra</option>
+          </select>
+        </div>
+        <button class="btn-settings-outline" onclick="enviarExcepcion()" id="btnExcepcion" style="width: 100%; border-radius: 12px; padding: 12px; font-weight: 500; display: flex; justify-content: center;">
+          Enviar Aviso
+        </button>
+      </div>
     </div>
 
     <!-- Paso 2: Reloj Checador (Visible si ya hay datos) -->
@@ -337,6 +435,48 @@
 
   const API_URL = "https://script.google.com/macros/s/AKfycbw-Yw0IHg7MCInYfncbsnHfXmTsE8tWFVVONc_gjmpmuz6OM7o9meYbbFSliAoZo9FRmA/exec";
 
+  const diasSemana = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+  const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+
+  function inicializarHorarios() {
+    const container = document.getElementById('horariosContainer');
+    container.innerHTML = '';
+    
+    // Intentar cargar horarios previos
+    let horariosGuardados = {};
+    try { horariosGuardados = JSON.parse(localStorage.getItem('dmf_horarios')) || {}; } catch(e){}
+
+    diasSemana.forEach((dia, index) => {
+      const dataDia = horariosGuardados[dia] || { activo: true, in: "10:00", out: "18:00" };
+      
+      const row = document.createElement('div');
+      row.className = `day-row ${!dataDia.activo ? 'disabled' : ''}`;
+      row.id = `row-${dia}`;
+      
+      row.innerHTML = `
+        <label class="day-toggle">
+          <input type="checkbox" id="chk-${dia}" ${dataDia.activo ? 'checked' : ''} onchange="toggleDia('${dia}')">
+          <div class="toggle-switch"></div>
+          ${diasNombres[index]}
+        </label>
+        <div class="time-inputs">
+          <input type="time" class="time-input" id="in-${dia}" value="${dataDia.in}" ${!dataDia.activo ? 'disabled' : ''}>
+          <span style="color:var(--text-muted);">-</span>
+          <input type="time" class="time-input" id="out-${dia}" value="${dataDia.out}" ${!dataDia.activo ? 'disabled' : ''}>
+        </div>
+      `;
+      container.appendChild(row);
+    });
+  }
+
+  function toggleDia(dia) {
+    const chk = document.getElementById(`chk-${dia}`).checked;
+    const row = document.getElementById(`row-${dia}`);
+    document.getElementById(`in-${dia}`).disabled = !chk;
+    document.getElementById(`out-${dia}`).disabled = !chk;
+    if (chk) row.classList.remove('disabled'); else row.classList.add('disabled');
+  }
+
   function cargarDatosGuardados() {
     const nombre = localStorage.getItem('dmf_nombre');
     const sucursal = localStorage.getItem('dmf_sucursal');
@@ -357,18 +497,101 @@
     document.getElementById('punchSection').style.display = 'none';
     document.getElementById('nombre').value = localStorage.getItem('dmf_nombre') || '';
     document.getElementById('sucursal').value = localStorage.getItem('dmf_sucursal') || '';
+    
+    // Si ya existe un nombre, mostrar la sección de excepciones
+    if(localStorage.getItem('dmf_nombre')) {
+      document.getElementById('excepcionesSection').style.display = 'block';
+    } else {
+      document.getElementById('excepcionesSection').style.display = 'none';
+    }
+    
+    inicializarHorarios();
   }
 
-  function guardarConfiguracion() {
+  async function guardarConfiguracion() {
     const nombre = document.getElementById('nombre').value.trim();
     const sucursal = document.getElementById('sucursal').value;
     if (!nombre || !sucursal) {
       alert("Por favor completa tu nombre y elige una clínica.");
       return;
     }
+
+    const btn = document.getElementById('btnGuardarConfig');
+    btn.textContent = "Guardando...";
+    btn.disabled = true;
+
+    // Recopilar horarios
+    const horarios = {};
+    diasSemana.forEach(dia => {
+      const activo = document.getElementById(`chk-${dia}`).checked;
+      const tIn = document.getElementById(`in-${dia}`).value;
+      const tOut = document.getElementById(`out-${dia}`).value;
+      horarios[dia] = activo ? `${tIn}-${tOut}` : "Descanso";
+    });
+
     localStorage.setItem('dmf_nombre', nombre);
     localStorage.setItem('dmf_sucursal', sucursal);
+    
+    // Guardar horarios locales formato json original
+    const horariosLocales = {};
+    diasSemana.forEach(dia => {
+      horariosLocales[dia] = {
+        activo: document.getElementById(`chk-${dia}`).checked,
+        in: document.getElementById(`in-${dia}`).value,
+        out: document.getElementById(`out-${dia}`).value
+      };
+    });
+    localStorage.setItem('dmf_horarios', JSON.stringify(horariosLocales));
+
+    // Enviar a Google Sheets
+    try {
+      const qs = new URLSearchParams({
+        action: 'guardar_perfil',
+        nombre: nombre,
+        sucursal: sucursal,
+        horarios: JSON.stringify(horarios)
+      });
+      await fetch(API_URL + '?' + qs.toString(), { mode: 'no-cors' });
+    } catch(e) {
+      console.log("Error al guardar perfil", e);
+    }
+
+    btn.textContent = "Guardar Perfil y Horario";
+    btn.disabled = false;
     cargarDatosGuardados();
+  }
+
+  async function enviarExcepcion() {
+    const fecha = document.getElementById('excFecha').value;
+    const motivo = document.getElementById('excMotivo').value;
+    if(!fecha) {
+      alert("Selecciona una fecha.");
+      return;
+    }
+    
+    const nombre = localStorage.getItem('dmf_nombre');
+    const sucursal = localStorage.getItem('dmf_sucursal');
+    const btn = document.getElementById('btnExcepcion');
+    btn.textContent = "Enviando...";
+    btn.disabled = true;
+
+    try {
+      const qs = new URLSearchParams({
+        action: 'guardar_excepcion',
+        nombre: nombre,
+        sucursal: sucursal,
+        fecha: fecha,
+        tipo: motivo
+      });
+      await fetch(API_URL + '?' + qs.toString(), { mode: 'no-cors' });
+      alert("Aviso de inasistencia enviado correctamente.");
+      document.getElementById('excFecha').value = '';
+    } catch(e) {
+      alert("Hubo un error de conexión, intenta de nuevo.");
+    }
+
+    btn.textContent = "Enviar Aviso";
+    btn.disabled = false;
   }
 
   function showModal(isEntrada) {
