@@ -801,12 +801,9 @@
     let currentYear = hoy.getFullYear();
 
     data.filter(d => d.tipo === 'Entrada').forEach(reg => {
-       let parts = reg.fecha.split(/[-/]/);
-       if (parts.length < 3) return;
-       let d = parseInt(parts[0], 10);
-       let m = parseInt(parts[1], 10);
-       let y = parseInt(parts[2], 10);
-       if (y < 1000) y += 2000;
+       let pDate = parseCustomDate(reg.fecha);
+       if (!pDate) return;
+       let d = pDate.d, m = pDate.m, y = pDate.y;
 
        if (m !== currentMonth || y !== currentYear) return;
 
@@ -920,17 +917,30 @@
     return (h * 60) + m;
   }
 
-  function isDateToday(dateStr) {
-    if(!dateStr) return false;
-    let parts = dateStr.split(/[-/]/);
-    if(parts.length < 3) return false;
+  function parseCustomDate(fStr) {
+    if (!fStr) return null;
+    // Si viene como ISO (ej. 2026-09-16T...)
+    if (String(fStr).includes('T')) {
+       let d = new Date(fStr);
+       return { d: d.getUTCDate(), m: d.getUTCMonth() + 1, y: d.getUTCFullYear() };
+    }
+    // Si viene como DD/MM/YYYY
+    let parts = String(fStr).split(/[-/]/);
+    if (parts.length < 3) return null;
     let d = parseInt(parts[0], 10);
     let m = parseInt(parts[1], 10);
     let y = parseInt(parts[2], 10);
     if (y < 1000) y += 2000;
-    
+    // Si resulta que estaba al revés YYYY-MM-DD
+    if (d > 1000) { let temp = d; d = y; y = temp; }
+    return { d, m, y };
+  }
+
+  function isDateToday(dateStr) {
+    let p = parseCustomDate(dateStr);
+    if (!p) return false;
     let hoy = new Date();
-    return (d === hoy.getDate() && m === (hoy.getMonth() + 1) && y === hoy.getFullYear());
+    return (p.d === hoy.getDate() && p.m === (hoy.getMonth() + 1) && p.y === hoy.getFullYear());
   }
 
   function procesarDatosHoy(allData) {
@@ -1310,21 +1320,24 @@
     const currentYear = dateNow.getFullYear();
 
     globalData.forEach(row => {
-      let fStr = row.Fecha;
-      if (!fStr) return;
-      let p = fStr.split(/[-/]/);
-      if (p.length < 3) return;
-      let d = parseInt(p[0], 10), m = parseInt(p[1], 10) - 1, y = parseInt(p[2], 10);
+      let fStr = row.Fecha || row.fecha;
+      let pDate = parseCustomDate(fStr);
+      if (!pDate) return;
+      let d = pDate.d, m = pDate.m - 1, y = pDate.y;
       
-      if (m === currentMonth && y === currentYear && row.Tipo === 'Entrada') {
-        const key = row.Nombre + "|" + row.Sucursal;
+      if (m === currentMonth && y === currentYear && (row.Tipo === 'Entrada' || row.tipo === 'Entrada')) {
+        let nombre = row.Nombre || row.nombre;
+        let sucursal = row.Sucursal || row.sucursal;
+        let hora = row.Hora || row.hora;
+        
+        const key = nombre + "|" + sucursal;
         if (!statsMensuales[key]) statsMensuales[key] = { retardos: 0 };
         
         let dSemana = new Date(y, m, d).getDay();
-        const expectedInfo = obtenerMinutosEsperados(row.Nombre, row.Sucursal, dSemana);
+        const expectedInfo = obtenerMinutosEsperados(nombre, sucursal, dSemana);
         
         if (expectedInfo.expected !== null) {
-          let timeParts = row.Hora.split(' ');
+          let timeParts = hora.split(' ');
           let hm = timeParts[0].split(':');
           if (hm.length === 2) {
             let h = parseInt(hm[0], 10);
