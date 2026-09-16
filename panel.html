@@ -679,15 +679,25 @@
 
   const API_URL = "https://script.google.com/macros/s/AKfycbw-Yw0IHg7MCInYfncbsnHfXmTsE8tWFVVONc_gjmpmuz6OM7o9meYbbFSliAoZo9FRmA/exec";
   let globalData = []; 
+  let globalPerfiles = [];
+  let globalExcepciones = [];
 
   async function cargarDatosEnVivo() {
     try {
       const dateNow = new Date();
-      // Evitar caché de Google
-      const noCacheUrl = `${API_URL}?action=leer&t=${dateNow.getTime()}`;
-      const response = await fetch(noCacheUrl);
-      const data = await response.json();
+      // Fetch concurrent para Registros, Perfiles y Excepciones
+      const [resDatos, resPerfiles] = await Promise.all([
+        fetch(`${API_URL}?action=obtener_datos&t=${dateNow.getTime()}`),
+        fetch(`${API_URL}?action=obtener_perfiles&t=${dateNow.getTime()}`)
+      ]);
+      
+      const data = await resDatos.json();
+      const perfs = await resPerfiles.json();
+      
       globalData = data; 
+      globalPerfiles = perfs.perfiles || [];
+      globalExcepciones = perfs.excepciones || [];
+      
       procesarDatosHoy(data);
       procesarDatosMensuales(data);
 
@@ -702,6 +712,49 @@
       console.error("Error cargando base de datos:", error);
       document.getElementById('tablaRegistros').innerHTML = `<tr><td style="text-align: center; color: var(--red); padding: 40px 0; justify-content: center;">Error de conexión. Intenta de nuevo.</td></tr>`;
     }
+  }
+
+  // Helper para obtener minutos esperados según perfil
+  function obtenerMinutosEsperados(nombre, sucursal, dayOfWeek) {
+    const defaultMins = 10 * 60; // 10:00 por defecto
+    const profile = globalPerfiles.find(p => p.Nombre === nombre && p.Sucursal === sucursal);
+    if (!profile) return { expected: defaultMins, descanso: false };
+
+    const diasMap = { 0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miercoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sabado' };
+    const diaClave = diasMap[dayOfWeek];
+    
+    let hor = profile[diaClave];
+    if (!hor || hor === "Descanso") {
+        return { expected: null, descanso: true };
+    }
+    
+    // Formato "10:00-18:00"
+    let entrada = hor.split('-')[0];
+    if(entrada) {
+        let pts = entrada.split(':');
+        if(pts.length === 2) {
+            return { expected: (parseInt(pts[0], 10) * 60) + parseInt(pts[1], 10), descanso: false };
+        }
+    }
+    return { expected: defaultMins, descanso: false };
+  }
+  
+  // Helper para checar si tiene excepcion
+  function tieneExcepcion(nombre, sucursal, fechaStr) {
+    if(!fechaStr) return null;
+    let parts = fechaStr.split(/[-/]/);
+    if (parts.length < 3) return null;
+    let d = String(parseInt(parts[0], 10)).padStart(2, '0');
+    let m = String(parseInt(parts[1], 10)).padStart(2, '0');
+    let y = parseInt(parts[2], 10);
+    if (y < 1000) y += 2000;
+    
+    let fCheck1 = `${y}-${m}-${d}`;
+    
+    return globalExcepciones.find(e => {
+        if(e.Nombre !== nombre || e.Sucursal !== sucursal) return false;
+        return e.Fecha && e.Fecha.includes(fCheck1);
+    });
   }
 
   function procesarDatosMensuales(allData) {
@@ -730,11 +783,20 @@
        let dateObj = new Date(y, m-1, d);
        let dayOfWeek = dateObj.getDay();
 
-       let expectedMinutes = 10 * 60;
-       if (reg.sucursal !== 'Tijuana' && dayOfWeek === 6) expectedMinutes = 9 * 60;
+       // EXCEPCIONES Y HORARIOS PERSONALIZADOS
+       let exc = tieneExcepcion(reg.nombre, reg.sucursal, reg.fecha);
+       if(exc) return; // Si tiene permiso/vacaciones, ignoramos la asistencia (no afecta stats)
 
-       let actualMinutes = parseTimeMinutes(reg.hora);
-       let isLate = (actualMinutes > (expectedMinutes + 5));
+       let configDia = obtenerMinutosEsperados(reg.nombre, reg.sucursal, dayOfWeek);
+       // Si era su día de descanso pero fue a trabajar, podemos contarlo como aTiempo automático o simplemente ignorar retardos.
+       // Lo contaremos como aTiempo.
+       let expectedMinutes = configDia.descanso ? null : configDia.expected;
+       
+       let isLate = false;
+       if (expectedMinutes !== null) {
+           let actualMinutes = parseTimeMinutes(reg.hora);
+           isLate = (actualMinutes > (expectedMinutes + 5)); // 5 mins tolerancia
+       }
 
        if(!empStats[reg.nombre]) empStats[reg.nombre] = { nombre: reg.nombre, sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
        if(!branchStats[reg.sucursal]) branchStats[reg.sucursal] = { sucursal: reg.sucursal, aTiempo: 0, retardos: 0, total: 0 };
@@ -844,22 +906,25 @@
   function procesarDatosHoy(allData) {
     let data = (currentClinicFilter === 'Global') ? allData : allData.filter(d => d.sucursal === currentClinicFilter);
 
+    const dateHoy = new Date();
+    const dStr = String(dateHoy.getDate()).padStart(2, '0');
+    const mStr = String(dateHoy.getMonth() + 1).padStart(2, '0');
+    const yStr = dateHoy.getFullYear();
+    const hoyFormat1 = `${yStr}-${mStr}-${dStr}`;
+    const numDia = dateHoy.getDay();
+
     if(!data || data.length === 0) {
       mostrarVacio();
       return;
     }
 
     const registrosHoy = data.filter(d => isDateToday(d.fecha));
-    if(registrosHoy.length === 0) {
-      mostrarVacio();
-      return;
-    }
-
+    
+    let htmlTabla = '';
     let entradas = 0;
     let retardos = 0;
     let tempranoList = [];
     let tardeList = [];
-    let htmlTabla = '';
 
     const clinicasStats = {
       "Tijuana": { total: 0, aTiempo: 0 },
@@ -868,59 +933,106 @@
       "Mexicali - Villa Verde": { total: 0, aTiempo: 0 }
     };
 
-    registrosHoy.reverse().forEach(reg => {
-      let isLate = false;
-      let statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Registro</div>`;
-
-      let actualMinutes = parseTimeMinutes(reg.hora);
-
-      if (reg.tipo === "Entrada") {
-        entradas++;
-        let expectedMinutes = 10 * 60; // 10:00 AM = 600 min
-        if (reg.sucursal !== "Tijuana" && numDia === 6) {
-          expectedMinutes = 9 * 60; // 9:00 AM = 540 min
+    if(registrosHoy.length > 0) {
+      registrosHoy.reverse().forEach(reg => {
+        let isLate = false;
+        let statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Registro</div>`;
+        let actualMinutes = parseTimeMinutes(reg.hora);
+        
+        // Cargar minutos esperados (Entrada) según perfil
+        let configDia = obtenerMinutosEsperados(reg.nombre, reg.sucursal, numDia);
+        let expectedMinutes = configDia.descanso ? null : configDia.expected;
+        
+        // Determinar hora esperada de Salida
+        let profile = globalPerfiles.find(p => p.Nombre === reg.nombre && p.Sucursal === reg.sucursal);
+        let expectedExitMinutes = null;
+        if (profile && !configDia.descanso) {
+           const diasMap = { 0: 'Domingo', 1: 'Lunes', 2: 'Martes', 3: 'Miercoles', 4: 'Jueves', 5: 'Viernes', 6: 'Sabado' };
+           let hor = profile[diasMap[numDia]];
+           if (hor && hor.includes('-')) {
+               let hSalida = hor.split('-')[1];
+               if(hSalida) {
+                   let pts = hSalida.split(':');
+                   if(pts.length===2) expectedExitMinutes = (parseInt(pts[0], 10)*60)+parseInt(pts[1], 10);
+               }
+           }
+        }
+        // Fallback global de salida si no hay perfil
+        if(expectedExitMinutes === null) {
+           expectedExitMinutes = 18 * 60; // 18:00
+           if (reg.sucursal !== "Tijuana" && numDia === 6) expectedExitMinutes = 17 * 60; // 17:00 Sabados otras clínicas
         }
 
-        // Retardo: después de los 5 minutos de tolerancia
-        if (actualMinutes > (expectedMinutes + 5)) {
-          isLate = true;
+        // Check Excepción
+        let exc = tieneExcepcion(reg.nombre, reg.sucursal, reg.fecha);
+        
+        if (reg.tipo === "Entrada") {
+          entradas++;
+          if (exc) {
+            statusHtml = `<div class="status-dot"><span class="dot" style="background:#3B82F6;"></span> ${exc.Tipo}</div>`;
+          } else {
+            if (expectedMinutes !== null && actualMinutes > (expectedMinutes + 5)) {
+              isLate = true;
+            }
+            if (isLate) {
+              retardos++;
+              tardeList.push(reg);
+              statusHtml = `<div class="status-dot"><span class="dot dot-red"></span> Retardo</div>`;
+            } else {
+              tempranoList.push(reg);
+              statusHtml = `<div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>`;
+              if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].aTiempo++;
+            }
+          }
+          if (clinicasStats[reg.sucursal] && !exc) clinicasStats[reg.sucursal].total++;
+        
+        } else if (reg.tipo === "Salida") {
+          if (exc) {
+            statusHtml = `<div class="status-dot"><span class="dot" style="background:#3B82F6;"></span> ${exc.Tipo}</div>`;
+          } else if (actualMinutes < (expectedExitMinutes - 5)) {
+            statusHtml = `<div class="status-dot"><span class="dot" style="background:#F59E0B;"></span> Salida anticipada</div>`;
+          } else {
+            statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Salida a tiempo</div>`;
+          }
         }
 
-        if (isLate) {
-          retardos++;
-          tardeList.push(reg);
-          statusHtml = `<div class="status-dot"><span class="dot dot-red"></span> Retardo</div>`;
-        } else {
-          tempranoList.push(reg);
-          statusHtml = `<div class="status-dot"><span class="dot dot-green"></span> A tiempo</div>`;
-          if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].aTiempo++;
-        }
-        if (clinicasStats[reg.sucursal]) clinicasStats[reg.sucursal].total++;
+        htmlTabla += `
+          <tr>
+            <td data-label="Empleado" style="font-weight: 500;">${reg.nombre}</td>
+            <td data-label="Clínica" style="color: var(--text-muted);">${reg.sucursal}</td>
+            <td data-label="Movimiento">${reg.tipo}</td>
+            <td data-label="Hora">${reg.hora}</td>
+            <td data-label="Estado">${statusHtml}</td>
+          </tr>
+        `;
+      });
+    }
+
+    // Agregar ausencias reportadas para HOY que NO hicieron check-in
+    let excHoy = globalExcepciones.filter(e => e.Fecha && (e.Fecha.includes(hoyFormat1) || e.Fecha.includes(`${dStr}/${mStr}/${yStr}`)));
+    if (currentClinicFilter !== 'Global') excHoy = excHoy.filter(e => e.Sucursal === currentClinicFilter);
+
+    excHoy.forEach(exc => {
+      // Si ya hizo un registro hoy (como entrada), no lo volvemos a listar como ausente puro
+      if (registrosHoy.some(r => r.nombre === exc.Nombre && r.sucursal === exc.Sucursal)) return;
       
-      } else if (reg.tipo === "Salida") {
-        let expectedExitMinutes = 18 * 60; // 6:00 PM = 1080 min
-        if (reg.sucursal !== "Tijuana" && numDia === 6) {
-          expectedExitMinutes = 17 * 60; // 5:00 PM = 1020 min
-        }
-
-        // Tolerancia de 5 minutos antes de la salida (ej. 5:55 PM)
-        if (actualMinutes < (expectedExitMinutes - 5)) {
-          statusHtml = `<div class="status-dot"><span class="dot" style="background:#F59E0B;"></span> Salida anticipada</div>`;
-        } else {
-          statusHtml = `<div class="status-dot"><span class="dot dot-gray"></span> Salida a tiempo</div>`;
-        }
-      }
-
       htmlTabla += `
-        <tr>
-          <td data-label="Empleado" style="font-weight: 500;">${reg.nombre}</td>
-          <td data-label="Clínica" style="color: var(--text-muted);">${reg.sucursal}</td>
-          <td data-label="Movimiento">${reg.tipo}</td>
-          <td data-label="Hora">${reg.hora}</td>
-          <td data-label="Estado">${statusHtml}</td>
-        </tr>
+          <tr style="background: rgba(59, 130, 246, 0.05);">
+            <td data-label="Empleado" style="font-weight: 500; color: #3B82F6;">${exc.Nombre}</td>
+            <td data-label="Clínica" style="color: var(--text-muted);">${exc.Sucursal}</td>
+            <td data-label="Movimiento">Inasistencia</td>
+            <td data-label="Hora">--:--</td>
+            <td data-label="Estado">
+              <div class="status-dot"><span class="dot" style="background:#3B82F6;"></span> ${exc.Tipo}</div>
+            </td>
+          </tr>
       `;
     });
+
+    if(!htmlTabla) {
+      mostrarVacio();
+      return;
+    }
 
     document.getElementById('tablaRegistros').innerHTML = htmlTabla;
 
