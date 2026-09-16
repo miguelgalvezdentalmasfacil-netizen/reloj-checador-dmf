@@ -370,6 +370,18 @@
         <p style="font-size: 13px; color: var(--text-light); margin: 0;">Define a qué hora entras y sales cada día. Si no trabajas, apaga el interruptor.</p>
       </div>
       
+      <!-- Contenedor de Estado de Bloqueo -->
+      <div id="lockStateContainer" style="display: none; background: var(--surface); border: 1px solid var(--border-dark); padding: 24px; border-radius: var(--radius-lg); text-align: center; margin-bottom: 24px;">
+        <div id="lockIcon" style="margin-bottom: 12px; display: flex; justify-content: center;">
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="var(--text-muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        </div>
+        <h4 id="lockTitle" style="margin: 0 0 8px; color: var(--text-main); font-size: 16px;">Horario Protegido</h4>
+        <p id="lockDesc" style="margin: 0 0 16px; color: var(--text-muted); font-size: 14px;">Tu horario está bloqueado por seguridad.</p>
+        <button class="btn-settings-outline" id="btnSolicitarCambio" onclick="solicitarPermiso()" style="width: 100%; border-radius: 12px; padding: 12px; font-weight: 500; display: flex; justify-content: center;">
+          Solicitar Permiso para Editar
+        </button>
+      </div>
+
       <div id="horariosContainer"></div>
 
       <button class="btn-guardar" id="btnGuardarConfig" onclick="guardarConfiguracion()" style="margin-top: 24px;">Guardar Perfil y Horario</button>
@@ -531,23 +543,97 @@
     }
   }
 
-  function mostrarConfiguracion() {
+  async function mostrarConfiguracion() {
     document.getElementById('configSection').classList.remove('display-none');
     document.getElementById('userBadge').style.display = 'none';
     document.getElementById('punchSection').style.display = 'none';
-    document.getElementById('nombre').value = localStorage.getItem('dmf_nombre') || '';
-    document.getElementById('sucursal').value = localStorage.getItem('dmf_sucursal') || '';
+    
+    const nombreGuardado = localStorage.getItem('dmf_nombre');
+    const sucursalGuardada = localStorage.getItem('dmf_sucursal');
+    
+    document.getElementById('nombre').value = nombreGuardado || '';
+    document.getElementById('sucursal').value = sucursalGuardada || '';
+    
+    const lockContainer = document.getElementById('lockStateContainer');
+    const horariosCont = document.getElementById('horariosContainer');
+    const btnGuardar = document.getElementById('btnGuardarConfig');
+    const lockTitle = document.getElementById('lockTitle');
+    const lockDesc = document.getElementById('lockDesc');
+    const btnSolicitar = document.getElementById('btnSolicitarCambio');
     
     // Si ya existe un nombre, mostrar la sección de excepciones y botón volver
-    if(localStorage.getItem('dmf_nombre')) {
+    if(nombreGuardado && sucursalGuardada) {
       document.getElementById('excepcionesSection').style.display = 'block';
       document.getElementById('btnVolverConfig').classList.remove('display-none');
+      
+      // Ocultar temporalmente para verificar
+      horariosCont.style.display = 'none';
+      btnGuardar.style.display = 'none';
+      lockContainer.style.display = 'block';
+      lockTitle.innerText = "Verificando...";
+      lockDesc.innerText = "Revisando permisos de edición con el servidor.";
+      btnSolicitar.style.display = 'none';
+      
+      try {
+        const res = await fetch(`${API_URL}?action=verificar_edicion&nombre=${encodeURIComponent(nombreGuardado)}&sucursal=${encodeURIComponent(sucursalGuardada)}&t=${new Date().getTime()}`);
+        const data = await res.json();
+        const estado = data.estado;
+        
+        if (estado === "Abierto") {
+           lockContainer.style.display = 'none';
+           horariosCont.style.display = 'block';
+           btnGuardar.style.display = 'block';
+           document.getElementById('nombre').readOnly = false;
+           document.getElementById('sucursal').disabled = false;
+        } else if (estado === "Pendiente") {
+           lockTitle.innerText = "Solicitud Enviada";
+           lockDesc.innerText = "Esperando que el administrador apruebe el cambio.";
+           document.getElementById('nombre').readOnly = true;
+           document.getElementById('sucursal').disabled = true;
+        } else {
+           // Cerrado o cualquier otro
+           lockTitle.innerText = "Horario Protegido";
+           lockDesc.innerText = "Tu horario está bloqueado por seguridad. Solicita acceso para modificarlo.";
+           btnSolicitar.style.display = 'flex';
+           document.getElementById('nombre').readOnly = true;
+           document.getElementById('sucursal').disabled = true;
+        }
+      } catch (e) {
+        lockTitle.innerText = "Error de Conexión";
+        lockDesc.innerText = "No se pudo verificar el permiso. Revisa tu internet.";
+        document.getElementById('nombre').readOnly = true;
+        document.getElementById('sucursal').disabled = true;
+      }
+      
     } else {
       document.getElementById('excepcionesSection').style.display = 'none';
       document.getElementById('btnVolverConfig').classList.add('display-none');
+      
+      // Usuario nuevo, todo abierto
+      lockContainer.style.display = 'none';
+      horariosCont.style.display = 'block';
+      btnGuardar.style.display = 'block';
     }
     
     inicializarHorarios();
+  }
+  
+  async function solicitarPermiso() {
+    const nombreGuardado = localStorage.getItem('dmf_nombre');
+    const sucursalGuardada = localStorage.getItem('dmf_sucursal');
+    if (!nombreGuardado) return;
+    
+    const btnSolicitar = document.getElementById('btnSolicitarCambio');
+    btnSolicitar.innerText = "Enviando...";
+    
+    try {
+      await fetch(`${API_URL}?action=solicitar_edicion&nombre=${encodeURIComponent(nombreGuardado)}&sucursal=${encodeURIComponent(sucursalGuardada)}`, { mode: 'no-cors' });
+      document.getElementById('lockTitle').innerText = "Solicitud Enviada";
+      document.getElementById('lockDesc').innerText = "Esperando que el administrador apruebe el cambio. Revisa más tarde.";
+      btnSolicitar.style.display = 'none';
+    } catch(e) {
+      btnSolicitar.innerText = "Error. Intentar de nuevo";
+    }
   }
 
   async function guardarConfiguracion() {

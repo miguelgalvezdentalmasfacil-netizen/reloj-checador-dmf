@@ -296,6 +296,7 @@
   <div class="tabs-container">
     <button class="tab-btn active" onclick="switchTab('diario', this)">Monitoreo Diario (Hoy)</button>
     <button class="tab-btn" onclick="switchTab('mensual', this)">Métricas del Mes</button>
+    <button class="tab-btn" onclick="switchTab('personal', this)">Empleados y Accesos</button>
   </div>
 
   <div id="view-diario" class="view-section active">
@@ -479,6 +480,31 @@
       <!-- Llenado dinámicamente -->
     </div>
   </div> <!-- Fin de view-mensual -->
+
+  <!-- VISTA PERSONAL -->
+  <div id="view-personal" class="view-section">
+    <div class="card" style="margin-top: 24px;">
+      <h3 style="margin: 0 0 16px; font-weight: 500;">Administración de Horarios y Rendimiento</h3>
+      <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 24px;">Calificación basada en el mes actual (Comienza en 100 - Penalización por retardos y faltas). Aquí puedes otorgar permisos para modificar horarios.</p>
+      
+      <div style="overflow-x: auto;">
+        <table class="table" id="tablaPersonal">
+          <thead>
+            <tr>
+              <th>Empleado</th>
+              <th>Clínica</th>
+              <th>Rendimiento</th>
+              <th>Estado Horario</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px 0;">Cargando perfiles...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
 
 </div> <!-- FIN CONTAINER GENERAL -->
       </div> <!-- Fin container -->
@@ -703,6 +729,7 @@
       
       procesarDatosHoy(data);
       procesarDatosMensuales(data);
+      procesarPersonal();
 
       // Actualizar indicador de última conexión
       const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -1260,6 +1287,123 @@
 </style>
 
 <script>
+  // --- VISTA PERSONAL Y ACCESOS ---
+  function procesarPersonal() {
+    const tbody = document.querySelector('#tablaPersonal tbody');
+    tbody.innerHTML = '';
+    
+    if (!globalPerfiles || globalPerfiles.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; padding: 20px;">No hay perfiles registrados.</td></tr>';
+      return;
+    }
+
+    // Filtrar por clínica si no es Global
+    const perfilesFiltrados = (currentClinicFilter === 'Global') 
+      ? globalPerfiles 
+      : globalPerfiles.filter(p => p.Sucursal === currentClinicFilter);
+
+    // Calcular "Calificación" basada en los retardos y faltas de este mes.
+    // Primero, precalcular retardos/faltas por persona para el mes actual
+    const statsMensuales = {};
+    const dateNow = new Date();
+    const currentMonth = dateNow.getMonth();
+    const currentYear = dateNow.getFullYear();
+
+    globalData.forEach(row => {
+      let fStr = row.Fecha;
+      if (!fStr) return;
+      let p = fStr.split(/[-/]/);
+      if (p.length < 3) return;
+      let d = parseInt(p[0], 10), m = parseInt(p[1], 10) - 1, y = parseInt(p[2], 10);
+      
+      if (m === currentMonth && y === currentYear && row.Tipo === 'Entrada') {
+        const key = row.Nombre + "|" + row.Sucursal;
+        if (!statsMensuales[key]) statsMensuales[key] = { retardos: 0 };
+        
+        let dSemana = new Date(y, m, d).getDay();
+        const expectedInfo = obtenerMinutosEsperados(row.Nombre, row.Sucursal, dSemana);
+        
+        if (expectedInfo.expected !== null) {
+          let timeParts = row.Hora.split(' ');
+          let hm = timeParts[0].split(':');
+          if (hm.length === 2) {
+            let h = parseInt(hm[0], 10);
+            let mins = parseInt(hm[1], 10);
+            if (timeParts[1] && timeParts[1].toLowerCase().includes('p.m.') && h !== 12) h += 12;
+            if (timeParts[1] && timeParts[1].toLowerCase().includes('a.m.') && h === 12) h = 0;
+            
+            let realMins = (h * 60) + mins;
+            let tardanza = realMins - expectedInfo.expected;
+            if (tardanza > 10) {
+              statsMensuales[key].retardos += 1;
+            }
+          }
+        }
+      }
+    });
+
+    perfilesFiltrados.forEach(perfil => {
+      const key = perfil.Nombre + "|" + perfil.Sucursal;
+      const retardos = statsMensuales[key] ? statsMensuales[key].retardos : 0;
+      
+      // Calificación: base 100, -10 por retardo (ejemplo)
+      let score = 100 - (retardos * 10);
+      if (score < 0) score = 0;
+      
+      let badgeColor = score >= 90 ? '#10B981' : (score >= 70 ? '#F59E0B' : '#EF4444');
+      
+      const estado = perfil.EstadoEdicion || 'Cerrado';
+      let estadoHtml = '';
+      let accionHtml = '';
+      
+      if (estado === 'Abierto') {
+        estadoHtml = '<span style="color:#10B981; font-weight:500;">Abierto</span>';
+        accionHtml = '<span style="color:var(--text-light); font-size:13px;">Sin acción</span>';
+      } else if (estado === 'Pendiente') {
+        estadoHtml = '<span style="color:#F59E0B; font-weight:500; display:flex; align-items:center; gap:4px;"><span style="width:8px; height:8px; background:#F59E0B; border-radius:50%; display:inline-block; animation: blink 1s infinite;"></span>Solicitando</span>';
+        accionHtml = `<button class="btn-outline" style="padding: 6px 12px; font-size:13px; color:#10B981; border-color:#10B981;" onclick="otorgarAcceso('${perfil.Nombre}', '${perfil.Sucursal}', this)">Dar Acceso</button>`;
+      } else {
+        estadoHtml = '<span style="color:var(--text-muted);">Cerrado</span>';
+        accionHtml = `<button class="btn-outline" style="padding: 6px 12px; font-size:13px;" onclick="otorgarAcceso('${perfil.Nombre}', '${perfil.Sucursal}', this)">Forzar Apertura</button>`;
+      }
+
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td style="font-weight: 500;">${perfil.Nombre}</td>
+        <td style="color: var(--text-muted);">${perfil.Sucursal}</td>
+        <td>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="flex:1; height:6px; background:var(--border-dark); border-radius:3px; overflow:hidden;">
+              <div style="height:100%; width:${score}%; background:${badgeColor};"></div>
+            </div>
+            <span style="font-weight:600; color:${badgeColor}; font-size:14px;">${score}</span>
+          </div>
+        </td>
+        <td>${estadoHtml}</td>
+        <td>${accionHtml}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
+
+  async function otorgarAcceso(nombre, sucursal, btn) {
+    const originalText = btn.innerText;
+    btn.innerText = "Abriendo...";
+    btn.disabled = true;
+    
+    try {
+      await fetch(`${API_URL}?action=aprobar_edicion&nombre=${encodeURIComponent(nombre)}&sucursal=${encodeURIComponent(sucursal)}`, { mode: 'no-cors' });
+      // Simular cambio local rápido
+      const p = globalPerfiles.find(x => x.Nombre === nombre && x.Sucursal === sucursal);
+      if(p) p.EstadoEdicion = "Abierto";
+      procesarPersonal(); // re-render
+    } catch(e) {
+      alert("Error al otorgar acceso. Intenta de nuevo.");
+      btn.innerText = originalText;
+      btn.disabled = false;
+    }
+  }
+
   // Registro de SW para Android
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
