@@ -25,16 +25,23 @@ function registrarAsistencia(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Registro");
   if (!sheet) {
     sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Registro");
-    sheet.appendRow(["Fecha", "Hora", "Nombre", "Sucursal", "Tipo"]);
+    sheet.appendRow(["Fecha", "Hora", "Nombre", "Sucursal", "Tipo", "Ubicacion"]);
   }
   
   var fecha = e.parameter.fecha;
   var hora = e.parameter.hora;
   var nombre = e.parameter.nombre;
   var sucursal = e.parameter.sucursal;
-  var tipo = e.parameter.tipo; // Entrada o Salida
+  var tipo = e.parameter.tipo; 
+  var ubicacion = e.parameter.ubicacion || "Sin ubicación";
   
-  sheet.appendRow([fecha, hora, nombre, sucursal, tipo]);
+  // Revisar si faltan headers en la hoja existente
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  if (headers.indexOf("Ubicacion") === -1) {
+    sheet.getRange(1, headers.length + 1).setValue("Ubicacion");
+  }
+  
+  sheet.appendRow([fecha, hora, nombre, sucursal, tipo, ubicacion]);
   
   return ContentService.createTextOutput(JSON.stringify({"status": "ok"}))
     .setMimeType(ContentService.MimeType.JSON);
@@ -53,6 +60,7 @@ function obtenerDatos() {
     var row = data[i];
     var obj = {};
     for (var j = 0; j < headers.length; j++) {
+      // Normalizar nombre de clave a minusculas si se requiere, pero lo dejaremos exacto.
       obj[headers[j]] = row[j];
     }
     result.push(obj);
@@ -72,19 +80,16 @@ function guardarPerfil(e) {
   
   var nombre = e.parameter.nombre;
   var sucursal = e.parameter.sucursal;
-  var horariosStr = e.parameter.horarios; // JSON string
+  var horariosStr = e.parameter.horarios; 
   
   var horarios = {};
   try {
     horarios = JSON.parse(horariosStr);
-  } catch (err) {
-    // Error parseando json
-  }
+  } catch (err) {}
 
   var data = sheet.getDataRange().getValues();
   var rowIndex = -1;
   
-  // Buscar si ya existe el usuario
   for (var i = 1; i < data.length; i++) {
     if (data[i][0] == nombre && data[i][1] == sucursal) {
       rowIndex = i + 1;
@@ -105,10 +110,8 @@ function guardarPerfil(e) {
   ];
   
   if (rowIndex > -1) {
-    // Actualizar
     sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);
   } else {
-    // Insertar nuevo
     sheet.appendRow(rowData);
   }
   
@@ -127,7 +130,7 @@ function guardarExcepcion(e) {
   var nombre = e.parameter.nombre;
   var sucursal = e.parameter.sucursal;
   var fecha = e.parameter.fecha;
-  var tipo = e.parameter.tipo; // "Falta", "Permiso", etc.
+  var tipo = e.parameter.tipo; 
   
   sheet.appendRow([nombre, sucursal, fecha, tipo]);
   
