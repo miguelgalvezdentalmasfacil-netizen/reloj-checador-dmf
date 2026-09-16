@@ -475,26 +475,26 @@
   cargarDatosGuardados();
 
 </script>
-<!-- PWA iOS Helper -->
-<div id="ios-pwa-prompt" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 400px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.5); padding: 24px 20px 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(16, 185, 129, 0.15); z-index: 9999; text-align: center; font-family: 'Inter', sans-serif;">
-  <button onclick="document.getElementById('ios-pwa-prompt').style.display='none'" style="position: absolute; right: 16px; top: 16px; background: #334155; border: none; width: 28px; height: 28px; border-radius: 50%; color: #F8FAFC; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">✕</button>
+<!-- PWA Assistant -->
+<div id="pwa-prompt" style="display: none; position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); width: calc(100% - 32px); max-width: 400px; background: rgba(30, 41, 59, 0.95); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(16, 185, 129, 0.5); padding: 24px 20px 20px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.6), 0 0 20px rgba(16, 185, 129, 0.15); z-index: 9999; text-align: center; font-family: 'Inter', sans-serif;">
+  <button onclick="document.getElementById('pwa-prompt').style.display='none'" style="position: absolute; right: 16px; top: 16px; background: #334155; border: none; width: 28px; height: 28px; border-radius: 50%; color: #F8FAFC; font-size: 14px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.2s;">✕</button>
   <div style="width: 48px; height: 48px; background: rgba(16, 185, 129, 0.15); color: #10B981; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px auto;">
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>
   </div>
   <h3 style="font-size: 18px; font-weight: 600; color: #F8FAFC; margin: 0 0 8px 0;">Instala la App Oficial</h3>
-  <p style="font-size: 14px; color: #94A3B8; margin: 0 0 20px 0; line-height: 1.5;">Sigue estos rápidos pasos en el menú de Safari:</p>
+  <p id="pwa-subtitle" style="font-size: 14px; color: #94A3B8; margin: 0 0 20px 0; line-height: 1.5;">Sigue estos rápidos pasos:</p>
   <div style="display: flex; flex-direction: column; gap: 12px; text-align: left; background: rgba(0,0,0,0.25); padding: 16px; border-radius: 12px; margin-bottom: 24px; border: 1px solid rgba(255,255,255,0.05);">
-      <div style="display: flex; align-items: center; gap: 12px; color: #E2E8F0; font-size: 14px;">
+      <div id="pwa-step1" style="display: flex; align-items: center; gap: 12px; color: #E2E8F0; font-size: 14px;">
           <div style="background: #334155; padding: 6px; border-radius: 8px; display: flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></div>
-          <span><b>1.</b> Toca los <b>3 puntos</b></span>
+          <span id="pwa-text1"><b>1.</b> Toca los <b>3 puntos</b></span>
       </div>
-      <div style="display: flex; align-items: center; gap: 12px; color: #E2E8F0; font-size: 14px;">
-          <div style="background: #334155; padding: 6px; border-radius: 8px; display: flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg></div>
-          <span><b>2.</b> Toca en <b>Compartir</b></span>
+      <div id="pwa-step2" style="display: flex; align-items: center; gap: 12px; color: #E2E8F0; font-size: 14px;">
+          <div style="background: #334155; padding: 6px; border-radius: 8px; display: flex;"><svg id="icon-step2" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><polyline points="16 6 12 2 8 6"></polyline><line x1="12" y1="2" x2="12" y2="15"></line></svg></div>
+          <span id="pwa-text2"><b>2.</b> Toca en <b>Compartir</b></span>
       </div>
-      <div style="display: flex; align-items: center; gap: 12px; color: #E2E8F0; font-size: 14px;">
+      <div id="pwa-step3" style="display: flex; align-items: center; gap: 12px; color: #E2E8F0; font-size: 14px;">
           <div style="background: #334155; padding: 6px; border-radius: 8px; display: flex;"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg></div>
-          <span><b>3.</b> Elige <b>Agregar a Inicio</b></span>
+          <span id="pwa-text3"><b>3.</b> Elige <b>Agregar a Inicio</b></span>
       </div>
   </div>
   <div style="color: #10B981; animation: bouncePwa 1.5s infinite; display: flex; justify-content: center;">
@@ -506,20 +506,32 @@
 </style>
 
 <script>
-  // Registro de Service Worker para Android Install Prompt
+  // Registro de SW para Android
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
       navigator.serviceWorker.register('sw.js').catch(err => console.log('SW error', err));
     });
   }
   
-  // Detección de iOS para mostrar el asistente visual
+  // Detección Inteligente del Asistente PWA
   window.addEventListener('load', () => {
     const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isAndroid = /Android/.test(navigator.userAgent);
     const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-    // Si es iOS y NO está instalada (abierta en navegador o in-app)
-    if (isIOS && !isStandalone) {
-      document.getElementById('ios-pwa-prompt').style.display = 'block';
+    
+    if (!isStandalone) {
+      const prompt = document.getElementById('pwa-prompt');
+      if (isIOS) {
+         document.getElementById('pwa-subtitle').textContent = "Sigue estos rápidos pasos en el menú de Safari:";
+         prompt.style.display = 'block';
+      } else if (isAndroid) {
+         document.getElementById('pwa-subtitle').textContent = "Sigue estos rápidos pasos:";
+         document.getElementById('pwa-text1').innerHTML = "<b>1.</b> Toca los <b>3 puntos (⋮)</b> arriba a la derecha";
+         document.getElementById('pwa-text2').innerHTML = "<b>2.</b> Selecciona <b>Instalar aplicación</b> (o Agregar a inicio)";
+         document.getElementById('icon-step2').innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>';
+         document.getElementById('pwa-step3').style.display = 'none'; // Android solo ocupa 2 pasos
+         prompt.style.display = 'block';
+      }
     }
   });
 </script>
