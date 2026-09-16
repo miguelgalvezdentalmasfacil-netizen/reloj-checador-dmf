@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "Panel DMF",
   "short_name": "Panel DMF",
   "start_url": "https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/panel.html",
@@ -7,14 +7,16 @@
   "theme_color": "#0F172A",
   "icons": [
     {
-      "src": "https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo.png",
+      "src": "https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo-192.png",
       "sizes": "192x192",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     },
     {
-      "src": "https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo.png",
+      "src": "https://miguelgalvezdentalmasfacil-netizen.github.io/reloj-checador-dmf/logo-512.png",
       "sizes": "512x512",
-      "type": "image/png"
+      "type": "image/png",
+      "purpose": "any maskable"
     }
   ]
 }
