@@ -51,6 +51,7 @@
   html {
     background-color: var(--bg-color);
     overscroll-behavior-y: none;
+    overflow-x: hidden;
   }
   body {
     margin: 0; padding: 0;
@@ -61,6 +62,7 @@
     -webkit-font-smoothing: antialiased;
     transition: background-color 0.3s, color 0.3s;
     overscroll-behavior-y: none;
+    overflow-x: hidden;
   }
   
   svg { display: block; }
@@ -269,6 +271,8 @@
     display: flex;
     align-items: center;
     gap: 6px;
+    flex: 1;
+    justify-content: flex-end;
   }
   .time-input {
     background: transparent;
@@ -279,6 +283,8 @@
     padding: 6px;
     border-radius: 6px;
     outline: none;
+    max-width: 95px;
+    width: 100%;
   }
   .time-input:focus { border-color: var(--text-muted); }
 </style>
@@ -306,9 +312,14 @@
     
     <!-- Paso 1: Configuración de Perfil (Oculto si ya hay datos) -->
     <div id="configSection">
-      <div style="text-align: center; margin-bottom: 24px;">
-        <h2 style="margin: 0 0 8px; font-size: 20px; color: var(--text-main); font-weight: 500;">Configuración de Perfil</h2>
-        <p style="margin: 0; color: var(--text-muted); font-size: 14px;">Actualiza tus datos y horarios</p>
+      <div style="display: flex; align-items: center; margin-bottom: 24px; position: relative;">
+        <button id="btnVolverConfig" class="display-none btn-settings-outline" onclick="cargarDatosGuardados()" style="position: absolute; left: 0; border:none; background:transparent;" title="Volver">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+        </button>
+        <div style="flex: 1; text-align: center;">
+          <h2 style="margin: 0 0 8px; font-size: 20px; color: var(--text-main); font-weight: 500;">Configuración</h2>
+          <p style="margin: 0; color: var(--text-muted); font-size: 14px;">Actualiza tus datos y horarios</p>
+        </div>
       </div>
       
       <div class="form-group">
@@ -500,11 +511,13 @@
     document.getElementById('nombre').value = localStorage.getItem('dmf_nombre') || '';
     document.getElementById('sucursal').value = localStorage.getItem('dmf_sucursal') || '';
     
-    // Si ya existe un nombre, mostrar la sección de excepciones
+    // Si ya existe un nombre, mostrar la sección de excepciones y botón volver
     if(localStorage.getItem('dmf_nombre')) {
       document.getElementById('excepcionesSection').style.display = 'block';
+      document.getElementById('btnVolverConfig').classList.remove('display-none');
     } else {
       document.getElementById('excepcionesSection').style.display = 'none';
+      document.getElementById('btnVolverConfig').classList.add('display-none');
     }
     
     inicializarHorarios();
