@@ -136,8 +136,9 @@
     
     .container { 
       margin: 0; padding: 24px 20px calc(env(safe-area-inset-bottom) + 32px) 20px; 
-      max-width: 100%; flex: 1; height: auto;
-      overflow-y: auto; overscroll-behavior-y: none;
+      max-width: 100%; width: 100vw; flex: 1; height: auto;
+      overflow-y: auto; overflow-x: hidden; overscroll-behavior-y: none;
+      box-sizing: border-box;
     }
     .card { padding: 0; border: none; box-shadow: none; background: transparent; margin-bottom: 0; }
     
@@ -287,6 +288,26 @@
     width: 100%;
   }
   .time-input:focus { border-color: var(--text-muted); }
+  
+  @media (max-width: 480px) {
+    .day-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 16px 12px;
+    }
+    .day-toggle {
+      width: 100%;
+    }
+    .time-inputs {
+      width: 100%;
+      justify-content: space-between;
+    }
+    .time-input {
+      max-width: 48%;
+      flex: 1;
+    }
+  }
 </style>
 </head>
 <body>
