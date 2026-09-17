@@ -79,7 +79,7 @@ function guardarPerfil(e) {
   var sheet = SpreadsheetApp.getActiveSpreadsheet().getSheetByName("Perfiles");
   if (!sheet) {
     sheet = SpreadsheetApp.getActiveSpreadsheet().insertSheet("Perfiles");
-    sheet.appendRow(["Nombre", "Sucursal", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo", "EstadoEdicion"]);
+    sheet.appendRow(["Nombre", "Sucursal", "Puesto", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo", "EstadoEdicion"]);
   }
   
   var headers = sheet.getRange(1, 1, 1, Math.max(1, sheet.getLastColumn())).getValues()[0];
@@ -87,9 +87,14 @@ function guardarPerfil(e) {
     sheet.getRange(1, headers.length + 1).setValue("EstadoEdicion");
     headers.push("EstadoEdicion");
   }
+  if (headers.indexOf("Puesto") === -1) {
+    sheet.getRange(1, headers.length + 1).setValue("Puesto");
+    headers.push("Puesto");
+  }
 
   var nombre = e.parameter.nombre;
   var sucursal = e.parameter.sucursal;
+  var puesto = e.parameter.puesto || "No especificado";
   var horariosStr = e.parameter.horarios; 
   
   var horarios = {};
@@ -107,18 +112,20 @@ function guardarPerfil(e) {
     }
   }
   
-  var rowData = [
-    nombre, 
-    sucursal,
-    horarios.lunes || "",
-    horarios.martes || "",
-    horarios.miercoles || "",
-    horarios.jueves || "",
-    horarios.viernes || "",
-    horarios.sabado || "",
-    horarios.domingo || "",
-    "Cerrado" // Se bloquea al guardar
-  ];
+  // Mapeamos dinámicamente según los headers para no perder el orden si se añadieron columnas después
+  var rowData = new Array(headers.length).fill("");
+  rowData[headers.indexOf("Nombre")] = nombre;
+  rowData[headers.indexOf("Sucursal")] = sucursal;
+  
+  if (headers.indexOf("Puesto") > -1) rowData[headers.indexOf("Puesto")] = puesto;
+  if (headers.indexOf("Lunes") > -1) rowData[headers.indexOf("Lunes")] = horarios.lunes || "";
+  if (headers.indexOf("Martes") > -1) rowData[headers.indexOf("Martes")] = horarios.martes || "";
+  if (headers.indexOf("Miercoles") > -1) rowData[headers.indexOf("Miercoles")] = horarios.miercoles || "";
+  if (headers.indexOf("Jueves") > -1) rowData[headers.indexOf("Jueves")] = horarios.jueves || "";
+  if (headers.indexOf("Viernes") > -1) rowData[headers.indexOf("Viernes")] = horarios.viernes || "";
+  if (headers.indexOf("Sabado") > -1) rowData[headers.indexOf("Sabado")] = horarios.sabado || "";
+  if (headers.indexOf("Domingo") > -1) rowData[headers.indexOf("Domingo")] = horarios.domingo || "";
+  if (headers.indexOf("EstadoEdicion") > -1) rowData[headers.indexOf("EstadoEdicion")] = "Cerrado";
   
   if (rowIndex > -1) {
     sheet.getRange(rowIndex, 1, 1, rowData.length).setValues([rowData]);

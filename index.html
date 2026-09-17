@@ -354,14 +354,18 @@
         <input type="text" id="nombre" class="form-input" placeholder="Ej. Juan Pérez" autocomplete="off">
       </div>
       <div class="form-group">
-        <label class="form-label" for="sucursal">Selecciona tu Clínica</label>
-        <select id="sucursal" class="form-input">
-          <option value="">-- Elige una opción --</option>
+        <label class="form-label" for="sucursal">Sucursal</label>
+        <select id="sucursal" class="form-input" style="margin-bottom: 24px;" required>
+          <option value="" disabled selected>Selecciona tu clínica...</option>
           <option value="Tijuana">Tijuana</option>
           <option value="Ensenada">Ensenada</option>
           <option value="Mexicali - Obregón">Mexicali - Obregón</option>
           <option value="Mexicali - Villa Verde">Mexicali - Villa Verde</option>
         </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label" for="puesto">Puesto</label>
+        <input type="text" id="puesto" class="form-input" placeholder="Ej: Asistente Dental" autocomplete="off" style="margin-bottom: 24px;" required>
       </div>
 
       <!-- HORARIOS -->
@@ -550,9 +554,11 @@
     
     const nombreGuardado = localStorage.getItem('dmf_nombre');
     const sucursalGuardada = localStorage.getItem('dmf_sucursal');
+    const puestoGuardado = localStorage.getItem('dmf_puesto');
     
     document.getElementById('nombre').value = nombreGuardado || '';
     document.getElementById('sucursal').value = sucursalGuardada || '';
+    document.getElementById('puesto').value = puestoGuardado || '';
     
     const lockContainer = document.getElementById('lockStateContainer');
     const horariosCont = document.getElementById('horariosContainer');
@@ -585,11 +591,13 @@
            btnGuardar.style.display = 'block';
            document.getElementById('nombre').readOnly = false;
            document.getElementById('sucursal').disabled = false;
+           document.getElementById('puesto').readOnly = false;
         } else if (estado === "Pendiente") {
            lockTitle.innerText = "Solicitud Enviada";
            lockDesc.innerText = "Esperando que el administrador apruebe el cambio.";
            document.getElementById('nombre').readOnly = true;
            document.getElementById('sucursal').disabled = true;
+           document.getElementById('puesto').readOnly = true;
         } else {
            // Cerrado o cualquier otro
            lockTitle.innerText = "Horario Protegido";
@@ -597,12 +605,14 @@
            btnSolicitar.style.display = 'flex';
            document.getElementById('nombre').readOnly = true;
            document.getElementById('sucursal').disabled = true;
+           document.getElementById('puesto').readOnly = true;
         }
       } catch (e) {
         lockTitle.innerText = "Error de Conexión";
         lockDesc.innerText = "No se pudo verificar el permiso. Revisa tu internet.";
         document.getElementById('nombre').readOnly = true;
         document.getElementById('sucursal').disabled = true;
+        document.getElementById('puesto').readOnly = true;
       }
       
     } else {
@@ -639,8 +649,9 @@
   async function guardarConfiguracion() {
     const nombre = document.getElementById('nombre').value.trim();
     const sucursal = document.getElementById('sucursal').value;
-    if (!nombre || !sucursal) {
-      alert("Por favor completa tu nombre y elige una clínica.");
+    const puesto = document.getElementById('puesto').value.trim();
+    if (!nombre || !sucursal || !puesto) {
+      alert("Por favor completa tu nombre, puesto y elige una clínica.");
       return;
     }
 
@@ -659,6 +670,7 @@
 
     localStorage.setItem('dmf_nombre', nombre);
     localStorage.setItem('dmf_sucursal', sucursal);
+    localStorage.setItem('dmf_puesto', puesto);
     
     // Guardar horarios locales formato json original
     const horariosLocales = {};
@@ -677,6 +689,7 @@
         action: 'guardar_perfil',
         nombre: nombre,
         sucursal: sucursal,
+        puesto: puesto,
         horarios: JSON.stringify(horarios)
       });
       await fetch(API_URL + '?' + qs.toString(), { mode: 'no-cors' });

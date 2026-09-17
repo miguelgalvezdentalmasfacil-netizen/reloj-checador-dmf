@@ -297,6 +297,7 @@
     <button class="tab-btn active" onclick="switchTab('diario', this)">Monitoreo Diario (Hoy)</button>
     <button class="tab-btn" onclick="switchTab('mensual', this)">Métricas del Mes</button>
     <button class="tab-btn" onclick="switchTab('personal', this)">Empleados y Accesos</button>
+    <button class="tab-btn" onclick="switchTab('legal', this)">Reportes Legales (LFT)</button>
   </div>
 
   <div id="view-diario" class="view-section active">
@@ -500,6 +501,64 @@
           </thead>
           <tbody>
             <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px 0;">Cargando perfiles...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div id="view-legal" class="view-section">
+    <div class="header-section" style="margin-bottom: 24px;">
+      <div>
+        <h2 style="font-size: 20px; font-weight: 600; margin: 0 0 8px 0; color: var(--text-main);">Bitácoras Legales (LFT)</h2>
+        <p style="margin: 0; color: var(--text-muted); font-size: 14px;">Genera reportes formales de asistencia y cálculo de horas laboradas por semana y sucursal.</p>
+      </div>
+    </div>
+    
+    <div class="card" style="margin-bottom: 32px;">
+      <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 24px;">
+        <div style="flex: 1; min-width: 200px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Selecciona la Semana (Lunes a Domingo)</label>
+          <input type="date" id="legalFechaRef" class="form-input" style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
+        </div>
+        <div style="flex: 1; min-width: 200px;">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Sucursal a Exportar</label>
+          <select id="legalSucursal" class="form-input" style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: var(--surface); color: var(--text-main);">
+            <option value="Tijuana">Tijuana</option>
+            <option value="Ensenada">Ensenada</option>
+            <option value="Mexicali - Obregón">Mexicali - Obregón</option>
+            <option value="Mexicali - Villa Verde">Mexicali - Villa Verde</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn-punch" style="background: #10B981; color: #FFF; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;" onclick="generarBitacoraLegal()">Generar Bitácora</button>
+        </div>
+      </div>
+      
+      <div class="table-container" style="display: none;" id="legalTableContainer">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
+          <h3 id="legalTituloSemana" style="margin:0; font-size:16px;">Semana de...</h3>
+          <button class="btn-outline" style="border-color: var(--border-dark); color: var(--text-main);" onclick="descargarCSVLegal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            Exportar CSV
+          </button>
+        </div>
+        <table class="table" id="tablaLegal">
+          <thead>
+            <tr>
+              <th>Empleado / Puesto</th>
+              <th>Lu</th>
+              <th>Ma</th>
+              <th>Mi</th>
+              <th>Ju</th>
+              <th>Vi</th>
+              <th>Sa</th>
+              <th>Do</th>
+              <th>H. Ord.</th>
+              <th>H. Extra</th>
+            </tr>
+          </thead>
+          <tbody id="tbodyLegal">
           </tbody>
         </table>
       </div>
@@ -1415,6 +1474,184 @@
       btn.innerText = originalText;
       btn.disabled = false;
     }
+  }
+
+  // LOGICA PARA BITACORA LEGAL
+  function formatearH(minutos) {
+    if (!minutos || minutos <= 0) return "0h 0m";
+    const h = Math.floor(minutos / 60);
+    const m = Math.floor(minutos % 60);
+    if (h === 0) return `${m}m`;
+    return `${h}h ${m}m`;
+  }
+
+  function formatoM(timeStr) {
+    if (!timeStr) return "--:--";
+    // De 09:30 p.m. a 09:30 PM para verse más pro
+    return timeStr.replace(/\./g, "").toUpperCase();
+  }
+
+  function generarBitacoraLegal() {
+    const fechaRef = document.getElementById('legalFechaRef').value;
+    const sucursalRef = document.getElementById('legalSucursal').value;
+    
+    if(!fechaRef) {
+      alert("Por favor selecciona una fecha para ubicar la semana.");
+      return;
+    }
+
+    // Calcular inicio de semana (Lunes) y fin (Domingo)
+    const dObj = new Date(fechaRef + 'T12:00:00'); // Evitar timezone issues
+    const day = dObj.getDay(); // 0 = Domingo, 1 = Lunes
+    const diffToMonday = day === 0 ? -6 : 1 - day;
+    const lunes = new Date(dObj);
+    lunes.setDate(lunes.getDate() + diffToMonday);
+    
+    document.getElementById('legalTituloSemana').innerText = `Semana del ${lunes.toLocaleDateString()} - ${sucursalRef}`;
+    
+    const registrosFiltrados = globalData.filter(d => (d.Sucursal || d.sucursal) === sucursalRef);
+    const perfilesFiltrados = globalPerfiles.filter(p => p.Sucursal === sucursalRef);
+    
+    let html = '';
+    
+    // Matriz semanal: 0=Dom, 1=Lun, 2=Mar, 3=Mie, 4=Jue, 5=Vie, 6=Sab
+    // Para renderizar: Lun(1), Mar(2), Mie(3), Jue(4), Vie(5), Sab(6), Dom(0)
+    const diasOrden = [1, 2, 3, 4, 5, 6, 0];
+    
+    perfilesFiltrados.forEach(p => {
+      let ordMinsTotal = 0;
+      let extMinsTotal = 0;
+      let celdasDias = '';
+      
+      diasOrden.forEach(diaMap => {
+        // Calcular la fecha exacta de ese día en la semana
+        const offset = diaMap === 0 ? 6 : diaMap - 1; // 0 a 6 desde Lunes
+        const currentDayDate = new Date(lunes);
+        currentDayDate.setDate(lunes.getDate() + offset);
+        
+        const dStr = String(currentDayDate.getDate()).padStart(2, '0');
+        const mStr = String(currentDayDate.getMonth() + 1).padStart(2, '0');
+        const yStr = currentDayDate.getFullYear();
+        const isoMatch = `${yStr}-${mStr}-${dStr}`;
+        const locMatch = `${dStr}/${mStr}/${yStr}`;
+        
+        // Buscar registros del empleado ese día
+        const regsDia = registrosFiltrados.filter(r => {
+          if ((r.Nombre || r.nombre) !== p.Nombre) return false;
+          const fStr = r.Fecha || r.fecha;
+          return fStr && (String(fStr).includes(isoMatch) || String(fStr).includes(locMatch));
+        });
+        
+        const entrada = regsDia.find(r => (r.Tipo || r.tipo) === 'Entrada');
+        const salida = regsDia.find(r => (r.Tipo || r.tipo) === 'Salida');
+        
+        let cellText = '--';
+        if (entrada) {
+           let inStr = formatoM(entrada.Hora || entrada.hora);
+           let outStr = salida ? formatoM(salida.Hora || salida.hora) : "Falta Salida";
+           cellText = `${inStr}<br><span style="color:var(--text-light);font-size:11px">${outStr}</span>`;
+           
+           // Cálculo matemático de horas
+           if (salida) {
+             let mIn = parseTimeMinutes(entrada.Hora || entrada.hora);
+             let mOut = parseTimeMinutes(salida.Hora || salida.hora);
+             let workedMins = mOut - mIn;
+             if (workedMins < 0) workedMins += 24 * 60; // turno nocturno cross-day
+             
+             const expected = obtenerMinutosEsperados(p.Nombre, p.Sucursal, diaMap);
+             if (expected.descanso) {
+                // Todo es hora extra
+                extMinsTotal += workedMins;
+             } else {
+                // Hay horas ordinarias
+                let expectedMins = 0; // expected length of shift?
+                // we only know expected entry. Let's find expected exit.
+                const mapKeys = {0:'Domingo', 1:'Lunes', 2:'Martes', 3:'Miercoles', 4:'Jueves', 5:'Viernes', 6:'Sabado'};
+                let hor = p[mapKeys[diaMap]];
+                if (hor && hor.includes('-')) {
+                  let pIn = parseTimeMinutes(hor.split('-')[0]);
+                  let pOut = parseTimeMinutes(hor.split('-')[1]);
+                  let shiftLen = pOut - pIn;
+                  if (shiftLen < 0) shiftLen += 24 * 60;
+                  
+                  if (workedMins > shiftLen) {
+                    ordMinsTotal += shiftLen;
+                    extMinsTotal += (workedMins - shiftLen);
+                  } else {
+                    ordMinsTotal += workedMins;
+                  }
+                } else {
+                  ordMinsTotal += workedMins; // Fallback
+                }
+             }
+           }
+        }
+        
+        celdasDias += `<td style="font-size: 12px; line-height: 1.4;">${cellText}</td>`;
+      });
+      
+      html += `
+        <tr>
+          <td>
+            <div style="font-weight: 500; color: var(--text-main);">${p.Nombre}</div>
+            <div style="font-size: 12px; color: var(--text-muted);">${p.Puesto || "Sin puesto"}</div>
+          </td>
+          ${celdasDias}
+          <td style="font-weight: 600; color: #10B981;">${formatearH(ordMinsTotal)}</td>
+          <td style="font-weight: 600; color: #3B82F6;">${formatearH(extMinsTotal)}</td>
+        </tr>
+      `;
+    });
+    
+    if(html === '') {
+       html = `<tr><td colspan="10" style="text-align:center; padding: 24px;">No hay empleados en esta sucursal o no hay datos para calcular.</td></tr>`;
+    }
+    
+    document.getElementById('tbodyLegal').innerHTML = html;
+    document.getElementById('legalTableContainer').style.display = 'block';
+  }
+
+  function descargarCSVLegal() {
+    const table = document.getElementById("tablaLegal");
+    let csv = [];
+    // Añadir titulo como primera fila
+    csv.push(document.getElementById('legalTituloSemana').innerText);
+    csv.push("");
+    
+    const rows = table.querySelectorAll("tr");
+    for (let i = 0; i < rows.length; i++) {
+        let row = [], cols = rows[i].querySelectorAll("td, th");
+        for (let j = 0; j < cols.length; j++) {
+            // Limpiar saltos de línea por espacios
+            let data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, " | ");
+            // Escapar comillas dobles
+            data = data.replace(/"/g, '""');
+            row.push(`"${data}"`);
+        }
+        csv.push(row.join(","));
+    }
+    
+    // Agregar bloque de firmas legal
+    csv.push("");
+    csv.push("");
+    csv.push('"Firmas de Conformidad"');
+    csv.push('"Nombre del Trabajador","Firma"');
+    
+    // Imprimir renglones para firma
+    const tbodyRows = document.getElementById("tbodyLegal").querySelectorAll("tr");
+    for (let i = 0; i < tbodyRows.length; i++) {
+        let empName = tbodyRows[i].querySelector("td") ? tbodyRows[i].querySelector("td").innerText.split("|")[0].trim() : "";
+        if(empName) csv.push(`"${empName}","____________________"`);
+    }
+
+    const csvFile = new Blob(["\uFEFF"+csv.join("\n")], {type: "text/csv;charset=utf-8;"});
+    const downloadLink = document.createElement("a");
+    downloadLink.download = `Bitacora_${document.getElementById('legalSucursal').value}.csv`;
+    downloadLink.href = window.URL.createObjectURL(csvFile);
+    downloadLink.style.display = "none";
+    document.body.appendChild(downloadLink);
+    downloadLink.click();
+    document.body.removeChild(downloadLink);
   }
 
   // Registro de SW para Android
