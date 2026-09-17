@@ -598,8 +598,8 @@
     <div class="card" style="margin-bottom: 32px;">
       <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 24px;">
         <div style="flex: 1; min-width: 200px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Selecciona la Semana (Lunes a Domingo)</label>
-          <input type="text" id="legalFechaRef" class="form-input" placeholder="Elige una fecha..." style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Selecciona cualquier día de la semana</label>
+          <input type="text" id="legalFechaRef" class="form-input" placeholder="Ej: Miércoles de esa semana..." style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
         </div>
         <div style="flex: 1; min-width: 200px;">
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Sucursal a Exportar</label>
@@ -1456,7 +1456,28 @@
   flatpickr("#legalFechaRef", {
       locale: "es",
       disableMobile: "true",
-      dateFormat: "Y-m-d"
+      dateFormat: "Y-m-d",
+      altInput: true,
+      altFormat: "Y-m-d",
+      onChange: function(selectedDates, dateStr, instance) {
+          if (selectedDates.length > 0) {
+              const date = selectedDates[0];
+              const day = date.getDay();
+              const diffToMonday = day === 0 ? -6 : 1 - day;
+              const lunes = new Date(date);
+              lunes.setDate(lunes.getDate() + diffToMonday);
+              
+              const domingo = new Date(lunes);
+              domingo.setDate(lunes.getDate() + 6);
+              
+              const format = (d) => String(d.getDate()).padStart(2, '0') + ' ' + d.toLocaleString('es', {month:'short'}).replace('.', '');
+              
+              // Mostrar al usuario visualmente que se seleccionó toda la semana
+              setTimeout(() => {
+                  instance.altInput.value = `Semana: ${format(lunes)} al ${format(domingo)}`;
+              }, 0);
+          }
+      }
   });
 
   // Auto-actualización silenciosa cada 10 segundos
