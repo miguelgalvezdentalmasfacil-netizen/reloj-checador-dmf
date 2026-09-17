@@ -771,19 +771,19 @@
   
   // Helper para checar si tiene excepcion
   function tieneExcepcion(nombre, sucursal, fechaStr) {
-    if(!fechaStr) return null;
-    let parts = fechaStr.split(/[-/]/);
-    if (parts.length < 3) return null;
-    let d = String(parseInt(parts[0], 10)).padStart(2, '0');
-    let m = String(parseInt(parts[1], 10)).padStart(2, '0');
-    let y = parseInt(parts[2], 10);
-    if (y < 1000) y += 2000;
+    let p = parseCustomDate(fechaStr);
+    if(!p) return null;
+    
+    let d = String(p.d).padStart(2, '0');
+    let m = String(p.m).padStart(2, '0');
+    let y = p.y;
     
     let fCheck1 = `${y}-${m}-${d}`;
+    let fCheck2 = `${d}/${m}/${y}`;
     
     return globalExcepciones.find(e => {
         if(e.Nombre !== nombre || e.Sucursal !== sucursal) return false;
-        return e.Fecha && e.Fecha.includes(fCheck1);
+        return e.Fecha && (String(e.Fecha).includes(fCheck1) || String(e.Fecha).includes(fCheck2));
     });
   }
 
@@ -1057,7 +1057,7 @@
     }
 
     // Agregar ausencias reportadas para HOY que NO hicieron check-in
-    let excHoy = globalExcepciones.filter(e => e.Fecha && (e.Fecha.includes(hoyFormat1) || e.Fecha.includes(`${dStr}/${mStr}/${yStr}`)));
+    let excHoy = globalExcepciones.filter(e => e.Fecha && (String(e.Fecha).includes(hoyFormat1) || String(e.Fecha).includes(`${dStr}/${mStr}/${yStr}`)));
     if (currentClinicFilter !== 'Global') excHoy = excHoy.filter(e => e.Sucursal === currentClinicFilter);
 
     excHoy.forEach(exc => {
@@ -1438,7 +1438,7 @@
       } else if (isAndroid) {
          document.getElementById('pwa-subtitle').textContent = "Sigue estos rápidos pasos:";
          document.getElementById('pwa-text1').innerHTML = "<b>1.</b> Toca los <b>3 puntos (⋮)</b> arriba a la derecha";
-         document.getElementById('pwa-text2').innerHTML = "<b>2.</b> Selecciona <b>Instalar aplicación</b> (o Agregar a inicio)";
+         document.getElementById('pwa-text2').innerHTML = "<b>2.</b> Selecciona <b>Instalar aplicación</b>";
          document.getElementById('icon-step2').innerHTML = '<rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line>';
          document.getElementById('pwa-step3').style.display = 'none'; // Android solo ocupa 2 pasos
          prompt.style.display = 'block';
