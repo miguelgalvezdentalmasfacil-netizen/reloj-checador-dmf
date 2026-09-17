@@ -16,6 +16,10 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 <!-- Librería para generar PDFs -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- Flatpickr (Calendario Estilo iOS) -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<script src="https://npmcdn.com/flatpickr/dist/l10n/es.js"></script>
 <style>
   /* Paleta ultra minimalista */
   :root {
@@ -214,6 +218,44 @@
   .modal-overlay.show { opacity: 1; pointer-events: auto; }
   .modal-card { background: var(--surface); padding: 40px 32px; border-radius: var(--radius-lg); max-width: 90%; width: 400px; box-shadow: var(--shadow-soft); transform: translateY(20px); transition: transform 0.3s; border: 1px solid var(--border); }
   .modal-overlay.show .modal-card { transform: translateY(0); }
+
+  /* Custom Flatpickr (iOS Style) */
+  .flatpickr-calendar {
+    background: var(--surface) !important;
+    border: 1px solid var(--border-dark) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    border-radius: 20px !important;
+    padding: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  .flatpickr-calendar:before, .flatpickr-calendar:after { display: none !important; }
+  .flatpickr-month { height: 40px !important; }
+  .flatpickr-current-month { font-size: 16px !important; font-weight: 600 !important; color: var(--text-main) !important; }
+  .flatpickr-current-month .flatpickr-monthDropdown-months { font-weight: 600 !important; }
+  .flatpickr-current-month input.cur-year { font-weight: 600 !important; color: var(--text-main) !important; }
+  span.flatpickr-weekday { color: var(--text-muted) !important; font-weight: 600 !important; font-size: 13px !important; }
+  .flatpickr-day { color: var(--text-main) !important; border-radius: 50% !important; font-weight: 500 !important; }
+  .flatpickr-day:hover, .flatpickr-day:focus { background: var(--hover-bg) !important; border-color: transparent !important; }
+  .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+    background: #007AFF !important;
+    border-color: #007AFF !important;
+    color: #fff !important;
+  }
+  .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover { color: var(--text-light) !important; }
+  .flatpickr-time { border-top: 1px solid var(--border-dark) !important; }
+  .flatpickr-time input { color: var(--text-main) !important; }
+  .flatpickr-time .flatpickr-am-pm { color: var(--text-main) !important; }
+  .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus { background: var(--hover-bg) !important; }
+  
+  html.dark-theme .flatpickr-calendar { background: #1C1C1E !important; border-color: #38383A !important; }
+  html.dark-theme .flatpickr-day { color: #fff !important; }
+  html.dark-theme span.flatpickr-weekday { color: #EBEBF580 !important; }
+  html.dark-theme .flatpickr-day:hover, html.dark-theme .flatpickr-day:focus { background: #2C2C2E !important; }
+  html.dark-theme .flatpickr-current-month { color: #fff !important; }
+  html.dark-theme .flatpickr-current-month input.cur-year { color: #fff !important; }
+  html.dark-theme .flatpickr-time { border-top-color: #38383A !important; }
+  html.dark-theme .flatpickr-time input { color: #fff !important; }
+  html.dark-theme .flatpickr-time .flatpickr-am-pm { color: #fff !important; }
 </style>
 </head>
 <body>
@@ -520,7 +562,7 @@
       <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 24px;">
         <div style="flex: 1; min-width: 200px;">
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Selecciona la Semana (Lunes a Domingo)</label>
-          <input type="date" id="legalFechaRef" class="form-input" style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
+          <input type="text" id="legalFechaRef" class="form-input" placeholder="Elige una fecha..." style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
         </div>
         <div style="flex: 1; min-width: 200px;">
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Sucursal a Exportar</label>
@@ -1319,6 +1361,13 @@
   aplicarTema();
   // Init
   cargarDatosEnVivo();
+
+  // Iniciar Calendario Minimalista iOS
+  flatpickr("#legalFechaRef", {
+      locale: "es",
+      disableMobile: "true",
+      dateFormat: "Y-m-d"
+  });
 
   // Auto-actualización silenciosa cada 10 segundos
   setInterval(() => {

@@ -315,6 +315,44 @@
       flex: 1;
     }
   }
+
+  /* Custom Flatpickr (iOS Style) */
+  .flatpickr-calendar {
+    background: var(--surface) !important;
+    border: 1px solid var(--border-dark) !important;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3) !important;
+    border-radius: 20px !important;
+    padding: 10px !important;
+    font-family: 'Inter', sans-serif !important;
+  }
+  .flatpickr-calendar:before, .flatpickr-calendar:after { display: none !important; }
+  .flatpickr-month { height: 40px !important; }
+  .flatpickr-current-month { font-size: 16px !important; font-weight: 600 !important; color: var(--text-main) !important; }
+  .flatpickr-current-month .flatpickr-monthDropdown-months { font-weight: 600 !important; }
+  .flatpickr-current-month input.cur-year { font-weight: 600 !important; color: var(--text-main) !important; }
+  span.flatpickr-weekday { color: var(--text-muted) !important; font-weight: 600 !important; font-size: 13px !important; }
+  .flatpickr-day { color: var(--text-main) !important; border-radius: 50% !important; font-weight: 500 !important; }
+  .flatpickr-day:hover, .flatpickr-day:focus { background: var(--hover-bg) !important; border-color: transparent !important; }
+  .flatpickr-day.selected, .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected.inRange, .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange, .flatpickr-day.selected:focus, .flatpickr-day.startRange:focus, .flatpickr-day.endRange:focus, .flatpickr-day.selected:hover, .flatpickr-day.startRange:hover, .flatpickr-day.endRange:hover, .flatpickr-day.selected.prevMonthDay, .flatpickr-day.startRange.prevMonthDay, .flatpickr-day.endRange.prevMonthDay, .flatpickr-day.selected.nextMonthDay, .flatpickr-day.startRange.nextMonthDay, .flatpickr-day.endRange.nextMonthDay {
+    background: #007AFF !important;
+    border-color: #007AFF !important;
+    color: #fff !important;
+  }
+  .flatpickr-day.flatpickr-disabled, .flatpickr-day.flatpickr-disabled:hover { color: var(--text-light) !important; }
+  .flatpickr-time { border-top: 1px solid var(--border-dark) !important; }
+  .flatpickr-time input { color: var(--text-main) !important; }
+  .flatpickr-time .flatpickr-am-pm { color: var(--text-main) !important; }
+  .flatpickr-time input:hover, .flatpickr-time .flatpickr-am-pm:hover, .flatpickr-time input:focus, .flatpickr-time .flatpickr-am-pm:focus { background: var(--hover-bg) !important; }
+  
+  html.dark-theme .flatpickr-calendar { background: #1C1C1E !important; border-color: #38383A !important; }
+  html.dark-theme .flatpickr-day { color: #fff !important; }
+  html.dark-theme span.flatpickr-weekday { color: #EBEBF580 !important; }
+  html.dark-theme .flatpickr-day:hover, html.dark-theme .flatpickr-day:focus { background: #2C2C2E !important; }
+  html.dark-theme .flatpickr-current-month { color: #fff !important; }
+  html.dark-theme .flatpickr-current-month input.cur-year { color: #fff !important; }
+  html.dark-theme .flatpickr-time { border-top-color: #38383A !important; }
+  html.dark-theme .flatpickr-time input { color: #fff !important; }
+  html.dark-theme .flatpickr-time .flatpickr-am-pm { color: #fff !important; }
 </style>
 </head>
 <body>
@@ -398,7 +436,7 @@
         
         <div class="form-group">
           <label class="form-label">Fecha de inasistencia</label>
-          <input type="date" id="excFecha" class="form-input">
+          <input type="text" id="excFecha" class="form-input" placeholder="Elige una fecha...">
         </div>
         <div class="form-group">
           <label class="form-label">Motivo</label>
@@ -484,6 +522,13 @@
   }
 
   aplicarTema();
+
+  // Iniciar Calendario Minimalista iOS
+  flatpickr("#excFecha", {
+      locale: "es",
+      disableMobile: "true",
+      dateFormat: "Y-m-d"
+  });
 
   // Fecha UI
   const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
