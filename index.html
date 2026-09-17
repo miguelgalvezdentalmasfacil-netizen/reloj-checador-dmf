@@ -353,6 +353,43 @@
   html.dark-theme .flatpickr-time { border-top-color: #38383A !important; }
   html.dark-theme .flatpickr-time input { color: #fff !important; }
   html.dark-theme .flatpickr-time .flatpickr-am-pm { color: #fff !important; }
+
+  /* iOS Custom Select */
+  .ios-select-wrapper { position: relative; width: 100%; user-select: none; }
+  .ios-select-display {
+    display: flex; justify-content: space-between; align-items: center;
+    width: 100%; padding: 12px; border-radius: 8px;
+    border: 1px solid var(--border-dark); background: transparent;
+    color: var(--text-main); font-size: 14px; cursor: pointer;
+  }
+  .ios-select-menu {
+    position: absolute; top: 100%; left: 0; right: 0; margin-top: 8px;
+    background: rgba(255, 255, 255, 0.85); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+    border-radius: 14px; box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    overflow: hidden; z-index: 1000;
+    opacity: 0; pointer-events: none; transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+  html.dark-theme .ios-select-menu {
+    background: rgba(30, 41, 59, 0.85);
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+  }
+  .ios-select-wrapper.open .ios-select-menu {
+    opacity: 1; pointer-events: auto; transform: translateY(0);
+  }
+  .ios-select-item {
+    padding: 12px 16px; font-size: 14px; color: var(--text-main);
+    border-bottom: 1px solid var(--border-dark); cursor: pointer;
+    transition: background 0.1s;
+  }
+  .ios-select-item:last-child { border-bottom: none; }
+  .ios-select-item:hover, .ios-select-item:active { background: var(--hover-bg); }
+  .ios-select-item.selected { color: #007AFF; font-weight: 600; display: flex; justify-content: space-between; align-items: center; }
+  .ios-select-item.selected::after {
+    content: '✓'; color: #007AFF; font-size: 16px; font-weight: bold;
+  }
 </style>
 </head>
 <body>
@@ -496,6 +533,56 @@
 </div>
 
 <script>
+  function convertSelectToIOS(selectId) {
+    const select = document.getElementById(selectId);
+    if(!select || (select.nextElementSibling && select.nextElementSibling.classList.contains('ios-select-wrapper'))) return;
+    
+    select.style.display = 'none';
+    const wrapper = document.createElement('div');
+    wrapper.className = 'ios-select-wrapper';
+    
+    const display = document.createElement('div');
+    display.className = 'ios-select-display';
+    display.innerHTML = `<span>${select.options[select.selectedIndex].text}</span> <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>`;
+    
+    const menu = document.createElement('div');
+    menu.className = 'ios-select-menu';
+    
+    Array.from(select.options).forEach((opt, index) => {
+        const item = document.createElement('div');
+        item.className = 'ios-select-item';
+        if (index === select.selectedIndex) item.classList.add('selected');
+        item.innerText = opt.text;
+        
+        item.addEventListener('click', (e) => {
+            e.stopPropagation();
+            select.selectedIndex = index;
+            select.dispatchEvent(new Event('change'));
+            display.querySelector('span').innerText = opt.text;
+            menu.querySelectorAll('.ios-select-item').forEach(i => i.classList.remove('selected'));
+            item.classList.add('selected');
+            wrapper.classList.remove('open');
+        });
+        menu.appendChild(item);
+    });
+    
+    display.addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.querySelectorAll('.ios-select-wrapper.open').forEach(w => {
+            if(w !== wrapper) w.classList.remove('open');
+        });
+        wrapper.classList.toggle('open');
+    });
+    
+    wrapper.appendChild(display);
+    wrapper.appendChild(menu);
+    select.parentNode.insertBefore(wrapper, select.nextSibling);
+  }
+
+  document.addEventListener('click', () => {
+     document.querySelectorAll('.ios-select-wrapper.open').forEach(w => w.classList.remove('open'));
+  });
+
   // TEMA OSCURO
   const KEY_THEME = 'dmf_theme';
   const sunSvg = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
@@ -903,6 +990,8 @@
 
   // Init
   cargarDatosGuardados();
+  convertSelectToIOS('sucursal');
+  convertSelectToIOS('excMotivo');
 
 </script>
 <!-- PWA Assistant -->
