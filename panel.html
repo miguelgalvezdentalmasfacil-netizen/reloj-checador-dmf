@@ -256,6 +256,35 @@
   html.dark-theme .flatpickr-time { border-top-color: #38383A !important; }
   html.dark-theme .flatpickr-time input { color: #fff !important; }
   html.dark-theme .flatpickr-time .flatpickr-am-pm { color: #fff !important; }
+  html.dark-theme .flatpickr-time .flatpickr-am-pm { color: #fff !important; }
+
+  /* Fix Flatpickr Range Styles */
+  .flatpickr-day { box-shadow: none !important; }
+  .flatpickr-day.inRange,
+  .flatpickr-day.prevMonthDay.inRange,
+  .flatpickr-day.nextMonthDay.inRange,
+  .flatpickr-day.today.inRange,
+  .flatpickr-day:hover.inRange {
+      background: rgba(0, 122, 255, 0.1) !important;
+      border-color: transparent !important;
+      color: var(--text-main) !important;
+  }
+  html.dark-theme .flatpickr-day.inRange,
+  html.dark-theme .flatpickr-day.prevMonthDay.inRange,
+  html.dark-theme .flatpickr-day.nextMonthDay.inRange,
+  html.dark-theme .flatpickr-day.today.inRange,
+  html.dark-theme .flatpickr-day:hover.inRange {
+      background: rgba(10, 132, 255, 0.2) !important;
+      color: #fff !important;
+  }
+  .flatpickr-day.startRange, .flatpickr-day.endRange, .flatpickr-day.selected,
+  .flatpickr-day.startRange.inRange, .flatpickr-day.endRange.inRange,
+  html.dark-theme .flatpickr-day.startRange, html.dark-theme .flatpickr-day.endRange, html.dark-theme .flatpickr-day.selected,
+  html.dark-theme .flatpickr-day.startRange.inRange, html.dark-theme .flatpickr-day.endRange.inRange {
+      background: #007AFF !important;
+      border-color: #007AFF !important;
+      color: #fff !important;
+  }
 
   /* iOS Custom Select */
   .ios-select-wrapper { position: relative; width: 100%; user-select: none; }
