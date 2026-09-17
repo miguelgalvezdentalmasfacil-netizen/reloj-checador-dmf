@@ -598,8 +598,8 @@
     <div class="card" style="margin-bottom: 32px;">
       <div style="display: flex; gap: 16px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 24px;">
         <div style="flex: 1; min-width: 200px;">
-          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Selecciona cualquier día de la semana</label>
-          <input type="text" id="legalFechaRef" class="form-input" placeholder="Ej: Miércoles de esa semana..." style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
+          <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Selecciona el periodo (Rango de días)</label>
+          <input type="text" id="legalFechaRef" class="form-input" placeholder="Clic inicio y fin..." style="width: 100%; border: 1px solid var(--border-dark); padding: 12px; border-radius: 8px; background: transparent; color: var(--text-main);">
         </div>
         <div style="flex: 1; min-width: 200px;">
           <label style="display: block; font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px;">Sucursal a Exportar</label>
@@ -1456,28 +1456,8 @@
   flatpickr("#legalFechaRef", {
       locale: "es",
       disableMobile: "true",
-      dateFormat: "Y-m-d",
-      altInput: true,
-      altFormat: "Y-m-d",
-      onChange: function(selectedDates, dateStr, instance) {
-          if (selectedDates.length > 0) {
-              const date = selectedDates[0];
-              const day = date.getDay();
-              const diffToMonday = day === 0 ? -6 : 1 - day;
-              const lunes = new Date(date);
-              lunes.setDate(lunes.getDate() + diffToMonday);
-              
-              const domingo = new Date(lunes);
-              domingo.setDate(lunes.getDate() + 6);
-              
-              const format = (d) => String(d.getDate()).padStart(2, '0') + ' ' + d.toLocaleString('es', {month:'short'}).replace('.', '');
-              
-              // Mostrar al usuario visualmente que se seleccionó toda la semana
-              setTimeout(() => {
-                  instance.altInput.value = `Semana: ${format(lunes)} al ${format(domingo)}`;
-              }, 0);
-          }
-      }
+      mode: "range",
+      dateFormat: "Y-m-d"
   });
 
   // Auto-actualización silenciosa cada 10 segundos
@@ -1652,51 +1632,72 @@
     return timeStr.replace(/\./g, "").toUpperCase();
   }
 
+  function parseTimeMinutes(timeStr) {
+    if(!timeStr) return 0;
+    let parts = timeStr.split(' ');
+    let hm = parts[0].split(':');
+    let h = parseInt(hm[0], 10) || 0;
+    let m = parseInt(hm[1], 10) || 0;
+    if (parts[1] && parts[1].toLowerCase().includes('p.m.') && h !== 12) h += 12;
+    if (parts[1] && parts[1].toLowerCase().includes('a.m.') && h === 12) h = 0;
+    return (h * 60) + m;
+  }
+
   function generarBitacoraLegal() {
     const fechaRef = document.getElementById('legalFechaRef').value;
     const sucursalRef = document.getElementById('legalSucursal').value;
     
-    if(!fechaRef) {
-      alert("Por favor selecciona una fecha para ubicar la semana.");
+    if(!fechaRef || !fechaRef.includes(' to ')) {
+      alert("Por favor selecciona un rango completo (clic en el día de inicio y luego en el día de fin).");
       return;
     }
 
-    // Calcular inicio de semana (Lunes) y fin (Domingo)
-    const dObj = new Date(fechaRef + 'T12:00:00'); // Evitar timezone issues
-    const day = dObj.getDay(); // 0 = Domingo, 1 = Lunes
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-    const lunes = new Date(dObj);
-    lunes.setDate(lunes.getDate() + diffToMonday);
+    const parts = fechaRef.split(' to ');
+    const startDate = new Date(parts[0] + 'T12:00:00');
+    const endDate = new Date(parts[1] + 'T12:00:00');
+
+    // Generar el array de fechas seleccionadas
+    const diasDelRango = [];
+    let curr = new Date(startDate);
+    while (curr <= endDate) {
+        diasDelRango.push(new Date(curr));
+        curr.setDate(curr.getDate() + 1);
+    }
     
-    document.getElementById('legalTituloSemana').innerText = `Semana del ${lunes.toLocaleDateString()} - ${sucursalRef}`;
+    if (diasDelRango.length > 31) {
+        alert("El rango máximo es de 31 días para este reporte.");
+        return;
+    }
+
+    document.getElementById('legalTituloSemana').innerText = `Reporte del ${startDate.toLocaleDateString('es-MX')} al ${endDate.toLocaleDateString('es-MX')} - ${sucursalRef}`;
+    
+    // Construir Header Dinámico
+    const diasCortos = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
+    let thHtml = '<th style="min-width: 150px;">Empleado / Puesto</th>';
+    diasDelRango.forEach(dObj => {
+        thHtml += `<th>${diasCortos[dObj.getDay()]}<br><span style="font-size:11px; font-weight:normal; color:var(--text-light);">${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}</span></th>`;
+    });
+    thHtml += '<th>H. Ord.</th><th>H. Extra</th>';
+    document.getElementById('theadLegal').innerHTML = `<tr>${thHtml}</tr>`;
     
     const registrosFiltrados = globalData.filter(d => (d.Sucursal || d.sucursal) === sucursalRef);
     const perfilesFiltrados = globalPerfiles.filter(p => p.Sucursal === sucursalRef);
     
     let html = '';
     
-    // Matriz semanal: 0=Dom, 1=Lun, 2=Mar, 3=Mie, 4=Jue, 5=Vie, 6=Sab
-    // Para renderizar: Lun(1), Mar(2), Mie(3), Jue(4), Vie(5), Sab(6), Dom(0)
-    const diasOrden = [1, 2, 3, 4, 5, 6, 0];
-    
     perfilesFiltrados.forEach(p => {
       let ordMinsTotal = 0;
       let extMinsTotal = 0;
       let celdasDias = '';
       
-      diasOrden.forEach(diaMap => {
-        // Calcular la fecha exacta de ese día en la semana
-        const offset = diaMap === 0 ? 6 : diaMap - 1; // 0 a 6 desde Lunes
-        const currentDayDate = new Date(lunes);
-        currentDayDate.setDate(lunes.getDate() + offset);
-        
-        const dStr = String(currentDayDate.getDate()).padStart(2, '0');
-        const mStr = String(currentDayDate.getMonth() + 1).padStart(2, '0');
-        const yStr = currentDayDate.getFullYear();
+      diasDelRango.forEach(dObj => {
+        const diaMap = dObj.getDay();
+        const dStr = String(dObj.getDate()).padStart(2, '0');
+        const mStr = String(dObj.getMonth() + 1).padStart(2, '0');
+        const yStr = dObj.getFullYear();
         const isoMatch = `${yStr}-${mStr}-${dStr}`;
         const locMatch = `${dStr}/${mStr}/${yStr}`;
         
-        // Buscar registros del empleado ese día
         const regsDia = registrosFiltrados.filter(r => {
           if ((r.Nombre || r.nombre) !== p.Nombre) return false;
           const fStr = r.Fecha || r.fecha;
@@ -1712,21 +1713,16 @@
            let outStr = salida ? formatoM(salida.Hora || salida.hora) : "Falta Salida";
            cellText = `${inStr}<br><span style="color:var(--text-light);font-size:11px">${outStr}</span>`;
            
-           // Cálculo matemático de horas
            if (salida) {
              let mIn = parseTimeMinutes(entrada.Hora || entrada.hora);
              let mOut = parseTimeMinutes(salida.Hora || salida.hora);
              let workedMins = mOut - mIn;
-             if (workedMins < 0) workedMins += 24 * 60; // turno nocturno cross-day
+             if (workedMins < 0) workedMins += 24 * 60;
              
              const expected = obtenerMinutosEsperados(p.Nombre, p.Sucursal, diaMap);
              if (expected.descanso) {
-                // Todo es hora extra
                 extMinsTotal += workedMins;
              } else {
-                // Hay horas ordinarias
-                let expectedMins = 0; // expected length of shift?
-                // we only know expected entry. Let's find expected exit.
                 const mapKeys = {0:'Domingo', 1:'Lunes', 2:'Martes', 3:'Miercoles', 4:'Jueves', 5:'Viernes', 6:'Sabado'};
                 let hor = p[mapKeys[diaMap]];
                 if (hor && hor.includes('-')) {
@@ -1742,21 +1738,20 @@
                     ordMinsTotal += workedMins;
                   }
                 } else {
-                  ordMinsTotal += workedMins; // Fallback
+                  ordMinsTotal += workedMins;
                 }
              }
            }
         }
         
-        celdasDias += `<td style="font-size: 12px; line-height: 1.4;">${cellText}</td>`;
+        celdasDias += `<td style="font-size:12px; font-weight:500;">${cellText}</td>`;
       });
+      
+      const puestoHtml = p.Puesto ? `<br><span style="font-size:11px; color:var(--text-light); font-weight:normal;">${p.Puesto}</span>` : '';
       
       html += `
         <tr>
-          <td>
-            <div style="font-weight: 500; color: var(--text-main);">${p.Nombre}</div>
-            <div style="font-size: 12px; color: var(--text-muted);">${p.Puesto || "Sin puesto"}</div>
-          </td>
+          <td style="font-weight: 500;">${p.Nombre}${puestoHtml}</td>
           ${celdasDias}
           <td style="font-weight: 600; color: #10B981;">${formatearH(ordMinsTotal)}</td>
           <td style="font-weight: 600; color: #3B82F6;">${formatearH(extMinsTotal)}</td>
@@ -1765,7 +1760,7 @@
     });
     
     if(html === '') {
-       html = `<tr><td colspan="10" style="text-align:center; padding: 24px;">No hay empleados en esta sucursal o no hay datos para calcular.</td></tr>`;
+       html = `<tr><td colspan="${diasDelRango.length + 3}" style="text-align:center; padding: 24px;">No hay empleados en esta sucursal o no hay datos para calcular.</td></tr>`;
     }
     
     document.getElementById('tbodyLegal').innerHTML = html;
