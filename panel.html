@@ -159,8 +159,8 @@
   /* Tables - Clean */
   .table-container { overflow-x: auto; }
   table { width: 100%; border-collapse: collapse; text-align: left; }
-  th { padding: 16px 0; font-size: 12px; text-transform: uppercase; color: var(--text-light); border-bottom: 1px solid var(--border-dark); font-weight: 500; letter-spacing: 1px;}
-  td { padding: 20px 0; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); font-weight: 400; transition: border-color 0.3s; }
+  th { padding: 16px; font-size: 12px; text-transform: uppercase; color: var(--text-light); border-bottom: 1px solid var(--border-dark); font-weight: 500; letter-spacing: 1px;}
+  td { padding: 20px 16px; font-size: 14px; color: var(--text-main); border-bottom: 1px solid var(--border); font-weight: 400; transition: border-color 0.3s; }
   
   /* Dots minimalistas */
   .status-dot { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; color: var(--text-muted); }
@@ -1385,7 +1385,7 @@
         <td style="font-weight: 500;">${perfil.Nombre}</td>
         <td style="color: var(--text-muted);">${perfil.Sucursal}</td>
         <td>
-          <div style="display:flex; align-items:center; gap:8px;">
+          <div style="display:flex; align-items:center; gap:8px; min-width: 120px;">
             <div style="flex:1; height:6px; background:var(--border-dark); border-radius:3px; overflow:hidden;">
               <div style="height:100%; width:${score}%; background:${badgeColor};"></div>
             </div>
