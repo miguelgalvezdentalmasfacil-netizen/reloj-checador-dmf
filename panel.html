@@ -677,10 +677,16 @@
       <div class="table-container" style="display: none;" id="legalTableContainer">
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 16px;">
           <h3 id="legalTituloSemana" style="margin:0; font-size:16px;">Semana de...</h3>
-          <button class="btn-outline" style="border-color: var(--border-dark); color: var(--text-main);" onclick="descargarCSVLegal()">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-            Exportar CSV
-          </button>
+          <div style="display:flex; gap: 8px;">
+            <button class="btn-outline" style="border-color: var(--border-dark); color: var(--text-main); padding: 8px 16px;" onclick="descargarCSVLegal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              CSV
+            </button>
+            <button class="btn-punch" style="background: #3B82F6; color: white; border: none; padding: 8px 16px; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center;" onclick="descargarPDFLegal()">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              PDF
+            </button>
+          </div>
         </div>
         <table class="table" id="tablaLegal">
           <thead id="theadLegal">
@@ -1921,6 +1927,89 @@
     document.body.appendChild(downloadLink);
     downloadLink.click();
     document.body.removeChild(downloadLink);
+  }
+
+  function descargarPDFLegal() {
+    const tableContainer = document.getElementById('legalTableContainer');
+    if (tableContainer.style.display === 'none' || !document.getElementById('tbodyLegal').innerHTML) {
+      alert("Primero genera la bitácora antes de exportar.");
+      return;
+    }
+
+    const originalTable = document.getElementById('tablaLegal');
+    const cloneTable = originalTable.cloneNode(true);
+    
+    cloneTable.style.width = '100%';
+    cloneTable.style.borderCollapse = 'collapse';
+    cloneTable.style.fontSize = '10px';
+    cloneTable.style.color = '#0F172A';
+    
+    cloneTable.querySelectorAll('th, td').forEach(cell => {
+       cell.style.border = '1px solid #CBD5E1';
+       cell.style.padding = '6px';
+       cell.style.background = '#FFF';
+    });
+    cloneTable.querySelectorAll('th').forEach(cell => {
+       cell.style.background = '#F8FAFC';
+       cell.style.fontWeight = 'bold';
+    });
+    
+    const div = document.createElement('div');
+    div.style.padding = '20px';
+    div.style.background = '#FFF';
+    div.style.color = '#0F172A';
+    div.style.fontFamily = 'Inter, sans-serif';
+    
+    const titulo = document.createElement('h2');
+    titulo.innerText = document.getElementById('legalTituloSemana').innerText;
+    titulo.style.textAlign = 'center';
+    titulo.style.marginBottom = '20px';
+    div.appendChild(titulo);
+    
+    div.appendChild(cloneTable);
+    
+    const firmContainer = document.createElement('div');
+    firmContainer.style.marginTop = '40px';
+    firmContainer.style.width = '100%';
+    firmContainer.innerHTML = '<h3 style="text-align: center; margin-bottom: 30px;">Firmas de Conformidad</h3>';
+    
+    const firmasFlex = document.createElement('div');
+    firmasFlex.style.display = 'flex';
+    firmasFlex.style.flexWrap = 'wrap';
+    firmasFlex.style.gap = '30px';
+    firmasFlex.style.justifyContent = 'space-around';
+    
+    const rows = cloneTable.querySelectorAll('tbody tr');
+    rows.forEach(tr => {
+        const td = tr.querySelector('td');
+        if (td && !td.colSpan) {
+            let empName = td.innerText.split('\n')[0].trim();
+            if (empName) {
+                const fBlock = document.createElement('div');
+                fBlock.style.width = '200px';
+                fBlock.style.textAlign = 'center';
+                fBlock.style.marginBottom = '20px';
+                fBlock.innerHTML = `
+                    <div style="border-bottom: 1px solid #000; height: 35px; margin-bottom: 5px;"></div>
+                    <div style="font-size: 11px; font-weight: bold;">${empName}</div>
+                `;
+                firmasFlex.appendChild(fBlock);
+            }
+        }
+    });
+    
+    firmContainer.appendChild(firmasFlex);
+    div.appendChild(firmContainer);
+    
+    const opt = {
+      margin:       [10, 10, 10, 10], 
+      filename:     `Bitacora_${document.getElementById('legalSucursal').value.replace(/ /g, '_')}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'letter', orientation: 'landscape' }
+    };
+
+    html2pdf().set(opt).from(div).save();
   }
 
   // Registro de SW para Android
