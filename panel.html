@@ -1906,19 +1906,6 @@
         csv.push(row.join(","));
     }
     
-    // Agregar bloque de firmas legal
-    csv.push("");
-    csv.push("");
-    csv.push('"Firmas de Conformidad"');
-    csv.push('"Nombre del Trabajador","Firma"');
-    
-    // Imprimir renglones para firma
-    const tbodyRows = document.getElementById("tbodyLegal").querySelectorAll("tr");
-    for (let i = 0; i < tbodyRows.length; i++) {
-        let empName = tbodyRows[i].querySelector("td") ? tbodyRows[i].querySelector("td").innerText.split("|")[0].trim() : "";
-        if(empName) csv.push(`"${empName}","____________________"`);
-    }
-
     const csvFile = new Blob(["\uFEFF"+csv.join("\n")], {type: "text/csv;charset=utf-8;"});
     const downloadLink = document.createElement("a");
     downloadLink.download = `Bitacora_${document.getElementById('legalSucursal').value}.csv`;
@@ -1967,39 +1954,6 @@
     div.appendChild(titulo);
     
     div.appendChild(cloneTable);
-    
-    const firmContainer = document.createElement('div');
-    firmContainer.style.marginTop = '40px';
-    firmContainer.style.width = '100%';
-    firmContainer.innerHTML = '<h3 style="text-align: center; margin-bottom: 30px;">Firmas de Conformidad</h3>';
-    
-    const firmasFlex = document.createElement('div');
-    firmasFlex.style.display = 'flex';
-    firmasFlex.style.flexWrap = 'wrap';
-    firmasFlex.style.gap = '30px';
-    firmasFlex.style.justifyContent = 'space-around';
-    
-    const rows = cloneTable.querySelectorAll('tbody tr');
-    rows.forEach(tr => {
-        const td = tr.querySelector('td');
-        if (td && !td.colSpan) {
-            let empName = td.innerText.split('\n')[0].trim();
-            if (empName) {
-                const fBlock = document.createElement('div');
-                fBlock.style.width = '200px';
-                fBlock.style.textAlign = 'center';
-                fBlock.style.marginBottom = '20px';
-                fBlock.innerHTML = `
-                    <div style="border-bottom: 1px solid #000; height: 35px; margin-bottom: 5px;"></div>
-                    <div style="font-size: 11px; font-weight: bold;">${empName}</div>
-                `;
-                firmasFlex.appendChild(fBlock);
-            }
-        }
-    });
-    
-    firmContainer.appendChild(firmasFlex);
-    div.appendChild(firmContainer);
     
     const opt = {
       margin:       [10, 10, 10, 10], 
