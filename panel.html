@@ -1747,14 +1747,27 @@
     const fechaRef = document.getElementById('legalFechaRef').value;
     const sucursalRef = document.getElementById('legalSucursal').value;
     
-    if(!fechaRef || !fechaRef.includes(' to ')) {
-      alert("Por favor selecciona un rango completo (clic en el día de inicio y luego en el día de fin).");
+    if(!fechaRef) {
+      alert("Por favor selecciona un periodo en el calendario.");
       return;
     }
 
-    const parts = fechaRef.split(' to ');
-    const startDate = new Date(parts[0] + 'T12:00:00');
-    const endDate = new Date(parts[1] + 'T12:00:00');
+    let startDate, endDate;
+    
+    // Flatpickr en español usa " a " como separador, en inglés usa " to "
+    if (fechaRef.includes(' a ')) {
+        const parts = fechaRef.split(' a ');
+        startDate = new Date(parts[0] + 'T12:00:00');
+        endDate = new Date(parts[1] + 'T12:00:00');
+    } else if (fechaRef.includes(' to ')) {
+        const parts = fechaRef.split(' to ');
+        startDate = new Date(parts[0] + 'T12:00:00');
+        endDate = new Date(parts[1] + 'T12:00:00');
+    } else {
+        // Solo se seleccionó un día
+        startDate = new Date(fechaRef + 'T12:00:00');
+        endDate = new Date(fechaRef + 'T12:00:00');
+    }
 
     // Generar el array de fechas seleccionadas
     const diasDelRango = [];
