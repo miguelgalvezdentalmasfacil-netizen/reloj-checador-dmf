@@ -1791,12 +1791,12 @@
     document.getElementById('legalTituloSemana').innerText = `Reporte del ${startDate.toLocaleDateString('es-MX')} al ${endDate.toLocaleDateString('es-MX')} - ${sucursalRef}`;
     
     // Construir Header Dinámico
-    const diasCortos = ['Do','Lu','Ma','Mi','Ju','Vi','Sa'];
-    let thHtml = '<th style="min-width: 150px;">Empleado / Puesto</th>';
+    const diasCompletos = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    let thHtml = '<th style="min-width: 150px; text-transform: uppercase;">Empleado / Puesto</th>';
     diasDelRango.forEach(dObj => {
-        thHtml += `<th>${diasCortos[dObj.getDay()]}<br><span style="font-size:11px; font-weight:normal; color:var(--text-light);">${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}</span></th>`;
+        thHtml += `<th style="text-transform: uppercase;">${diasCompletos[dObj.getDay()]}<br><span style="font-size:11px; font-weight:normal; color:#64748B;">${String(dObj.getDate()).padStart(2,'0')}/${String(dObj.getMonth()+1).padStart(2,'0')}</span></th>`;
     });
-    thHtml += '<th>H. Ord.</th><th>H. Extra</th>';
+    thHtml += '<th style="text-transform: uppercase;">H. Ord.</th><th style="text-transform: uppercase;">H. Extra</th>';
     document.getElementById('theadLegal').innerHTML = `<tr>${thHtml}</tr>`;
     
     const registrosFiltrados = globalData.filter(d => (d.Sucursal || d.sucursal) === sucursalRef);
@@ -1829,8 +1829,8 @@
         let cellText = '--';
         if (entrada) {
            let inStr = formatoM(entrada.Hora || entrada.hora);
-           let outStr = salida ? formatoM(salida.Hora || salida.hora) : "Falta Salida";
-           cellText = `${inStr}<br><span style="color:var(--text-light);font-size:11px">${outStr}</span>`;
+           let outStr = salida ? formatoM(salida.Hora || salida.hora) : "Sin Salida";
+           cellText = `<span style="color:#10B981; font-weight:700;">E:</span> <span style="color:var(--text-main); font-weight:500;">${inStr}</span><br><span style="color:#3B82F6; font-weight:700;">S:</span> <span style="color:var(--text-main); font-weight:500;">${outStr}</span>`;
            
            if (salida) {
              let mIn = parseTimeMinutes(entrada.Hora || entrada.hora);
@@ -1929,16 +1929,24 @@
     cloneTable.style.width = '100%';
     cloneTable.style.borderCollapse = 'collapse';
     cloneTable.style.fontSize = '10px';
-    cloneTable.style.color = '#0F172A';
     
+    // Forzar colores para PDF (Fondo blanco, letras oscuras)
+    cloneTable.style.color = '#0F172A';
+    cloneTable.querySelectorAll('*').forEach(el => {
+        if(el.style.color === 'var(--text-main)' || el.style.color === '' || el.style.color === 'var(--text-light)') {
+            el.style.color = '#0F172A';
+        }
+    });
+
     cloneTable.querySelectorAll('th, td').forEach(cell => {
        cell.style.border = '1px solid #CBD5E1';
-       cell.style.padding = '6px';
+       cell.style.padding = '8px 6px';
        cell.style.background = '#FFF';
     });
     cloneTable.querySelectorAll('th').forEach(cell => {
        cell.style.background = '#F8FAFC';
        cell.style.fontWeight = 'bold';
+       cell.style.color = '#0F172A';
     });
     
     const div = document.createElement('div');
@@ -1947,17 +1955,39 @@
     div.style.color = '#0F172A';
     div.style.fontFamily = 'Inter, sans-serif';
     
-    const titulo = document.createElement('h2');
-    titulo.innerText = document.getElementById('legalTituloSemana').innerText;
-    titulo.style.textAlign = 'center';
-    titulo.style.marginBottom = '20px';
-    div.appendChild(titulo);
+    // Header Corporativo
+    const headerDiv = document.createElement('div');
+    headerDiv.style.display = 'flex';
+    headerDiv.style.alignItems = 'center';
+    headerDiv.style.justifyContent = 'space-between';
+    headerDiv.style.marginBottom = '20px';
+    headerDiv.style.borderBottom = '2px solid #E2E8F0';
+    headerDiv.style.paddingBottom = '15px';
+
+    const rawTitle = document.getElementById('legalTituloSemana').innerText; // e.g. Reporte del 17/9/2026 al 17/9/2026 - Tijuana
+    const sucursal = document.getElementById('legalSucursal').value;
+    const periodo = rawTitle.replace('Reporte del ', '').replace(' - ' + sucursal, '');
+
+    headerDiv.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <img src="logo.png" style="height: 50px; border-radius: 8px;">
+            <div>
+                <h2 style="margin: 0; font-size: 20px; color: #0F172A; font-weight: 600;">Dental Más Fácil</h2>
+                <p style="margin: 2px 0 0; font-size: 12px; color: #64748B;">Bitácora de Asistencia Legal (LFT)</p>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-size: 14px; font-weight: bold; color: #0F172A; text-transform: uppercase;">Sucursal: ${sucursal}</div>
+            <div style="font-size: 12px; color: #64748B; margin-top: 4px;">Periodo: ${periodo}</div>
+        </div>
+    `;
+    div.appendChild(headerDiv);
     
     div.appendChild(cloneTable);
     
     const opt = {
       margin:       [10, 10, 10, 10], 
-      filename:     `Bitacora_${document.getElementById('legalSucursal').value.replace(/ /g, '_')}.pdf`,
+      filename:     `Bitacora_${sucursal.replace(/ /g, '_')}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true },
       jsPDF:        { unit: 'mm', format: 'letter', orientation: 'landscape' }
