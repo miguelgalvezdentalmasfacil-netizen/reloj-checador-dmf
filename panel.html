@@ -959,18 +959,59 @@
   let globalPerfiles = [];
   let globalExcepciones = [];
 
+  const MODO_DEMO = true; // CAMBIAR A FALSE PARA VOLVER A CERO
+
   async function cargarDatosEnVivo() {
     try {
       const dateNow = new Date();
-      // Fetch concurrent para Registros, Perfiles y Excepciones
       const [resDatos, resPerfiles] = await Promise.all([
         fetch(`${API_URL}?action=obtener_datos&t=${dateNow.getTime()}`),
         fetch(`${API_URL}?action=obtener_perfiles&t=${dateNow.getTime()}`)
       ]);
       
-      const data = await resDatos.json();
-      const perfs = await resPerfiles.json();
+      let data = await resDatos.json();
+      let perfs = await resPerfiles.json();
       
+      if (MODO_DEMO) {
+          perfs.perfiles = [
+              { Nombre: "Dr. Roberto", Sucursal: "Tijuana", Puesto: "Ortodoncista", EstadoEdicion: "Cerrado", Lunes: "10:00-19:00", Martes: "10:00-19:00", Miercoles: "10:00-19:00", Jueves: "10:00-19:00", Viernes: "10:00-19:00", Sabado: "10:00-14:00", Domingo: "Descanso" },
+              { Nombre: "Ana López", Sucursal: "Tijuana", Puesto: "Asistente Dental", EstadoEdicion: "Cerrado", Lunes: "09:00-18:00", Martes: "09:00-18:00", Miercoles: "09:00-18:00", Jueves: "09:00-18:00", Viernes: "09:00-18:00", Sabado: "Descanso", Domingo: "Descanso" },
+              { Nombre: "Carlos Ruiz", Sucursal: "Mexicali - Villa Verde", Puesto: "Recepcionista", EstadoEdicion: "Cerrado", Lunes: "08:00-16:00", Martes: "08:00-16:00", Miercoles: "08:00-16:00", Jueves: "08:00-16:00", Viernes: "08:00-16:00", Sabado: "08:00-16:00", Domingo: "Descanso" }
+          ];
+
+          perfs.excepciones = [
+              { Nombre: "Carlos Ruiz", Sucursal: "Mexicali - Villa Verde", Fecha: dateNow.toLocaleDateString('es-MX'), Tipo: "Vacaciones", Motivo: "Aprobadas por RH" }
+          ];
+
+          data = [];
+          for (let i = 5; i >= 0; i--) {
+              let d = new Date(dateNow);
+              d.setDate(d.getDate() - i);
+              const dayOfWeek = d.getDay();
+              const fStr = d.toLocaleDateString('es-MX', {year:'numeric', month:'2-digit', day:'2-digit'}); 
+
+              if (dayOfWeek !== 0) {
+                  // Dr. Roberto 
+                  data.push({ nombre: "Dr. Roberto", sucursal: "Tijuana", tipo: "Entrada", fecha: fStr, hora: "09:55 a.m.", ubicacion: "Clínica Tijuana" });
+                  data.push({ nombre: "Dr. Roberto", sucursal: "Tijuana", tipo: "Salida", fecha: fStr, hora: i%2===0 ? "07:45 p.m." : "07:05 p.m.", ubicacion: "Clínica Tijuana" });
+                  
+                  // Ana López 
+                  if (dayOfWeek !== 6) {
+                      data.push({ nombre: "Ana López", sucursal: "Tijuana", tipo: "Entrada", fecha: fStr, hora: i===1 ? "09:25 a.m." : "08:50 a.m.", ubicacion: "Clínica Tijuana" });
+                      if (i !== 2) { 
+                          data.push({ nombre: "Ana López", sucursal: "Tijuana", tipo: "Salida", fecha: fStr, hora: "06:05 p.m.", ubicacion: "Clínica Tijuana" });
+                      }
+                  }
+                  
+                  // Carlos Ruiz 
+                  if (i !== 0) {
+                      data.push({ nombre: "Carlos Ruiz", sucursal: "Mexicali - Villa Verde", tipo: "Entrada", fecha: fStr, hora: "07:55 a.m.", ubicacion: "Clínica Mexicali" });
+                      data.push({ nombre: "Carlos Ruiz", sucursal: "Mexicali - Villa Verde", tipo: "Salida", fecha: fStr, hora: "04:00 p.m.", ubicacion: "Clínica Mexicali" });
+                  }
+              }
+          }
+      }
+
       globalData = data; 
       globalPerfiles = perfs.perfiles || [];
       globalExcepciones = perfs.excepciones || [];
