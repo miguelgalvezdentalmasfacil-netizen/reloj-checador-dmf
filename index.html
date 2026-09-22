@@ -639,11 +639,15 @@
   aplicarTema();
 
   // Iniciar Calendario Minimalista iOS
-  flatpickr("#excFecha", {
-      locale: "es",
-      disableMobile: "true",
-      dateFormat: "Y-m-d"
-  });
+  try {
+    flatpickr("#excFecha", {
+        locale: "es",
+        disableMobile: "true",
+        dateFormat: "Y-m-d"
+    });
+  } catch (e) {
+    console.warn("Flatpickr no pudo cargar", e);
+  }
 
   // Fecha UI
   const opciones = { weekday: 'long', day: 'numeric', month: 'long' };
@@ -656,34 +660,53 @@
   const diasNombres = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   function inicializarHorarios() {
-    const container = document.getElementById('horariosContainer');
-    container.innerHTML = '';
-    
-    // Intentar cargar horarios previos
-    let horariosGuardados = {};
-    try { horariosGuardados = JSON.parse(localStorage.getItem('dmf_horarios')) || {}; } catch(e){}
+    try {
+      const container = document.getElementById('horariosContainer');
+      if(!container) return;
+      container.innerHTML = '';
+      container.style.display = 'block'; // Ensure it's visible
+      
+      // Intentar cargar horarios previos
+      let horariosGuardados = {};
+      try { 
+        const raw = localStorage.getItem('dmf_horarios');
+        if (raw) horariosGuardados = JSON.parse(raw); 
+      } catch(e) {
+        console.warn('Error parsing horarios', e);
+      }
 
-    diasSemana.forEach((dia, index) => {
-      const dataDia = horariosGuardados[dia] || { activo: true, in: "10:00", out: "18:00" };
-      
-      const row = document.createElement('div');
-      row.className = `day-row ${!dataDia.activo ? 'disabled' : ''}`;
-      row.id = `row-${dia}`;
-      
-      row.innerHTML = `
-        <label class="day-toggle">
-          <input type="checkbox" id="chk-${dia}" ${dataDia.activo ? 'checked' : ''} onchange="toggleDia('${dia}')">
-          <div class="toggle-switch"></div>
-          ${diasNombres[index]}
-        </label>
-        <div class="time-inputs">
-          <input type="time" class="time-input" id="in-${dia}" value="${dataDia.in}" ${!dataDia.activo ? 'disabled' : ''}>
-          <span style="color:var(--text-muted);">-</span>
-          <input type="time" class="time-input" id="out-${dia}" value="${dataDia.out}" ${!dataDia.activo ? 'disabled' : ''}>
-        </div>
-      `;
-      container.appendChild(row);
-    });
+      diasSemana.forEach((dia, index) => {
+        let dataDia = { activo: true, in: "10:00", out: "18:00" };
+        if (horariosGuardados && horariosGuardados[dia] && typeof horariosGuardados[dia] === 'object') {
+           dataDia = horariosGuardados[dia];
+        }
+        
+        const isActivo = dataDia.activo !== false; // por defecto true
+        const inVal = dataDia.in || "10:00";
+        const outVal = dataDia.out || "18:00";
+
+        const row = document.createElement('div');
+        row.className = `day-row ${!isActivo ? 'disabled' : ''}`;
+        row.id = `row-${dia}`;
+        
+        row.innerHTML = `
+          <label class="day-toggle">
+            <input type="checkbox" id="chk-${dia}" ${isActivo ? 'checked' : ''} onchange="toggleDia('${dia}')">
+            <div class="toggle-switch"></div>
+            ${diasNombres[index]}
+          </label>
+          <div class="time-inputs">
+            <input type="time" class="time-input" id="in-${dia}" value="${inVal}" ${!isActivo ? 'disabled' : ''}>
+            <span style="color:var(--text-muted);">-</span>
+            <input type="time" class="time-input" id="out-${dia}" value="${outVal}" ${!isActivo ? 'disabled' : ''}>
+          </div>
+        `;
+        container.appendChild(row);
+      });
+    } catch(err) {
+      console.error('Error fatal en inicializarHorarios:', err);
+      document.getElementById('horariosContainer').innerHTML = '<div style="color:#EF4444; padding: 10px;">Error al cargar horarios. Intenta recargar.</div>';
+    }
   }
 
   function toggleDia(dia) {
