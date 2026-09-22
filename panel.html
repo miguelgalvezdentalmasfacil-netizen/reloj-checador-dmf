@@ -633,13 +633,14 @@
             <tr>
               <th>Empleado</th>
               <th>Clínica</th>
+              <th>Horario Asignado</th>
               <th>Rendimiento</th>
               <th>Estado Horario</th>
               <th>Acción</th>
             </tr>
           </thead>
           <tbody>
-            <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 40px 0;">Cargando perfiles...</td></tr>
+            <tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px 0;">Cargando perfiles...</td></tr>
           </tbody>
         </table>
       </div>
@@ -1686,10 +1687,32 @@
         accionHtml = `<button class="btn-outline" style="padding: 6px 12px; font-size:13px;" onclick="otorgarAcceso('${perfil.Nombre}', '${perfil.Sucursal}', this)">Forzar Apertura</button>`;
       }
 
+      // Agrupar horarios
+      const dMap = [
+          { key: 'Lunes', lbl: 'Lu' }, { key: 'Martes', lbl: 'Ma' }, { key: 'Miercoles', lbl: 'Mi' },
+          { key: 'Jueves', lbl: 'Ju' }, { key: 'Viernes', lbl: 'Vi' }, { key: 'Sabado', lbl: 'Sa' },
+          { key: 'Domingo', lbl: 'Do' }
+      ];
+      let groups = {};
+      dMap.forEach(d => {
+          let h = perfil[d.key];
+          if (!h || h === "Descanso" || h.trim() === "") return;
+          if (!groups[h]) groups[h] = [];
+          groups[h].push(d.lbl);
+      });
+      let timeParts = [];
+      for (let time in groups) {
+          let daysStr = groups[time].join(',');
+          if (daysStr === "Lu,Ma,Mi,Ju,Vi") daysStr = "L-V";
+          timeParts.push(`<strong style="color:var(--text-main); font-weight:500;">${daysStr}:</strong> ${time}`);
+      }
+      let horarioHtml = timeParts.length === 0 ? '<span style="color:var(--text-light)">Sin horario</span>' : `<div style="font-size: 12px; color: var(--text-muted); line-height: 1.5; white-space: nowrap;">${timeParts.join('<br>')}</div>`;
+
       const tr = document.createElement('tr');
       tr.innerHTML = `
         <td style="font-weight: 500;">${perfil.Nombre}</td>
         <td style="color: var(--text-muted);">${perfil.Sucursal}</td>
+        <td>${horarioHtml}</td>
         <td>
           <div style="display:flex; align-items:center; gap:8px; min-width: 120px;">
             <div style="flex:1; height:6px; background:var(--border-dark); border-radius:3px; overflow:hidden;">
